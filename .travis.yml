@@ -1,4 +1,14 @@
 language: ruby
 rvm:
-  - 2.0.0
-before_install: gem install bundler -v 1.10.5
+- 2.2.4
+install: bundle
+script:
+- rake test
+- rake build
+deploy:
+  provider: rubygems
+  api_key:
+    secure: GRtgzVc4BWoriFpF1h57w1ndS8HhIndKyTH3WIXShs/yKtoz6zlTIURtkBRTb0pNsIcb+kla2JbJ0BfECz6MRlKGBKBCTv81HRilKW3qCWS9F3VpOX4NobcBCZVtDrhlMAnumf3/xHF3ZrUAEr7BCNhTfgs1bQLaXvw+K8plMi731DC0odyIA3CHwt+2bmERE6s3FwKIH+kpPZAUuHNyVqPPCInpaHE4lTEJN26sZWrM4QPO6Ms1PQxPBlYe3H6JXtGAEde6c14PGZpOy3kf8xF9o3prMm1ralwwPlQrZIq0FcuqYb27jBXGX7GEfJIUsnaR8UIVKpk1itiHLFWf1x3pG5SAks6iIAM+L9hGQIDFb+geM+GMUxTE/nHDWrjH3st+HOjAs8lkZlNIwNnxZrnngV5rzbaOq1YWPg1FxGhkjAoZRQ225xeJOxD+S7p27cnV2iGrevrqn2Ud3n0uxeaRXcXiXBWxV5Otzc7m/fYG+No/mm87r4F2Jn+BN88puhI2eBk/oO7fgB1BeYEJ7wrV3kjsdHAcIO9MPG59jZ+Dpsut5CJQVK6ASOd3DTYmbTLiiZZlIK9gHf43MsR45GmY0tSk4wwY4hPWKmZtX6wEmLjD9sTGWeeMnPIVomKzB76Zyd60qNm/MzUMesSHGX80AGnHY7yQIc02deyWMYs=
+  gem: go_builder
+  on:
+    repo: nicholasjackson/go_builder

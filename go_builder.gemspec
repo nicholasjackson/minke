@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["jackson.nic@gmail.com"]
 
   spec.summary       = "Go builder is a set of rake tasks for building and testing your go application with Docker."
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = "https://github.com/nicholasjackson/go_builder"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
