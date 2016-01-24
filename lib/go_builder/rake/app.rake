@@ -128,7 +128,7 @@ namespace :app do
   end
 
   desc "push built image to Docker registry"
-  task :push => [:load_config] do
+  task :push => ['config:load_config'] do
   	p "Push image to registry"
 
     config = GoBuilder::Helpers.config
