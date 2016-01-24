@@ -117,7 +117,7 @@ namespace :app do
         GoBuilder::Helpers.wait_until_server_running config['cucumber']['health_check']['url'], 0
       end
 
-  		puts `cucumber --color -f pretty #{feature}`
+  		sh "cucumber --color -f pretty #{feature}"
       status = $?.exitstatus
   	ensure
   		compose.stop

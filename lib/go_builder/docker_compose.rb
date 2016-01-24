@@ -8,6 +8,7 @@ module GoBuilder
 
     def up
       execute "docker-compose -f #{@compose_file} up -d"
+      sleep 2
     end
 
     def stop
@@ -24,7 +25,7 @@ module GoBuilder
 
     private
     def execute command
-      system "#{command}"
+      system("#{command}")
     end
   end
 end
