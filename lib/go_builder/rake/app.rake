@@ -73,6 +73,14 @@ namespace :app do
   	begin
       compose.up
 
+      # do we need to run any tasks after the server starts?
+      if config['run']['after_start'] != nil
+        config['run']['after_start'].each do |task|
+          puts "Running after_start task: #{task}"
+          Rake::Task[task].invoke
+        end
+      end
+
       if config['run']['consul_loader']['enabled']
         GoBuilder::Helpers.wait_until_server_running "#{config['run']['consul_loader']['url']}/v1/status/leader", 0
         loader = ConsulLoader::Loader.new(ConsulLoader::ConfigParser.new)
@@ -106,6 +114,14 @@ namespace :app do
     compose = GoBuilder::DockerCompose.new config['docker']['compose_file']
   	begin
   	  compose.up
+
+      # do we need to run any tasks after the server starts?
+      if config['run']['after_start'] != nil
+        config['run']['after_start'].each do |task|
+          puts "Running after_start task: #{task}"
+          Rake::Task[task].invoke
+        end
+      end
 
       if config['cucumber']['consul_loader']['enabled']
         GoBuilder::Helpers.wait_until_server_running "#{config['cucumber']['consul_loader']['url']}/v1/status/leader", 0
