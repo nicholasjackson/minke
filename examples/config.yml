@@ -5,7 +5,7 @@ go:
 docker_registry:
   url: <%= ENV['DOCKER_REGISTRY_URL'] %>
   user: <%= ENV['DOCKER_REGISTRY_USER'] %>
-  pass: <%= ENV['DOCKER_REGISTRY_PASS'] %>
+  password: <%= ENV['DOCKER_REGISTRY_PASS'] %>
   email: <%= ENV['DOCKER_REGISTRY_EMAIL'] %>
   namespace: <%= ENV['DOCKER_NAMESPACE'] %>
 docker:

@@ -132,6 +132,6 @@ namespace :app do
   	p "Push image to registry"
 
     config = GoBuilder::Helpers.config
-  	GoBuilder::Docker.tag_and_push config
+  	GoBuilder::GoDocker.tag_and_push config
   end
 end

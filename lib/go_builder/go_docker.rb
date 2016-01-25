@@ -67,11 +67,11 @@ module GoBuilder
     end
 
     def self.tag_and_push args
-      image =  find_image "#{args[:go][:application_name]}:latest"
-    	image.tag('repo' => "#{args[:docker_registry][:namespace]}/#{args[:go][:application_name]}", 'force' => true) unless image.info["RepoTags"].include? "#{args[:docker_registry][:namespace]}/#{args[:go][:application_name]}:latest"
+      image =  self.find_image "#{args['go']['application_name']}:latest"
+    	image.tag('repo' => "#{args['docker_registry']['namespace']}/#{args['go']['application_name']}", 'force' => true) unless image.info["RepoTags"].include? "#{args['docker_registry']['namespace']}/#{args['go']['application_name']}:latest"
 
-    	sh "docker login -u #{args[:docker_registry][:user]} -p #{args[:docker_registry][:password]} -e #{args[:docker_registry][:email]} #{args[:docker_registry][:url]}"
-    	sh "docker push #{args[:docker_registry][:namespace]}/#{args[:go][:application_name]}:latest"
+    	system("docker login -u #{args['docker_registry']['user']} -p #{args['docker_registry']['password']} -e #{args['docker_registry']['email']} #{args['docker_registry']['url']}")
+    	system("docker push #{args['docker_registry']['namespace']}/#{args['go']['application_name']}:latest")
     end
   end
 end
