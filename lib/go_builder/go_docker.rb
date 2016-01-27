@@ -71,7 +71,10 @@ module GoBuilder
     	image.tag('repo' => "#{args['docker_registry']['namespace']}/#{args['go']['application_name']}", 'force' => true) unless image.info["RepoTags"].include? "#{args['docker_registry']['namespace']}/#{args['go']['application_name']}:latest"
 
     	system("docker login -u #{args['docker_registry']['user']} -p #{args['docker_registry']['password']} -e #{args['docker_registry']['email']} #{args['docker_registry']['url']}")
+      abort "Unable to login" unless $?.exitstatus ==  0
+
     	system("docker push #{args['docker_registry']['namespace']}/#{args['go']['application_name']}:latest")
+      abort "Unable to push to registry" unless $?.exitstatus ==  0
     end
   end
 end
