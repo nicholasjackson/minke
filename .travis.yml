@@ -7,8 +7,8 @@ script:
 - rake build
 deploy:
   provider: rubygems
-  gem: go_builder
+  gem: minke
   on:
-    repo: nicholasjackson/go_builder
+    repo: nicholasjackson/minke
   api_key:
     secure: NfDL67sdeJ0FOSYns+VKjPPk/ZAhJa/wpffw5RiXG94gst5XUtZauik1nVIrTpWYhw5e34hqHPH9mE+v8AkXQRmGyUkYbW+0ePFuqBHidsSFGUOzg3h0+wYrOkvA60REJAg1EM97IDx7PmhcxfO3NFsDvr6RKOXaNc3cLxmiIdD9PVktm75hk2BvoiuO3d12ph2Wr9RjSuidX/0z2H8oOdDs8e14x9QPqX3LuRiTe+A3h+hjZ1OhH9aT5blJ2ZI65iDMY1K6hzcDuUY7CzCbKZF2pPEkDgtT5FgRX1klu28Ehxebef/vvAFmOt5ztuXyE6nEdoI8NACE7XXQQC+6H5PzE6hWoHKk7/vMn5u2pdMRUykArAJ6++JxRSitaKSXn0xZfRKvszp00WhHiG4kPtQXgNKiJiuOKX9huy+gHssYfP3sxcd0LNrslnxaGRAn0igRHuBeaIi8kxL+03q1tCSjOcc6OV9qPIgZAiGUdeeolefrXFTovptcG5PiDzq6jJoQSO51kRMhG/XGfuf2T+vpl5ouT2dsYSz8qDchX5LEjcjuBXb3J1/Xz5s1oQjGI1w+bSrZ1OAFv0d5v8jcD9IyF4C7iVuqCtlc0bNkm9ZgwG+iHHj/SxezFPCttVFBS2or6YizA2xAONXkuy2g+yUDZplcX56fe0oIQsOJOjc=

@@ -3,8 +3,8 @@ namespace :app do
   task :test => ['config:set_docker_env', 'config:load_config', 'docker:fetch_images'] do
   	p "Test application"
 
-    config = GoBuilder::Helpers.config
-    container = GoBuilder::GoDocker.get_container config['docker']
+    config = Minke::Helpers.config
+    container = Minke::GoDocker.get_container config['docker']
 
   	begin
   		# Get go packages
@@ -26,8 +26,8 @@ namespace :app do
   task :build => [:test] do
   	p "Build for Linux"
 
-    config = GoBuilder::Helpers.config
-  	container = GoBuilder::GoDocker.get_container config['docker']
+    config = Minke::Helpers.config
+  	container = Minke::GoDocker.get_container config['docker']
 
   	begin
   		# Build go server
@@ -46,16 +46,16 @@ namespace :app do
   task :copy_assets do
     p "Copy assets"
 
-    config = GoBuilder::Helpers.config
+    config = Minke::Helpers.config
 
     if config['after_build'] != nil && config['after_build']['copy_assets'] != nil
-      GoBuilder::Helpers.copy_files config['after_build']['copy_assets']
+      Minke::Helpers.copy_files config['after_build']['copy_assets']
     end
   end
 
   desc "build Docker image for application"
   task :build_server => [:build, :copy_assets] do
-    config = GoBuilder::Helpers.config
+    config = Minke::Helpers.config
 
   	p "Building Docker image: #{config['go']['application_name']}"
 
@@ -67,8 +67,8 @@ namespace :app do
   task :run => ['config:set_docker_env', 'config:load_config'] do
     p "Run application with docker compose"
 
-    config = GoBuilder::Helpers.config
-    compose = GoBuilder::DockerCompose.new config['docker']['compose_file']
+    config = Minke::Helpers.config
+    compose = Minke::DockerCompose.new config['docker']['compose_file']
 
   	begin
       compose.up
@@ -82,7 +82,7 @@ namespace :app do
       end
 
       if config['run']['consul_loader']['enabled']
-        GoBuilder::Helpers.wait_until_server_running "#{config['run']['consul_loader']['url']}/v1/status/leader", 0
+        Minke::Helpers.wait_until_server_running "#{config['run']['consul_loader']['url']}/v1/status/leader", 0
         loader = ConsulLoader::Loader.new(ConsulLoader::ConfigParser.new)
         loader.load_config config['run']['consul_loader']['config_file'], config['run']['consul_loader']['url']
       end
@@ -99,7 +99,7 @@ namespace :app do
 
   desc "run end to end Cucumber tests USAGE: rake app:cucumber[@tag]"
   task :cucumber, [:feature] => ['config:set_docker_env', 'config:load_config'] do |t, args|
-    config = GoBuilder::Helpers.config
+    config = Minke::Helpers.config
 
   	puts "Running cucumber with tags #{args[:feature]}"
 
@@ -111,7 +111,7 @@ namespace :app do
 
   	status = 0
 
-    compose = GoBuilder::DockerCompose.new config['docker']['compose_file']
+    compose = Minke::DockerCompose.new config['docker']['compose_file']
   	begin
   	  compose.up
 
@@ -124,13 +124,13 @@ namespace :app do
       end
 
       if config['cucumber']['consul_loader']['enabled']
-        GoBuilder::Helpers.wait_until_server_running "#{config['cucumber']['consul_loader']['url']}/v1/status/leader", 0
+        Minke::Helpers.wait_until_server_running "#{config['cucumber']['consul_loader']['url']}/v1/status/leader", 0
         loader = ConsulLoader::Loader.new(ConsulLoader::ConfigParser.new)
         loader.load_config config['cucumber']['consul_loader']['config_file'], config['cucumber']['consul_loader']['url']
       end
 
       if config['cucumber']['health_check']['enabled']
-        GoBuilder::Helpers.wait_until_server_running config['cucumber']['health_check']['url'], 0
+        Minke::Helpers.wait_until_server_running config['cucumber']['health_check']['url'], 0
       end
 
   		sh "cucumber --color -f pretty #{feature}"
@@ -147,7 +147,7 @@ namespace :app do
   task :push => ['config:load_config'] do
   	p "Push image to registry"
 
-    config = GoBuilder::Helpers.config
-  	GoBuilder::GoDocker.tag_and_push config
+    config = Minke::Helpers.config
+  	Minke::GoDocker.tag_and_push config
   end
 end

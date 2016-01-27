@@ -1,14 +1,14 @@
-# GoBuilder
+# Minke
 [![Build Status](https://travis-ci.org/nicholasjackson/go_builder.svg?branch=master)](https://travis-ci.org/nicholasjackson/go_builder)
 
-Go Builder is an opinionated build system for Go microservices and Docker, it scaffolds the build, run and test (go test and cucumber) phases of your microservice project.
+Minke is an opinionated build system for Microservices and Docker, like a little envelope of quality it scaffolds the build, run and test (unit test and functional tests) phases of your microservice project allowing you to simply run and test your images using Docker Compose.  Currently supporting Google's Go, extensions are planned for Node.js or HTML / Javascript sites with Grunt or Gulp based builds. 
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'go_builder'
+gem 'minke'
 ```
 
 And then execute:
@@ -17,12 +17,12 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install go_builder
+    $ gem install minke
 
 ## Dependencies
 
 ### Docker
-You need to have docker, docker-machine, and docker-compose installed on your build machine and the docker envrionment variables must be set.  If using the docker-toolkit on a mac you can set these by running...
+You need to have docker, docker-machine, and docker-compose installed on your build machine and the docker environment variables must be set.  If using the docker-toolkit on a mac you can set these by running...
 ```bash
 eval "$(docker-machine env default)"
 ```
@@ -30,10 +30,10 @@ eval "$(docker-machine env default)"
 ## Usage
 Include the rake tasks in your Rakefile
 ```ruby
-require 'go_builder'
+require 'minke'
 
-spec = Gem::Specification.find_by_name 'go_builder'
-Rake.add_rakelib "#{spec.gem_dir}/lib/go_builder/rake"
+spec = Gem::Specification.find_by_name 'minke'
+Rake.add_rakelib "#{spec.gem_dir}/lib/minke/rake"
 ```
 
 By default Go builder looks for a config file (config.yml) in the same folder as your Rakefile

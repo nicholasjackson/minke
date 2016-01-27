@@ -1,4 +1,4 @@
-module GoBuilder
+module Minke
   class DockerCompose
     @compose_file = nil
 

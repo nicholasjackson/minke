@@ -1,4 +1,4 @@
-module GoBuilder
+module Minke
   class GoDocker
     def self.get_docker_ip_address
     	if !ENV['DOCKER_HOST']
