@@ -1,5 +1,5 @@
 # Minke
-[![Build Status](https://travis-ci.org/nicholasjackson/go_builder.svg?branch=master)](https://travis-ci.org/nicholasjackson/go_builder)
+[![Build Status](https://travis-ci.org/nicholasjackson/minke.svg?branch=master)](https://travis-ci.org/nicholasjackson/minke)
 
 Minke is an opinionated build system for Microservices and Docker, like a little envelope of quality it scaffolds the build, run and test (unit test and functional tests) phases of your microservice project allowing you to simply run and test your images using Docker Compose.  Currently supporting Google's Go, extensions are planned for Node.js or HTML / Javascript sites with Grunt or Gulp based builds. 
 
