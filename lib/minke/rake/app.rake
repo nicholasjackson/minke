@@ -87,7 +87,7 @@ namespace :app do
       compose.logs
   	rescue SystemExit, Interrupt
   		compose.stop
-  		compose.rm
+  		compose.rm unless Docker.info["Driver"] == "btrfs"
   	end
   end
 
