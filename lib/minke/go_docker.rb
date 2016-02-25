@@ -66,6 +66,36 @@ module Minke
     	return container
     end
 
+    def self.create_and_run_container args, cmd
+    	# update the timeout for the Excon Http Client
+    	# set the chunk size to enable streaming of log files
+      Docker.options = {:chunk_size => 1, :read_timeout => 3600}
+      container = Docker::Container.create(
+    		'Image' => args['build_args']['image'],
+    		'Cmd' => cmd,
+    		"Binds" => ["#{ENV['GOPATH']}/src:/go/src"],
+    		"Env" => args['build_args']['env'],
+    		'WorkingDir' => args['build_args']['working_directory'])
+
+      return_code = 0
+
+      thread = Thread.new {
+        container.attach { |stream, chunk|
+          puts "#{chunk}"
+
+          if stream.to_s == "stdout"
+            return_code = 0
+          else
+            return_code = 1
+          end
+        }
+      }
+      container.start
+      thread.join
+
+    	return container, return_code
+    end
+
     def self.tag_and_push args
       image =  self.find_image "#{args['go']['application_name']}:latest"
     	image.tag('repo' => "#{args['docker_registry']['namespace']}/#{args['go']['application_name']}", 'force' => true) unless image.info["RepoTags"].include? "#{args['docker_registry']['namespace']}/#{args['go']['application_name']}:latest"

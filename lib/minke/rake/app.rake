@@ -4,21 +4,23 @@ namespace :app do
   	p "Test application"
 
     config = Minke::Helpers.config
-    container = Minke::GoDocker.get_container config['docker']
 
   	begin
   		# Get go packages
-  		ret = container.exec(['go','get','-t','-v','./...']) { |stream, chunk| puts "#{stream}: #{chunk}" }
-  		raise Exception, 'Error running command' unless ret[2] == 0
+      puts "Go get"
+      container, ret = Minke::GoDocker.create_and_run_container config['docker'], ['go','get','-t','-v','./...']
+    ensure
+  		container.delete()
+  	end
 
+    begin
   		# Test application
-  		ret = container.exec(['go','test','./...']) do |stream, chunk|
-        puts "#{stream}: #{chunk}"
-      end
+      puts "Go test"
+      container, ret = Minke::GoDocker.create_and_run_container config['docker'], ['go','test','./...']
 
-  		raise Exception, 'Error running command' unless ret[2] == 0
-  	ensure
-  		container.delete(:force => true)
+  		raise Exception, 'Error running command' unless ret == 0
+    ensure
+  		container.delete()
   	end
   end
 
@@ -27,19 +29,14 @@ namespace :app do
   	p "Build for Linux"
 
     config = Minke::Helpers.config
-  	container = Minke::GoDocker.get_container config['docker']
 
   	begin
   		# Build go server
-  		ret = container.exec(
-        ['go','build','-a','-installsuffix','cgo','-ldflags','\'-s\'','-o', config['go']['application_name']]
-      ) do |stream, chunk|
-        puts "#{stream}: #{chunk}"
-      end
+      container, ret = Minke::GoDocker.create_and_run_container config['docker'], ['go','build','-a','-installsuffix','cgo','-ldflags','\'-s\'','-o', config['go']['application_name']]
 
-  		raise Exception, 'Error running command' unless ret[2] == 0
-  	ensure
-  		container.delete(:force => true)
+  		raise Exception, 'Error running command' unless ret == 0
+    ensure
+  		container.delete()
   	end
   end
 
