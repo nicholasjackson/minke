@@ -1,32 +1,34 @@
 namespace :app do
   desc "run unit tests"
   task :test => ['config:set_docker_env', 'config:load_config', 'docker:fetch_images'] do
-  	p "Test application"
-
     config = Minke::Helpers.config
 
   	begin
   		# Get go packages
-      puts "Go get"
+      puts "## Go get"
       container, ret = Minke::GoDocker.create_and_run_container config['docker'], ['go','get','-t','-v','-d','./...']
     ensure
   		Minke::GoDocker.delete_container container
   	end
 
+    puts ""
+
     begin
   		# Test application
-      puts "Go test"
+      puts "## Go test"
       container, ret = Minke::GoDocker.create_and_run_container config['docker'], ['go','test','./...']
 
   		raise Exception, 'Error running command' unless ret == 0
     ensure
   		Minke::GoDocker.delete_container container
   	end
+
+    puts ""
   end
 
   desc "build and test application"
   task :build => [:test] do
-  	p "Build for Linux"
+  	puts "## Build for Linux"
 
     config = Minke::Helpers.config
 
@@ -38,31 +40,37 @@ namespace :app do
     ensure
   		Minke::GoDocker.delete_container container
   	end
+
+    puts ""
   end
 
   task :copy_assets do
-    p "Copy assets"
+    puts "## Copy assets"
 
     config = Minke::Helpers.config
 
     if config['after_build'] != nil && config['after_build']['copy_assets'] != nil
       Minke::Helpers.copy_files config['after_build']['copy_assets']
     end
+
+    puts ""
   end
 
   desc "build Docker image for application"
   task :build_server => [:build, :copy_assets] do
     config = Minke::Helpers.config
 
-  	p "Building Docker image: #{config['go']['application_name']}"
+  	puts "## Building Docker image: #{config['go']['application_name']}"
 
   	Docker.options = {:read_timeout => 6200}
   	image = Docker::Image.build_from_dir config['docker']['docker_file'], {:t => config['go']['application_name']}
+
+    puts ""
   end
 
   desc "run application with Docker Compose"
   task :run => ['config:set_docker_env', 'config:load_config'] do
-    p "Run application with docker compose"
+    puts "## Run application with docker compose"
 
     config = Minke::Helpers.config
     compose = Minke::DockerCompose.new config['docker']['compose_file']
@@ -73,8 +81,10 @@ namespace :app do
       # do we need to run any tasks after the server starts?
       if config['run']['after_start'] != nil
         config['run']['after_start'].each do |task|
-          puts "Running after_start task: #{task}"
+          puts "## Running after_start task: #{task}"
           Rake::Task[task].invoke
+
+          puts ""
         end
       end
 
@@ -82,6 +92,8 @@ namespace :app do
         Minke::Helpers.wait_until_server_running "#{config['run']['consul_loader']['url']}/v1/status/leader", 0
         loader = ConsulLoader::Loader.new(ConsulLoader::ConfigParser.new)
         loader.load_config config['run']['consul_loader']['config_file'], config['run']['consul_loader']['url']
+
+        puts ""
       end
 
       compose.logs
@@ -98,7 +110,7 @@ namespace :app do
   task :cucumber, [:feature] => ['config:set_docker_env', 'config:load_config'] do |t, args|
     config = Minke::Helpers.config
 
-  	puts "Running cucumber with tags #{args[:feature]}"
+  	puts "## Running cucumber with tags #{args[:feature]}"
 
   	if args[:feature] != nil
   		feature = "--tags #{args[:feature]}"
@@ -115,8 +127,10 @@ namespace :app do
       # do we need to run any tasks after the server starts?
       if config['run']['after_start'] != nil
         config['run']['after_start'].each do |task|
-          puts "Running after_start task: #{task}"
+          puts "## Running after_start task: #{task}"
           Rake::Task[task].invoke
+
+          puts ""
         end
       end
 
@@ -142,7 +156,7 @@ namespace :app do
 
   desc "push built image to Docker registry"
   task :push => ['config:load_config'] do
-  	p "Push image to registry"
+  	puts "## Push image to registry"
 
     config = Minke::Helpers.config
   	Minke::GoDocker.tag_and_push config

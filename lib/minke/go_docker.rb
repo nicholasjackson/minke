@@ -101,7 +101,7 @@ module Minke
         begin
           container.delete()
         rescue => e
-          puts "Unable to delete container"
+          puts "Error: Unable to delete container"
         end
       end
     end
