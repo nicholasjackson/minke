@@ -10,7 +10,7 @@ namespace :app do
       puts "Go get"
       container, ret = Minke::GoDocker.create_and_run_container config['docker'], ['go','get','-t','-v','./...']
     ensure
-  		container.delete()
+  		Minke::GoDocker.delete_container container
   	end
 
     begin
@@ -20,7 +20,7 @@ namespace :app do
 
   		raise Exception, 'Error running command' unless ret == 0
     ensure
-  		container.delete()
+  		Minke::GoDocker.delete_container container
   	end
   end
 
@@ -36,7 +36,7 @@ namespace :app do
 
   		raise Exception, 'Error running command' unless ret == 0
     ensure
-  		container.delete()
+  		Minke::GoDocker.delete_container container
   	end
   end
 

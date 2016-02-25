@@ -96,6 +96,16 @@ module Minke
     	return container, return_code
     end
 
+    def self.delete_container container
+      if container != nil
+        begin
+          container.delete()
+        rescue => e
+          puts "Unable to delete container"
+        end
+      end
+    end
+
     def self.tag_and_push args
       image =  self.find_image "#{args['go']['application_name']}:latest"
     	image.tag('repo' => "#{args['docker_registry']['namespace']}/#{args['go']['application_name']}", 'force' => true) unless image.info["RepoTags"].include? "#{args['docker_registry']['namespace']}/#{args['go']['application_name']}:latest"
