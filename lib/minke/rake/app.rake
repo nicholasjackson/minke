@@ -148,7 +148,7 @@ namespace :app do
       status = $?.exitstatus
   	ensure
   		compose.stop
-  		compose.rm
+  		compose.rm unless Docker.info["Driver"] == "btrfs"
 
       abort "Cucumber steps failed" unless status == 0
   	end
