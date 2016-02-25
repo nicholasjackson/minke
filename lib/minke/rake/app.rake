@@ -8,7 +8,7 @@ namespace :app do
   	begin
   		# Get go packages
       puts "Go get"
-      container, ret = Minke::GoDocker.create_and_run_container config['docker'], ['go','get','-t','-v','./...']
+      container, ret = Minke::GoDocker.create_and_run_container config['docker'], ['go','get','-t','-v','-d','./...']
     ensure
   		Minke::GoDocker.delete_container container
   	end
