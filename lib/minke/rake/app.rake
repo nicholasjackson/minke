@@ -6,9 +6,9 @@ namespace :app do
   	begin
   		# Get go packages
       puts "## Go get"
-      container, ret = Minke::GoDocker.create_and_run_container config['docker'], ['go','get','-t','-v','-d','./...']
+      container, ret = Minke::Docker.create_and_run_container config, config[:build_config][:build][:get]
     ensure
-  		Minke::GoDocker.delete_container container
+  		Minke::Docker.delete_container container
   	end
 
     puts ""
@@ -16,11 +16,11 @@ namespace :app do
     begin
   		# Test application
       puts "## Go test"
-      container, ret = Minke::GoDocker.create_and_run_container config['docker'], ['go','test','./...']
+      container, ret = Minke::Docker.create_and_run_container config, config[:build_config][:build][:test]
 
   		raise Exception, 'Error running command' unless ret == 0
     ensure
-  		Minke::GoDocker.delete_container container
+  		Minke::Docker.delete_container container
   	end
 
     puts ""
@@ -34,11 +34,11 @@ namespace :app do
 
   	begin
   		# Build go server
-      container, ret = Minke::GoDocker.create_and_run_container config['docker'], ['go','build','-a','-installsuffix','cgo','-ldflags','\'-s\'','-o', config['go']['application_name']]
+      container, ret = Minke::Docker.create_and_run_container config, config[:build_config][:build][:build]
 
   		raise Exception, 'Error running command' unless ret == 0
     ensure
-  		Minke::GoDocker.delete_container container
+  		Minke::Docker.delete_container container
   	end
 
     puts ""

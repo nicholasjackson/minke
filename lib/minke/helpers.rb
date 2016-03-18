@@ -27,6 +27,9 @@ module Minke
 
     def self.load_config config_file
       @config = YAML.parse(ERB.new(File.read(config_file)).result).transform
+
+      @config[:build_config] = Minke::Commands::Go.new.commands unless @config['go'] == nil
+      @config[:build_config] = Minke::Commands::Swift.new.commands unless @config['swift'] == nil
     end
 
     def self.copy_files assets
