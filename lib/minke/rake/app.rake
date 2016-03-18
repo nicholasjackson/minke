@@ -60,10 +60,10 @@ namespace :app do
   task :build_server => [:build, :copy_assets] do
     config = Minke::Helpers.config
 
-  	puts "## Building Docker image: #{config['go']['application_name']}"
+  	puts "## Building Docker image"
 
   	Docker.options = {:read_timeout => 6200}
-  	image = Docker::Image.build_from_dir config['docker']['docker_file'], {:t => config['go']['application_name']}
+  	image = Docker::Image.build_from_dir config['docker']['docker_file'], {:t => config['application_name']}
 
     puts ""
   end
