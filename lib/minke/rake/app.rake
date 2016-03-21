@@ -3,19 +3,21 @@ namespace :app do
   task :test => ['config:set_docker_env', 'config:load_config', 'docker:fetch_images'] do
     config = Minke::Helpers.config
 
-  	begin
-  		# Get go packages
-      puts "## Go get"
-      container, ret = Minke::Docker.create_and_run_container config, config[:build_config][:build][:get]
-    ensure
-  		Minke::Docker.delete_container container
-  	end
+    if config[:build_config][:build][:get] != nil
+    	begin
+    		# Get go packages
+        puts "## Get dependent packages"
+        container, ret = Minke::Docker.create_and_run_container config, config[:build_config][:build][:get]
+      ensure
+    		Minke::Docker.delete_container container
+    	end
 
-    puts ""
+      puts ""
+    end
 
     begin
   		# Test application
-      puts "## Go test"
+      puts "## Test application"
       container, ret = Minke::Docker.create_and_run_container config, config[:build_config][:build][:test]
 
   		raise Exception, 'Error running command' unless ret == 0
@@ -73,7 +75,14 @@ namespace :app do
     puts "## Run application with docker compose"
 
     config = Minke::Helpers.config
-    compose = Minke::DockerCompose.new config['docker']['compose_file']
+
+    if config['run']['docker'] != nil && config['run']['docker']['compose_file'] != nil
+      config_file = config['run']['docker']['compose_file']
+    else
+      config_file = config['docker']['compose_file']
+    end
+
+    compose = Minke::DockerCompose.new config_file
 
   	begin
       compose.up
@@ -120,13 +129,22 @@ namespace :app do
 
   	status = 0
 
-    compose = Minke::DockerCompose.new config['docker']['compose_file']
+    config = Minke::Helpers.config
+
+    if config['cucumber']['docker'] != nil && config['cucumber']['docker']['compose_file'] != nil
+      config_file = config['cucumber']['docker']['compose_file']
+    else
+      config_file = config['docker']['compose_file']
+    end
+
+    compose = Minke::DockerCompose.new config_file
+
   	begin
   	  compose.up
 
       # do we need to run any tasks after the server starts?
-      if config['run']['after_start'] != nil
-        config['run']['after_start'].each do |task|
+      if config['cucumber']['after_start'] != nil
+        config['cucumber']['after_start'].each do |task|
           puts "## Running after_start task: #{task}"
           Rake::Task[task].invoke
 

@@ -67,7 +67,6 @@ module Minke
     end
 
     def self.create_and_run_container args, cmd
-      puts args[:build_config][:docker][:binds]
     	# update the timeout for the Excon Http Client
     	# set the chunk size to enable streaming of log files
       ::Docker.options = {:chunk_size => 1, :read_timeout => 3600}

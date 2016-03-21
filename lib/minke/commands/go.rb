@@ -1,7 +1,7 @@
 module Minke
   module Commands
     class Go
-      def config
+      def commands
         {
           :build => {
             :get => ['go','get','-t','-v','-d','./...'],
@@ -11,9 +11,16 @@ module Minke
           :docker => {
             :image => 'golang:latest',
             :env => ['CGO_ENABLED=0'],
-            :binds => ["#{ENV['GOPATH']}/src:/go/src"]
+            :binds => ["#{ENV['GOPATH']}/src:/go/src"],
+            :working_directory => "#{working_directory}"
           }
         }
+      end
+
+      def working_directory
+        dir = File.expand_path('../.')
+        gopath = "#{ENV['GOPATH']}"
+        new_dir = "/go" + dir.gsub(gopath,'')
       end
     end
   end

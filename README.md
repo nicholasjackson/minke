@@ -1,7 +1,12 @@
 # Minke
+
+## NOTE:
+Version 0.13.0 of the gem introduces breaking changes to the configuration files in order to support multiple language builds for swift and go.  Please use version 0.12.0 or upgrade your config to the new specification shown below.  
+
+**Version 0.13.0**  
 [![Build Status](https://travis-ci.org/nicholasjackson/minke.svg?branch=master)](https://travis-ci.org/nicholasjackson/minke)
 
-Minke is an opinionated build system for Microservices and Docker, like a little envelope of quality it scaffolds the build, run and test (unit test and functional tests) phases of your microservice project allowing you to simply run and test your images using Docker Compose.  Currently supporting Google's Go, extensions are planned for Node.js or HTML / Javascript sites with Grunt or Gulp based builds. 
+Minke is an opinionated build system for Microservices and Docker, like a little envelope of quality it scaffolds the build, run and test (unit test and functional tests) phases of your microservice project allowing you to simply run and test your images using Docker Compose.  Currently supporting Google's Go, and experimental support for Swift, extensions are planned for Node.js or HTML / Javascript sites with Grunt or Gulp based builds.
 
 ## Installation
 
@@ -63,9 +68,9 @@ The config file config.yml is where you set the various configuration for the bu
 
 ### Example Config File
 ```yaml
-go:
-  namespace: 'github.com/nicholasjackson'
-  application_name: 'event-sauce'
+namespace: 'github.com/nicholasjackson'
+application_name: 'event-sauce'
+language: go
 docker_registry:
   url: <%= ENV['DOCKER_REGISTRY_URL'] %>
   user: <%= ENV['DOCKER_REGISTRY_USER'] %>
@@ -73,18 +78,23 @@ docker_registry:
   email: <%= ENV['DOCKER_REGISTRY_EMAIL'] %>
   namespace: <%= ENV['DOCKER_NAMESPACE'] %>
 docker:
-  docker_file: './'
-  compose_file: './'
-  build_args:
-    image: 'golang:latest'
-    env:
-      - 'CGO_ENABLED=0' # used for alpine linux static linking
-    working_directory: '/go/src/github.com/nicholasjackson/event-sauce'
+  docker_file: './dockerfiles/event-sauce/Dockerfile'
+  compose_file: './dockercompose/event-sauce/docker-compose.yml'
+after_build:
+  copy_assets:
+    -
+      from: <%= "#{ENV['GOPATH']}/src/github.com/nicholasjackson/event-sauce/event-sauce" %>
+      to: './docker/event-sauce'
+    -
+      from: './swagger_spec/swagger.yml'
+      to: './dockerfile/event-sauce/swagger_spec/swagger.yml'
 run:
   consul_loader:
     enabled: true
     config_file: './config.yml'
     url: <%= "http://#{ENV['DOCKER_IP']}:9500" %>
+  docker:
+    compose_file: './dockercompose/event-sauce/docker-compose-alternate.yml'
 cucumber:
   consul_loader:
     enabled: true
@@ -95,20 +105,13 @@ cucumber:
     url: <%= "http://#{ENV['DOCKER_IP']}:8001/v1/health" %>
   after_start:
     - 'wait_for_elastic_search'
-after_build:
-  copy_assets:
-    -
-      from: <%= "#{ENV['GOPATH']}/src/github.com/nicholasjackson/event-sauce/event-sauce" %>
-      to: './docker/event-sauce'
-    -
-      from: './swagger_spec/swagger.yml'
-      to: './dockerfile/event-sauce/swagger_spec/swagger.yml'
 ```
 
-#### go:
+#### head:
 This section contains the configuration for the build process.  
 **namespace:** namespace for your application code within your GOPATH, this is generally the same as your repository.  
 **application_name:** name of the built binary.  
+**language** (go|swift) language type of the build swift is currently experimental and uses the v3 dev branch which is compatible with Kitura
 
 #### docker_registry:
 This section contains the configuration for the docker registry to push the image to.  Images are pushed to the registry prefixed with the namespace and application_name, e.g. nicholasjackson/event-sauce:latest.   
@@ -118,16 +121,38 @@ This section contains the configuration for the docker registry to push the imag
 **email:** email address to use when logging into the registry.  
 **namespace:** namespace of your image to use when pushing the image to the registry.  
 
+#### after_build:
+This section allows you to copy assets such as binaries or files which you would like to include into your Docker image.
+##### copy_assets:  
+An array of elements with the following parameters:  
+**from:** the source file or directory  
+**to:** the destination file or directory
+
 #### docker:
 This section contains configuration for the Docker build and run process.  
 **docker_file:** path to the folder containing your Dockerfile used by the build_server task.  
 **compose_file:** path to your docker-compose file for run and cucumber tasks.  
 
 #### run:
+The run section defines config for running your microservice with Docker Compose.
 ##### consul_loader:
 When the application is run using docker-compose you can load some default config into your consul server.  Told you this was opinionated, if you are building microservices you are using consul right?  
 **enabled:** boolean determining if this feature is enabled.  
 **config_file:** path to a yaml file containing the key values you would like to load into consul. consul_loader flattens the structure of your yaml file and converts this into key values. For more information please see []()
+##### docker:
+This section allows you to override the docker compose file specified in the main section incase you would like a different config for testing.  
+**compose_file:** path to your docker-compose file for run and cucumber tasks.
+##### after_start:
+This section is an array of rake tasks which will be run after docker compose has started, you can define these rake tasks in your main Rakefile.  e.g.  
+  - 'wait_for_elastic_search'
+  - 'es:create_indexes'
+
+#### cucumber:
+The cucumber section defines config for running and testing your microservice with Docker Compose and cucumber, the config options are the same as in **run:** with the addition of health_check.
+##### health_check:
+After the Docker Compose startup the application can wait until the main application has started before running the cucumber tests, to enable this specify true for the enabled: section then specify your health check url.  
+**enabled** (true|false) enable or disable the health check.  
+**url** url to use for health checks.  
 
 ## Development
 

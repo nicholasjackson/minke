@@ -1,4 +1,3 @@
-# docker run -i -t -v $(pwd)/../:/src -w /src ibmcom/kitura-ubuntu:latest /bin/bash -c "swift build -Xcc -fblocks"
 module Minke
   module Commands
     class Swift
@@ -6,7 +5,6 @@ module Minke
         {
           :build => {
             :build => ['swift', 'build', '-Xcc', '-fblocks'],
-            :get => ['ls', '-ls'],
             :test => ['ls', '-ls'],
           },
           :docker => {
