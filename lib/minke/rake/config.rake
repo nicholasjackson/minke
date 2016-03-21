@@ -4,7 +4,7 @@ namespace :config do
   end
 
   task :set_docker_env do
-    DOCKER_IP = Minke::GoDocker.get_docker_ip_address
+    DOCKER_IP = Minke::Docker.get_docker_ip_address
     ENV['DOCKER_IP'] = DOCKER_IP
   end
 end

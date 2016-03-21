@@ -1,5 +1,5 @@
 module Minke
-  class GoDocker
+  class Docker
     def self.get_docker_ip_address
     	if !ENV['DOCKER_HOST']
     		return "127.0.0.1"
@@ -15,7 +15,7 @@ module Minke
 
     def self.find_image image_name
     	found = nil
-    	Docker::Image.all.each do | image |
+    	::Docker::Image.all.each do | image |
     		found = image if image.info["RepoTags"].include? image_name
     	end
 
@@ -37,7 +37,7 @@ module Minke
     end
 
     def self.find_running_container
-    	containers = Docker::Container.all(:all => true)
+    	containers = ::Docker::Container.all(:all => true)
     	found = nil
 
     	containers.each do | container |
@@ -52,9 +52,9 @@ module Minke
     def self.create_and_start_container args
     	# update the timeout for the Excon Http Client
     	# set the chunk size to enable streaming of log files
-    	Docker.options = {:chunk_size => 1, :read_timeout => 3600}
+    	::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
 
-    	container = Docker::Container.create(
+    	container = ::Docker::Container.create(
     		'Image' => args['build_args']['image'],
     		'Cmd' => ['/bin/bash'],
     		'Tty' => true,
@@ -69,13 +69,13 @@ module Minke
     def self.create_and_run_container args, cmd
     	# update the timeout for the Excon Http Client
     	# set the chunk size to enable streaming of log files
-      Docker.options = {:chunk_size => 1, :read_timeout => 3600}
-      container = Docker::Container.create(
-    		'Image' => args['build_args']['image'],
+      ::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
+      container = ::Docker::Container.create(
+    		'Image' => args[:build_config][:docker][:image],
     		'Cmd' => cmd,
-    		"Binds" => ["#{ENV['GOPATH']}/src:/go/src"],
-    		"Env" => args['build_args']['env'],
-    		'WorkingDir' => args['build_args']['working_directory'])
+    		"Binds" => args[:build_config][:docker][:binds],
+    		"Env" => args[:build_config][:docker][:env],
+    		'WorkingDir' => args[:build_config][:docker][:working_directory])
 
       return_code = 0
 

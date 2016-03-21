@@ -3,24 +3,26 @@ namespace :app do
   task :test => ['config:set_docker_env', 'config:load_config', 'docker:fetch_images'] do
     config = Minke::Helpers.config
 
-  	begin
-  		# Get go packages
-      puts "## Go get"
-      container, ret = Minke::GoDocker.create_and_run_container config['docker'], ['go','get','-t','-v','-d','./...']
-    ensure
-  		Minke::GoDocker.delete_container container
-  	end
+    if config[:build_config][:build][:get] != nil
+    	begin
+    		# Get go packages
+        puts "## Get dependent packages"
+        container, ret = Minke::Docker.create_and_run_container config, config[:build_config][:build][:get]
+      ensure
+    		Minke::Docker.delete_container container
+    	end
 
-    puts ""
+      puts ""
+    end
 
     begin
   		# Test application
-      puts "## Go test"
-      container, ret = Minke::GoDocker.create_and_run_container config['docker'], ['go','test','./...']
+      puts "## Test application"
+      container, ret = Minke::Docker.create_and_run_container config, config[:build_config][:build][:test]
 
   		raise Exception, 'Error running command' unless ret == 0
     ensure
-  		Minke::GoDocker.delete_container container
+  		Minke::Docker.delete_container container
   	end
 
     puts ""
@@ -34,11 +36,11 @@ namespace :app do
 
   	begin
   		# Build go server
-      container, ret = Minke::GoDocker.create_and_run_container config['docker'], ['go','build','-a','-installsuffix','cgo','-ldflags','\'-s\'','-o', config['go']['application_name']]
+      container, ret = Minke::Docker.create_and_run_container config, config[:build_config][:build][:build]
 
   		raise Exception, 'Error running command' unless ret == 0
     ensure
-  		Minke::GoDocker.delete_container container
+  		Minke::Docker.delete_container container
   	end
 
     puts ""
@@ -60,10 +62,10 @@ namespace :app do
   task :build_server => [:build, :copy_assets] do
     config = Minke::Helpers.config
 
-  	puts "## Building Docker image: #{config['go']['application_name']}"
+  	puts "## Building Docker image"
 
   	Docker.options = {:read_timeout => 6200}
-  	image = Docker::Image.build_from_dir config['docker']['docker_file'], {:t => config['go']['application_name']}
+  	image = Docker::Image.build_from_dir config['docker']['docker_file'], {:t => config['application_name']}
 
     puts ""
   end
@@ -73,7 +75,14 @@ namespace :app do
     puts "## Run application with docker compose"
 
     config = Minke::Helpers.config
-    compose = Minke::DockerCompose.new config['docker']['compose_file']
+
+    if config['run']['docker'] != nil && config['run']['docker']['compose_file'] != nil
+      config_file = config['run']['docker']['compose_file']
+    else
+      config_file = config['docker']['compose_file']
+    end
+
+    compose = Minke::DockerCompose.new config_file
 
   	begin
       compose.up
@@ -120,13 +129,22 @@ namespace :app do
 
   	status = 0
 
-    compose = Minke::DockerCompose.new config['docker']['compose_file']
+    config = Minke::Helpers.config
+
+    if config['cucumber']['docker'] != nil && config['cucumber']['docker']['compose_file'] != nil
+      config_file = config['cucumber']['docker']['compose_file']
+    else
+      config_file = config['docker']['compose_file']
+    end
+
+    compose = Minke::DockerCompose.new config_file
+
   	begin
   	  compose.up
 
       # do we need to run any tasks after the server starts?
-      if config['run']['after_start'] != nil
-        config['run']['after_start'].each do |task|
+      if config['cucumber']['after_start'] != nil
+        config['cucumber']['after_start'].each do |task|
           puts "## Running after_start task: #{task}"
           Rake::Task[task].invoke
 

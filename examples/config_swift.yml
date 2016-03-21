@@ -1,7 +1,5 @@
-go:
-  namespace: 'github.com/nicholasjackson'
+swift:
   application_name: 'event-sauce'
-  comand: '/usr/local/go/bin/go'
 docker_registry:
   url: <%= ENV['DOCKER_REGISTRY_URL'] %>
   user: <%= ENV['DOCKER_REGISTRY_USER'] %>
@@ -11,11 +9,6 @@ docker_registry:
 docker:
   docker_file: './'
   compose_file: './'
-  build_args:
-    image: 'golang:latest'
-    env:
-      - 'CGO_ENABLED=0' # used for alpine linux static linking
-    working_directory: '/go/src/github.com/nicholasjackson/event-sauce'
 run:
   consul_loader:
     enabled: true

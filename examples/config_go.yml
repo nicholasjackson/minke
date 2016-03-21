@@ -1,0 +1,34 @@
+go:
+  namespace: 'github.com/nicholasjackson'
+  application_name: 'event-sauce'
+  comand: '/usr/local/go/bin/go'
+docker_registry:
+  url: <%= ENV['DOCKER_REGISTRY_URL'] %>
+  user: <%= ENV['DOCKER_REGISTRY_USER'] %>
+  password: <%= ENV['DOCKER_REGISTRY_PASS'] %>
+  email: <%= ENV['DOCKER_REGISTRY_EMAIL'] %>
+  namespace: <%= ENV['DOCKER_NAMESPACE'] %>
+docker:
+  docker_file: './'
+  compose_file: './'
+run:
+  consul_loader:
+    enabled: true
+    config_file: './config.yml'
+    url: <%= "http://#{ENV['DOCKER_IP']}:9500" %>
+cucumber:
+  consul_loader:
+    enabled: true
+    config_file: './config.yml'
+    url: <%= "http://#{ENV['DOCKER_IP']}:9500" %>
+  health_check:
+    enabled: true
+    url: <%= "http://#{ENV['DOCKER_IP']}:8001/v1/health" %>
+after_build:
+  copy_assets:
+    -
+      from: <%= "#{ENV['GOPATH']}/src/github.com/nicholasjackson/event-sauce/event-sauce" %>
+      to: './docker/event-sauce'
+    -
+      from: './swagger_spec/swagger.yml'
+      to: './dockerfile/event-sauce/swagger_spec/swagger.yml'

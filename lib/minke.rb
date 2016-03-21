@@ -6,6 +6,9 @@ require 'rake'
 require "erb"
 
 require 'minke/version'
-require 'minke/go_docker'
+require 'minke/docker'
 require 'minke/docker_compose'
 require 'minke/helpers'
+
+require 'minke/commands/go'
+require 'minke/commands/swift'
