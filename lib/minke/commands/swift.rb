@@ -1,7 +1,7 @@
 module Minke
   module Commands
     class Swift
-      def commands
+      def commands config
         {
           :build => {
             :build => ['swift', 'build', '-Xcc', '-fblocks'],
