@@ -1,6 +1,6 @@
 namespace :app do
   desc "run unit tests"
-  task :test => ['config:set_docker_env', 'config:load_config', 'docker:fetch_images'] do
+  task :test => [:build] do
     config = Minke::Helpers.config
 
     if config[:build_config][:build][:get] != nil
@@ -29,7 +29,7 @@ namespace :app do
   end
 
   desc "build and test application"
-  task :build => [:test] do
+  task :build => ['config:set_docker_env', 'config:load_config', 'docker:fetch_images'] do
   	puts "## Build for Linux"
 
     config = Minke::Helpers.config
