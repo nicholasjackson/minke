@@ -27,9 +27,10 @@ namespace :app do
     begin
   		# Test application
       puts "## Test application"
-      container, ret = Minke::Docker.create_and_run_container config, config[:build_config][:build][:test]
-
-  		raise Exception, 'Error running command' unless ret == 0
+      config[:build_config][:build][:test].each do |command|
+        container, ret = Minke::Docker.create_and_run_container config, command
+      	raise Exception, 'Error running command' unless ret == 0
+      end
     ensure
   		Minke::Docker.delete_container container
   	end
@@ -45,9 +46,10 @@ namespace :app do
 
   	begin
   		# Build go server
-      container, ret = Minke::Docker.create_and_run_container config, config[:build_config][:build][:build]
-
-  		raise Exception, 'Error running command' unless ret == 0
+      config[:build_config][:build][:build].each do |command|
+        container, ret = Minke::Docker.create_and_run_container config, command
+        raise Exception, 'Error running command' unless ret == 0
+      end
     ensure
   		Minke::Docker.delete_container container
   	end

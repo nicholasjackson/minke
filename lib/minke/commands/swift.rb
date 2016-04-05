@@ -4,8 +4,11 @@ module Minke
       def commands config
         {
           :build => {
-            :build => ['swift', 'build', '--clean', '&&', 'swift', 'build', '-Xcc', '-fblocks'],
-            :test => ['swift', 'test'],
+            :build => [
+              ['swift', 'build', '--clean'],
+              ['swift', 'build', '-Xcc', '-fblocks']
+            ],
+            :test => [['swift', 'test']],
           },
           :docker => {
             :image => 'ibmcom/kitura-ubuntu:latest',

@@ -4,9 +4,9 @@ module Minke
       def commands config
         {
           :build => {
-            :get => ['go','get','-t','-v','-d','./...'],
-            :build => ['go','build','-a','-installsuffix','cgo','-ldflags','\'-s\'','-o', "#{config['application_name']}"],
-            :test => ['go','test','./...']
+            :get => [['go','get','-t','-v','-d','./...']],
+            :build => [['go','build','-a','-installsuffix','cgo','-ldflags','\'-s\'','-o', "#{config['application_name']}"]],
+            :test => [['go','test','./...']]
           },
           :docker => {
             :image => 'golang:latest',
