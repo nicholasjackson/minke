@@ -4,6 +4,9 @@ module Minke
       def commands config
         {
           :build => {
+            :get => [
+              ['swift', 'build', '--fetch']
+            ]
             :build => [
               ['swift', 'build', '--clean'],
               ['swift', 'build', '-Xcc', '-fblocks']
