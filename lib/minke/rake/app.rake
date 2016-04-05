@@ -18,6 +18,33 @@ namespace :app do
     end
   end
 
+  desc "build application"
+  task :build => [:get] do
+  	puts "## Build for Linux"
+    config = Minke::Helpers.config
+
+    if config['build']['before'] != nil
+      config['build']['before'].each do |task|
+        puts "## Running before build task: #{task}"
+        Rake::Task[task].invoke
+
+        puts ""
+      end
+    end
+
+    config[:build_config][:build][:build].each do |command|
+    	begin
+    		# Build application
+        container, ret = Minke::Docker.create_and_run_container config, command
+        raise Exception, 'Error running command' unless ret == 0
+      ensure
+    		Minke::Docker.delete_container container
+    	end
+    end
+
+    puts ""
+  end
+
   desc "run unit tests"
   task :test => [:build] do
     config = Minke::Helpers.config
@@ -31,33 +58,6 @@ namespace :app do
       end
     end
 
-    desc "build application"
-    task :build => [:get] do
-    	puts "## Build for Linux"
-      config = Minke::Helpers.config
-
-      if config['build']['before'] != nil
-        config['build']['before'].each do |task|
-          puts "## Running before build task: #{task}"
-          Rake::Task[task].invoke
-
-          puts ""
-        end
-      end
-
-      config[:build_config][:build][:build].each do |command|
-      	begin
-      		# Build application
-          container, ret = Minke::Docker.create_and_run_container config, command
-          raise Exception, 'Error running command' unless ret == 0
-        ensure
-      		Minke::Docker.delete_container container
-      	end
-      end
-
-      puts ""
-    end
-    
     puts "## Test application"
     config[:build_config][:build][:test].each do |command|
       begin
