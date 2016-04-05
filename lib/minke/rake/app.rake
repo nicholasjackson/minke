@@ -23,7 +23,7 @@ namespace :app do
   	puts "## Build for Linux"
     config = Minke::Helpers.config
 
-    if config['build']['before'] != nil
+    if config['build'] != nil && config['build']['before'] != nil
       config['build']['before'].each do |task|
         puts "## Running before build task: #{task}"
         Rake::Task[task].invoke
@@ -49,7 +49,7 @@ namespace :app do
   task :test => [:build] do
     config = Minke::Helpers.config
 
-    if config['test']['before'] != nil
+    if config['test'] != nil && config['test']['before'] != nil
       config['test']['before'].each do |task|
         puts "## Running before test task: #{task}"
         Rake::Task[task].invoke
