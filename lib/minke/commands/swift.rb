@@ -4,7 +4,7 @@ module Minke
       def commands config
         {
           :build => {
-            :build => ['swift', 'build', '-Xcc', '-fblocks'],
+            :build => ['swift', 'build', '--clean', '&&', 'swift', 'build', '-Xcc', '-fblocks'],
             :test => ['swift', 'test'],
           },
           :docker => {

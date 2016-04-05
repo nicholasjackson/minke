@@ -15,6 +15,15 @@ namespace :app do
       puts ""
     end
 
+    if config['test']['before'] != nil
+      config['test']['before'].each do |task|
+        puts "## Running before test task: #{task}"
+        Rake::Task[task].invoke
+
+        puts ""
+      end
+    end
+
     begin
   		# Test application
       puts "## Test application"
