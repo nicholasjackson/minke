@@ -6,7 +6,8 @@ module Minke
           :build => {
             :get => [
               ['swift', 'build', '--fetch'],
-              ['bash','-c', "find /src/Packages/ -type d -name Tests -exec rm -rf {} \\;"]
+              # ['bash','-c', "find /src/Packages/ -type d -name Tests -exec echo {} && rm -rf {} \\;"]
+              ['bash','-c', "find /src/Packages/ -type d -name Tests | xargs rm -rf"]
             ],
             :build => [
               ['swift', 'build', '--clean'],
