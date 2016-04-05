@@ -5,10 +5,9 @@ namespace :app do
     config = Minke::Helpers.config
 
     if config[:build_config][:build][:get] != nil
+      puts "## Get dependent packages"
       config[:build_config][:build][:get].each do |command|
       	begin
-      		# Get packages
-          puts "## Get dependent packages"
           container, ret = Minke::Docker.create_and_run_container config, command
         ensure
       		Minke::Docker.delete_container container
