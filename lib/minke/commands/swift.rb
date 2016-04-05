@@ -5,7 +5,7 @@ module Minke
         {
           :build => {
             :build => ['swift', 'build', '-Xcc', '-fblocks'],
-            :test => ['ls', '-ls'],
+            :test => ['swift', 'test'],
           },
           :docker => {
             :image => 'ibmcom/kitura-ubuntu:latest',
