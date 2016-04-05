@@ -24,16 +24,16 @@ namespace :app do
       end
     end
 
-    begin
-  		# Test application
-      puts "## Test application"
-      config[:build_config][:build][:test].each do |command|
+    puts "## Test application"
+    config[:build_config][:build][:test].each do |command|
+      begin
+  		  # Test application
         container, ret = Minke::Docker.create_and_run_container config, command
       	raise Exception, 'Error running command' unless ret == 0
-      end
-    ensure
-  		Minke::Docker.delete_container container
-  	end
+      ensure
+    		Minke::Docker.delete_container container
+    	end
+    end
 
     puts ""
   end
@@ -44,15 +44,15 @@ namespace :app do
 
     config = Minke::Helpers.config
 
-  	begin
-  		# Build go server
-      config[:build_config][:build][:build].each do |command|
+    config[:build_config][:build][:build].each do |command|
+    	begin
+    		# Build application
         container, ret = Minke::Docker.create_and_run_container config, command
         raise Exception, 'Error running command' unless ret == 0
-      end
-    ensure
-  		Minke::Docker.delete_container container
-  	end
+      ensure
+    		Minke::Docker.delete_container container
+    	end
+    end
 
     puts ""
   end
