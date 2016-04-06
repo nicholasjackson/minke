@@ -84,7 +84,7 @@ namespace :app do
   end
 
   desc "build Docker image for application"
-  task :build_server => [:build, :copy_assets] do
+  task :build_server => [:test, :copy_assets] do
     config = Minke::Helpers.config
 
   	puts "## Building Docker image"
