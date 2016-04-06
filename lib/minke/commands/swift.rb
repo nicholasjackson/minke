@@ -10,7 +10,7 @@ module Minke
               ['bash','-c', "find /src/Packages/ -type d -name Tests | xargs rm -rf"]
             ],
             :build => [
-              ['swift', 'build', '--clean'],
+              ['rm', '-rf', '.build'],
               ['swift', 'build', '-Xcc', '-fblocks']
             ],
             :test => [['swift', 'test']],
