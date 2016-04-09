@@ -1,15 +1,19 @@
 module Minke
   class Docker
     def self.get_docker_ip_address
-    	if !ENV['DOCKER_HOST']
-    		return "127.0.0.1"
-    	else
+    	if ENV['DOCKER_HOST']
     		# dockerhost set
     		host = ENV['DOCKER_HOST'].dup
     		host.gsub!(/tcp:\/\//, '')
     		host.gsub!(/:\d+/,'')
 
     		return host
+      elseif ip = Resolv.getaddress
+        # Check if we are using the new docker for mac or windows
+        puts ip
+        return ip
+      else
+        return "127.0.0.1"
     	end
     end
 
