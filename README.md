@@ -8,6 +8,14 @@ Version 0.13.0 of the gem introduces breaking changes to the configuration files
 
 Minke is an opinionated build system for Microservices and Docker, like a little envelope of quality it scaffolds the build, run and test (unit test and functional tests) phases of your microservice project allowing you to simply run and test your images using Docker Compose.  Currently supporting Google's Go, and experimental support for Swift, extensions are planned for Node.js or HTML / Javascript sites with Grunt or Gulp based builds.
 
+## Supported languages
+- Go
+- Swift
+
+## Languages coming soon
+- Node
+- Java
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -80,6 +88,9 @@ docker_registry:
 docker:
   docker_file: './dockerfiles/event-sauce/Dockerfile'
   compose_file: './dockercompose/event-sauce/docker-compose.yml'
+  build:
+    image: [optional]
+    docker_file: [optional]
 after_build:
   copy_assets:
     -
@@ -131,7 +142,10 @@ An array of elements with the following parameters:
 #### docker:
 This section contains configuration for the Docker build and run process.  
 **docker_file:** path to the folder containing your Dockerfile used by the build_server task.  
-**compose_file:** path to your docker-compose file for run and cucumber tasks.  
+**compose_file:** path to your docker-compose file for run and cucumber tasks.
+**build:** This section allows you to override the language default used for building your application code.
+- **image [optional]:** specify a different image from your registry or local machine to use for building the application.
+- **docker_file [optional]:** specify a dockerfile which will be built into an image and then used for building the application.
 
 #### run:
 The run section defines config for running your microservice with Docker Compose.
