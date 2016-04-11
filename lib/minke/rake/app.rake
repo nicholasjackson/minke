@@ -187,8 +187,14 @@ namespace :app do
       if config['cucumber']['after_start'] != nil
         config['cucumber']['after_start'].each do |task|
           puts "## Running after_start task: #{task}"
-          Rake::Task[task].invoke
 
+          begin
+            Rake::Task[task].invoke
+          rescue Exception => msg
+            puts "Error running rake task: #{msg}"
+            raise msg
+          end
+          
           puts ""
         end
       end

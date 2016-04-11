@@ -8,12 +8,10 @@ module Minke
     		host.gsub!(/:\d+/,'')
 
     		return host
-      elseif ip = Resolv.getaddress
-        # Check if we are using the new docker for mac or windows
-        puts ip
-        return ip
+      elsif ENV['DOCKER_IP']
+        return ENV['DOCKER_IP']
       else
-        return "127.0.0.1"
+        throw "Please set the environment variable DOCKER_HOST or DOCKER_IP with the ip address of your docker instance."
     	end
     end
 

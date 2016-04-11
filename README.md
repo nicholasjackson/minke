@@ -40,6 +40,12 @@ You need to have docker, docker-machine, and docker-compose installed on your bu
 eval "$(docker-machine env default)"
 ```
 
+## Not for Docker for Mac Beta users
+If you use docker for mac please set the environment variable, this will auto resolve once Docker for mac exits beta.
+```
+DOCKER_IP=[your docker vm ip]
+```
+
 ## Usage
 Include the rake tasks in your Rakefile
 ```ruby

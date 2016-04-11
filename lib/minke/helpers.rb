@@ -22,6 +22,8 @@ module Minke
         else
           raise 'Server failed to start'
         end
+      else
+        puts "Server: #{server} healthy"
       end
     end
 
