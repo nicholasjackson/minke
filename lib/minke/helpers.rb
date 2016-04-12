@@ -25,6 +25,7 @@ module Minke
       else
         if successes > 0
           puts "Server: #{server} passed health check, #{successes} checks to go..."
+          sleep 1
           self.wait_until_server_running server, count + 1, successes - 1
         else
           puts "Server: #{server} healthy"
