@@ -7,7 +7,7 @@ module Minke
 
     @config = nil
 
-    def self.wait_until_server_running server, count
+    def self.wait_until_server_running server, count, successes = 0
       begin
         response = RestClient.send("get", server)
       rescue
@@ -23,7 +23,12 @@ module Minke
           raise 'Server failed to start'
         end
       else
-        puts "Server: #{server} healthy"
+        if successes > 0
+          puts "Server: #{server} passed health check, #{successes} checks to go..."
+          self.wait_until_server_running server, count + 1, successes - 1
+        else
+          puts "Server: #{server} healthy"
+        end
       end
     end
 

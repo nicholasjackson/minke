@@ -194,7 +194,6 @@ namespace :app do
             puts "Error running rake task: #{msg}"
             raise msg
           end
-          
           puts ""
         end
       end
@@ -206,7 +205,7 @@ namespace :app do
       end
 
       if config['cucumber']['health_check']['enabled']
-        Minke::Helpers.wait_until_server_running config['cucumber']['health_check']['url'], 0
+        Minke::Helpers.wait_until_server_running config['cucumber']['health_check']['url'], 0, 3
       end
 
   		sh "cucumber --color -f pretty #{feature}"
