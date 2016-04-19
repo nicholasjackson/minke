@@ -3,7 +3,8 @@ require 'yaml'
 require 'rest-client'
 require 'consul_loader'
 require 'rake'
-require "erb"
+require 'erb'
+require 'resolv'
 
 require 'minke/version'
 require 'minke/docker'

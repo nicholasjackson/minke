@@ -1,47 +1,88 @@
 namespace :app do
-  desc "run unit tests"
-  task :test => ['config:set_docker_env', 'config:load_config', 'docker:fetch_images'] do
+
+  desc "get dependent packages"
+  task :get => ['config:set_docker_env', 'config:load_config', 'docker:fetch_images'] do
     config = Minke::Helpers.config
 
     if config[:build_config][:build][:get] != nil
+      puts "## Get dependent packages"
+      config[:build_config][:build][:get].each do |command|
+      	begin
+          container, ret = Minke::Docker.create_and_run_container config, command
+        ensure
+      		Minke::Docker.delete_container container
+      	end
+      end
+      puts ""
+    end
+  end
+
+  desc "build application"
+  task :build => [:get] do
+  	puts "## Build for Linux"
+    config = Minke::Helpers.config
+
+    # do we need to build a custom build container
+    if config['docker']['build'] && config['docker']['build']['docker_file'] != nil
+      puts "## Building custom docker image"
+
+      docker_file = config['docker']['build']['docker_file']
+      image_name = config['application_name'] + "-buildimage"
+
+      Docker.options = {:read_timeout => 6200}
+    	image = Docker::Image.build_from_dir docker_file, {:t => image_name}
+      config[:build_config][:docker][:image] = image_name
+    end
+
+    if config['docker']['build'] && config['docker']['build']['image'] != nil
+      config[:build_config][:docker][:image] = config['docker']['build']['image']
+    end
+
+    if config['build'] != nil && config['build']['before'] != nil
+      config['build']['before'].each do |task|
+        puts "## Running before build task: #{task}"
+        Rake::Task[task].invoke
+
+        puts ""
+      end
+    end
+
+    config[:build_config][:build][:build].each do |command|
     	begin
-    		# Get go packages
-        puts "## Get dependent packages"
-        container, ret = Minke::Docker.create_and_run_container config, config[:build_config][:build][:get]
+    		# Build application
+        container, ret = Minke::Docker.create_and_run_container config, command
+        raise Exception, 'Error running command' unless ret == 0
       ensure
     		Minke::Docker.delete_container container
     	end
-
-      puts ""
     end
-
-    begin
-  		# Test application
-      puts "## Test application"
-      container, ret = Minke::Docker.create_and_run_container config, config[:build_config][:build][:test]
-
-  		raise Exception, 'Error running command' unless ret == 0
-    ensure
-  		Minke::Docker.delete_container container
-  	end
 
     puts ""
   end
 
-  desc "build and test application"
-  task :build => [:test] do
-  	puts "## Build for Linux"
-
+  desc "run unit tests"
+  task :test => [:build] do
     config = Minke::Helpers.config
 
-  	begin
-  		# Build go server
-      container, ret = Minke::Docker.create_and_run_container config, config[:build_config][:build][:build]
+    if config['test'] != nil && config['test']['before'] != nil
+      config['test']['before'].each do |task|
+        puts "## Running before test task: #{task}"
+        Rake::Task[task].invoke
 
-  		raise Exception, 'Error running command' unless ret == 0
-    ensure
-  		Minke::Docker.delete_container container
-  	end
+        puts ""
+      end
+    end
+
+    puts "## Test application"
+    config[:build_config][:build][:test].each do |command|
+      begin
+  		  # Test application
+        container, ret = Minke::Docker.create_and_run_container config, command
+      	raise Exception, 'Error running command' unless ret == 0
+      ensure
+    		Minke::Docker.delete_container container
+    	end
+    end
 
     puts ""
   end
@@ -59,7 +100,7 @@ namespace :app do
   end
 
   desc "build Docker image for application"
-  task :build_server => [:build, :copy_assets] do
+  task :build_server => [:test, :copy_assets] do
     config = Minke::Helpers.config
 
   	puts "## Building Docker image"
@@ -146,8 +187,13 @@ namespace :app do
       if config['cucumber']['after_start'] != nil
         config['cucumber']['after_start'].each do |task|
           puts "## Running after_start task: #{task}"
-          Rake::Task[task].invoke
 
+          begin
+            Rake::Task[task].invoke
+          rescue Exception => msg
+            puts "Error running rake task: #{msg}"
+            raise msg
+          end
           puts ""
         end
       end
@@ -159,7 +205,7 @@ namespace :app do
       end
 
       if config['cucumber']['health_check']['enabled']
-        Minke::Helpers.wait_until_server_running config['cucumber']['health_check']['url'], 0
+        Minke::Helpers.wait_until_server_running config['cucumber']['health_check']['url'], 0, 3
       end
 
   		sh "cucumber --color -f pretty #{feature}"

@@ -4,8 +4,16 @@ module Minke
       def commands config
         {
           :build => {
-            :build => ['swift', 'build', '-Xcc', '-fblocks'],
-            :test => ['ls', '-ls'],
+            :get => [
+              ['swift', 'build', '--fetch'],
+              # ['bash','-c', "find /src/Packages/ -type d -name Tests -exec echo {} && rm -rf {} \\;"]
+              ['bash','-c', "find /src/Packages/ -type d -name Tests | xargs rm -rf"]
+            ],
+            :build => [
+              ['rm', '-rf', '.build'],
+              ['swift', 'build', '-Xcc', '-fblocks']
+            ],
+            :test => [['swift', 'test']],
           },
           :docker => {
             :image => 'ibmcom/kitura-ubuntu:latest',

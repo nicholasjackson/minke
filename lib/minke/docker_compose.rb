@@ -20,7 +20,7 @@ module Minke
     end
 
     def logs
-      execute "docker-compose -f #{@compose_file} logs"
+      execute "docker-compose -f #{@compose_file} logs -f"
     end
 
     private

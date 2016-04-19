@@ -1,15 +1,17 @@
 module Minke
   class Docker
     def self.get_docker_ip_address
-    	if !ENV['DOCKER_HOST']
-    		return "127.0.0.1"
-    	else
+    	if ENV['DOCKER_HOST']
     		# dockerhost set
     		host = ENV['DOCKER_HOST'].dup
     		host.gsub!(/tcp:\/\//, '')
     		host.gsub!(/:\d+/,'')
 
     		return host
+      elsif ENV['DOCKER_IP']
+        return ENV['DOCKER_IP']
+      else
+        throw "Please set the environment variable DOCKER_HOST or DOCKER_IP with the ip address of your docker instance."
     	end
     end
 
