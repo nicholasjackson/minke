@@ -3,7 +3,7 @@
 ## NOTE:
 Version 0.13.0 of the gem introduces breaking changes to the configuration files in order to support multiple language builds for swift and go.  Please use version 0.12.0 or upgrade your config to the new specification shown below.  
 
-**Version 0.13.0**  
+**Version 0.15.0**  
 [![Build Status](https://travis-ci.org/nicholasjackson/minke.svg?branch=master)](https://travis-ci.org/nicholasjackson/minke)
 
 Minke is an opinionated build system for Microservices and Docker, like a little envelope of quality it scaffolds the build, run and test (unit test and functional tests) phases of your microservice project allowing you to simply run and test your images using Docker Compose.  Currently supporting Google's Go, and experimental support for Swift, extensions are planned for Node.js or HTML / Javascript sites with Grunt or Gulp based builds.
