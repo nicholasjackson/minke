@@ -13,3 +13,5 @@ require 'minke/helpers'
 
 require 'minke/commands/go'
 require 'minke/commands/swift'
+require 'minke/generators/register'
+require 'minke/generators/config'

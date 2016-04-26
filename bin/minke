@@ -1,0 +1,88 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'optparse'
+require 'erb'
+require 'fileutils'
+
+require 'minke/version'
+
+def local_gems
+   Gem::Specification.sort_by{ |g| [g.name.downcase, g.version] }.group_by{ |g| g.name }
+end
+
+ASCII_ART = <<eos
+888b     d888 d8b          888
+8888b   d8888 Y8P          888
+88888b.d88888              888
+888Y88888P888 888 88888b.  888  888  .d88b.
+888 Y888P 888 888 888 "88b 888 .88P d8P  Y8b
+888  Y8P  888 888 888  888 888888K  88888888
+888   "   888 888 888  888 888 "88b Y8b.
+888       888 888 888  888 888  888  "Y8888
+eos
+
+puts ""
+puts ASCII_ART
+puts ""
+puts "Version: #{Minke::VERSION}"
+puts ""
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: example.rb [options]"
+
+  opts.on('-g', '--generator GENERATOR', 'Generator plugin to use') { |v| options[:generator] = v }
+  opts.on('-o', '--output OUTPUT', 'Output folder') { |v| options[:output] = v }
+  opts.on('-a', '--application_name NAME', 'Application name') { |v| options[:name] = v }
+  opts.on('-n', '--namespace NAMESPACE', 'Application namespace') { |v| options[:namespace] = v }
+
+end.parse!
+
+# load the installed generators
+puts '# Loading installed generators'
+Gem::Specification.find_all.each do |spec|
+  if spec.metadata != nil && spec.metadata['entrypoint'] != nil
+    require spec.metadata['entrypoint']
+  end
+end
+
+# check to see if the requested generator is installed
+generator = Minke::Generators.get_registrations.select { |config| config.name == options[:generator]}.first
+if generator == nil
+  puts "Generator not installed"
+  exit 1
+end
+
+SERVICE_NAME = options[:name]
+APPLICATION_NAME = options[:name]
+NAMESPACE = options[:namespace]
+APPLICATION_LOCATION = ""
+
+# process the files
+puts '# Modifiying templates'
+puts "#{generator.template_location}"
+Dir.glob("#{generator.template_location}/**/*").each do |file_name|
+  puts "## Processing #{file_name}"
+
+  new_filename = file_name.sub(generator.template_location + '/', '')
+  new_filename.sub!('.erb', '')
+  new_filename.sub!('##SERVICE_NAME##', SERVICE_NAME)
+
+  new_filename = options[:output] + '/' + new_filename
+
+
+  dirname = File.dirname(new_filename)
+  unless File.directory?(dirname)
+    FileUtils.mkdir_p(dirname)
+  end
+
+  if !File.directory?(file_name)
+    if File.extname(file_name) == ".erb"
+      renderer = ERB.new(File.read(file_name))
+      File.open(new_filename, 'w') {|f| f.write renderer.result }
+    elsif
+      FileUtils.cp(file_name, new_filename)
+    end
+  end
+end
