@@ -35,9 +35,28 @@ module Minke
 
     def self.load_config config_file
       @config = YAML.parse(ERB.new(File.read(config_file)).result).transform
+      build_commands = Minke::Generators.get_registrations.first.build_commands
 
-      @config[:build_config] = Minke::Commands::Go.new.commands(@config) unless @config['language'] != 'go'
-      @config[:build_config] = Minke::Commands::Swift.new.commands(@config) unless @config['language'] != 'swift'
+      @config[:build_config] = build_commands
+
+      self.replace_vars_in_config @config
+    end
+
+    def self.replace_vars_in_config config
+       config[:build_config][:docker][:binds] = self.replace_var config[:build_config][:docker][:binds]
+       config[:build_config][:docker][:working_directory] = self.replace_var config[:build_config][:docker][:working_directory]
+    end
+
+    def self.replace_var var
+      self.replace_vars_in_section(var, '##SRC_ROOT##', File.expand_path('../'))
+    end
+
+    def self.replace_vars_in_section original, variable, value
+      if original.kind_of?(Array)
+        original.map { |var| var.gsub(variable, value) }
+      else
+        original.gsub(variable, value)
+      end
     end
 
     def self.copy_files assets

@@ -74,17 +74,20 @@ namespace :app do
     end
 
     puts "## Test application"
-    config[:build_config][:build][:test].each do |command|
-      begin
-  		  # Test application
-        container, ret = Minke::Docker.create_and_run_container config, command
-      	raise Exception, 'Error running command' unless ret == 0
-      ensure
-    		Minke::Docker.delete_container container
-    	end
+      if config[:build_config][:build][:test] != nil
+      config[:build_config][:build][:test].each do |command|
+        begin
+    		  # Test application
+          container, ret = Minke::Docker.create_and_run_container config, command
+        	raise Exception, 'Error running command' unless ret == 0
+        ensure
+      		Minke::Docker.delete_container container
+      	end
+      end
+
+      puts ""
     end
 
-    puts ""
   end
 
   task :copy_assets do

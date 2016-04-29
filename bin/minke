@@ -5,10 +5,37 @@ require 'optparse'
 require 'erb'
 require 'fileutils'
 
-require 'minke/version'
+require 'minke'
 
 def local_gems
    Gem::Specification.sort_by{ |g| [g.name.downcase, g.version] }.group_by{ |g| g.name }
+end
+
+def process_directory template_location, in_dir, output
+  Dir.glob("#{template_location}/#{in_dir}").each do |file_name|
+    puts "## Processing #{file_name}"
+
+    new_filename = file_name.sub(template_location + '/', '')
+    new_filename.sub!('.erb', '')
+    new_filename.sub!('##SERVICE_NAME##', SERVICE_NAME)
+
+    new_filename = output + '/' + new_filename
+
+
+    dirname = File.dirname(new_filename)
+    unless File.directory?(dirname)
+      FileUtils.mkdir_p(dirname)
+    end
+
+    if !File.directory?(file_name)
+      if File.extname(file_name) == ".erb"
+        renderer = ERB.new(File.read(file_name))
+        File.open(new_filename, 'w') {|f| f.write renderer.result }
+      elsif
+        FileUtils.cp(file_name, new_filename)
+      end
+    end
+  end
 end
 
 ASCII_ART = <<eos
@@ -47,10 +74,15 @@ Gem::Specification.find_all.each do |spec|
   end
 end
 
+if options[:generator] == nil || options[:output] == nil || options[:name] == nil || options[:namespace] == nil
+  exit 0
+end
+
 # check to see if the requested generator is installed
+#puts Minke::Generators.get_registrations.inspect
 generator = Minke::Generators.get_registrations.select { |config| config.name == options[:generator]}.first
 if generator == nil
-  puts "Generator not installed"
+  puts "Generator not installed please select from the above list of installed generators or install the required gem"
   exit 1
 end
 
@@ -62,27 +94,25 @@ APPLICATION_LOCATION = ""
 # process the files
 puts '# Modifiying templates'
 puts "#{generator.template_location}"
-Dir.glob("#{generator.template_location}/**/*").each do |file_name|
-  puts "## Processing #{file_name}"
+process_directory generator.template_location, '**/*', options[:output]
+process_directory generator.template_location, '**/.*', options[:output]
 
-  new_filename = file_name.sub(generator.template_location + '/', '')
-  new_filename.sub!('.erb', '')
-  new_filename.sub!('##SERVICE_NAME##', SERVICE_NAME)
+# run generate command if present
+Minke::Docker.pull_image generator.generate_command_docker_image unless Minke::Docker.find_image generator.generate_command_docker_image
 
-  new_filename = options[:output] + '/' + new_filename
+begin
+  config = {
+    :build_config => {
+      :docker => {
+        :image => generator.generate_command_docker_image,
+        :binds => ["#{File.expand_path(options[:output])}:/src"],
+        :working_directory => "/src"
+      }
+    }
+  }
 
-
-  dirname = File.dirname(new_filename)
-  unless File.directory?(dirname)
-    FileUtils.mkdir_p(dirname)
-  end
-
-  if !File.directory?(file_name)
-    if File.extname(file_name) == ".erb"
-      renderer = ERB.new(File.read(file_name))
-      File.open(new_filename, 'w') {|f| f.write renderer.result }
-    elsif
-      FileUtils.cp(file_name, new_filename)
-    end
-  end
+  command = Minke::Helpers.replace_vars_in_section generator.generate_command, '##SERVICE_NAME##', APPLICATION_NAME
+  container, ret = Minke::Docker.create_and_run_container config, command
+ensure
+  Minke::Docker.delete_container container
 end
