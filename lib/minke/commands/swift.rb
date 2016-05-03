@@ -11,7 +11,7 @@ module Minke
             ],
             :build => [
               ['rm', '-rf', '.build'],
-              ['swift', 'build', '-Xcc', '-fblocks']
+              ['swift', 'build', '-Xcc', '-fblocks','-Xlinker', '-rpath', '-Xlinker', '.build/debug']
             ],
             :test => [['swift', 'test']],
           },
