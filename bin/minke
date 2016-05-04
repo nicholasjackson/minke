@@ -98,13 +98,24 @@ process_directory generator.template_location, '**/*', options[:output]
 process_directory generator.template_location, '**/.*', options[:output]
 
 # run generate command if present
-Minke::Docker.pull_image generator.generate_command_docker_image unless Minke::Docker.find_image generator.generate_command_docker_image
+image = ""
+if generator.generate_command_docker_file != nil
+  puts "## Building custom docker image"
+
+  image = APPLICATION_NAME + "-buildimage"
+
+  Docker.options = {:read_timeout => 6200}
+  image = Docker::Image.build_from_dir generator.generate_command_docker_file, {:t => image}
+else
+  Minke::Docker.pull_image generator.generate_command_docker_image unless Minke::Docker.find_image generator.generate_command_docker_image
+  image = generator.generate_command_docker_image
+end
 
 begin
   config = {
     :build_config => {
       :docker => {
-        :image => generator.generate_command_docker_image,
+        :image => image,
         :binds => ["#{File.expand_path(options[:output])}:/src"],
         :working_directory => "/src"
       }
