@@ -5,6 +5,7 @@ require 'optparse'
 require 'erb'
 require 'fileutils'
 
+require 'bundler'
 require 'minke'
 
 def local_gems

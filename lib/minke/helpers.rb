@@ -15,9 +15,9 @@ module Minke
       end
 
       if response == nil || !response.code.to_i == 200
-        puts "Waiting for server #{server} to start"
+        puts "Waiting for server #{server} to start: #{count}"
         sleep 1
-        if count < 20
+        if count < 200
           self.wait_until_server_running server, count + 1
         else
           raise 'Server failed to start'
