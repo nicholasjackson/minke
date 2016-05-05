@@ -19,7 +19,7 @@ namespace :app do
 
   desc "build application"
   task :build => [:get] do
-  	puts "## Build for Linux"
+  	puts "## Build application"
     config = Minke::Helpers.config
 
     # do we need to build a custom build container
@@ -32,9 +32,7 @@ namespace :app do
       Docker.options = {:read_timeout => 6200}
     	image = Docker::Image.build_from_dir docker_file, {:t => image_name}
       config[:build_config][:docker][:image] = image_name
-    end
-
-    if config['docker']['build'] && config['docker']['build']['image'] != nil
+    elsif config['docker']['build'] && config['docker']['build']['image'] != nil
       config[:build_config][:docker][:image] = config['docker']['build']['image']
     end
 

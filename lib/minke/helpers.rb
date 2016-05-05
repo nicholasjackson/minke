@@ -43,12 +43,15 @@ module Minke
     end
 
     def self.replace_vars_in_config config
-       config[:build_config][:docker][:binds] = self.replace_var config[:build_config][:docker][:binds]
-       config[:build_config][:docker][:working_directory] = self.replace_var config[:build_config][:docker][:working_directory]
+       config[:build_config][:docker][:binds] = self.replace_var config[:build_config][:docker][:binds], '##SRC_ROOT##', File.expand_path('../')
+       config[:build_config][:docker][:working_directory] = self.replace_var config[:build_config][:docker][:working_directory], '##SRC_ROOT##', File.expand_path('../')
+
+       config[:build_config][:docker][:binds] = self.replace_var config[:build_config][:docker][:binds], '##APPLICATION_NAME##', config['application_name']
+       config[:build_config][:docker][:working_directory] = self.replace_var config[:build_config][:docker][:working_directory], '##APPLICATION_NAME##', config['application_name']
     end
 
-    def self.replace_var var
-      self.replace_vars_in_section(var, '##SRC_ROOT##', File.expand_path('../'))
+    def self.replace_var var, original, new
+      self.replace_vars_in_section(var, original, new)
     end
 
     def self.replace_vars_in_section original, variable, value
