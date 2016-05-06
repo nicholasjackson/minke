@@ -104,7 +104,7 @@ if generator.generate_command_docker_file != nil
 
   image_name = APPLICATION_NAME + "-buildimage"
   Docker.options = {:read_timeout => 6200}
-  image = Docker::Image.build_from_dir generator.generate_command_docker_file, {:t => image}
+  image = Docker::Image.build_from_dir generator.generate_command_docker_file, {:t => image_name}
 else
   Minke::Docker.pull_image generator.generate_command_docker_image unless Minke::Docker.find_image generator.generate_command_docker_image
   image_name = generator.generate_command_docker_image
