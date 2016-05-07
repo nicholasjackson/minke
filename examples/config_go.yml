@@ -1,7 +1,5 @@
-go:
-  namespace: 'github.com/nicholasjackson'
-  application_name: 'event-sauce'
-  comand: '/usr/local/go/bin/go'
+namespace: 'github.com/nicholasjackson'
+application_name: 'event-sauce'
 docker_registry:
   url: <%= ENV['DOCKER_REGISTRY_URL'] %>
   user: <%= ENV['DOCKER_REGISTRY_USER'] %>
@@ -9,26 +7,45 @@ docker_registry:
   email: <%= ENV['DOCKER_REGISTRY_EMAIL'] %>
   namespace: <%= ENV['DOCKER_NAMESPACE'] %>
 docker:
-  docker_file: './'
-  compose_file: './'
+  build_image: [optional]
+  build_docker_file: [optional]
+  application_docker_file: './dockerfiles/event-sauce/Dockerfile'
+  application_compose_file: './dockercompose/event-sauce/docker-compose.yml'
+build:
+  pre:
+    tasks:
+      -
+    copy_assets:
+      -
+  docker:
+    application_compose_file: './dockercompose/event-sauce/docker-compose.yml'
+  post:
+    tasks:
+      -
+    copy:
+      -
+        from: <%= "#{ENV['GOPATH']}/src/github.com/nicholasjackson/event-sauce/event-sauce" %>
+        to: './docker/event-sauce'
+      -
+        from: './swagger_spec/swagger.yml'
+        to: './dockerfile/event-sauce/swagger_spec/swagger.yml'
 run:
-  consul_loader:
-    enabled: true
-    config_file: './config.yml'
-    url: <%= "http://#{ENV['DOCKER_IP']}:9500" %>
+  pre:
+    consul_loader:
+      config_file: './config.yml'
+      url: <%= "http://#{ENV['DOCKER_IP']}:9500" %>
+  docker:
+    application_compose_file: './dockercompose/event-sauce/docker-compose-alternate.yml'
+  post:
+    tasks:
+      - wait_for_elastic_search
 cucumber:
-  consul_loader:
-    enabled: true
-    config_file: './config.yml'
-    url: <%= "http://#{ENV['DOCKER_IP']}:9500" %>
-  health_check:
-    enabled: true
-    url: <%= "http://#{ENV['DOCKER_IP']}:8001/v1/health" %>
-after_build:
-  copy_assets:
-    -
-      from: <%= "#{ENV['GOPATH']}/src/github.com/nicholasjackson/event-sauce/event-sauce" %>
-      to: './docker/event-sauce'
-    -
-      from: './swagger_spec/swagger.yml'
-      to: './dockerfile/event-sauce/swagger_spec/swagger.yml'
+  pre:
+    consul_loader:
+      config_file: './config.yml'
+      url: <%= "http://#{ENV['DOCKER_IP']}:9500" %>
+    health_check:
+      url: <%= "http://#{ENV['DOCKER_IP']}:8001/v1/health" %>
+  post:
+    tasks:
+      - 'wait_for_elastic_search'
