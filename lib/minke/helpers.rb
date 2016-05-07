@@ -33,36 +33,7 @@ module Minke
       end
     end
 
-    def self.load_config config_file
-      @config = YAML.parse(ERB.new(File.read(config_file)).result).transform
-      build_commands = Minke::Generators.get_registrations.first.build_commands
-
-      @config[:build_config] = build_commands
-
-      self.replace_vars_in_config @config
-    end
-
-    def self.replace_vars_in_config config
-       config[:build_config][:docker][:binds] = self.replace_var config[:build_config][:docker][:binds], '##SRC_ROOT##', File.expand_path('../')
-       config[:build_config][:docker][:working_directory] = self.replace_var config[:build_config][:docker][:working_directory], '##SRC_ROOT##', File.expand_path('../')
-
-       config[:build_config][:docker][:binds] = self.replace_var config[:build_config][:docker][:binds], '##APPLICATION_NAME##', config['application_name']
-       config[:build_config][:docker][:working_directory] = self.replace_var config[:build_config][:docker][:working_directory], '##APPLICATION_NAME##', config['application_name']
-    end
-
-    def self.replace_var var, original, new
-      self.replace_vars_in_section(var, original, new)
-    end
-
-    def self.replace_vars_in_section original, variable, value
-      if original.kind_of?(Array)
-        original.map { |var| var.gsub(variable, value) }
-      else
-        original.gsub(variable, value)
-      end
-    end
-
-    def self.copy_files assets
+    def copy_files assets
       assets.each do |a|
         directory = a['to']
         if File.directory?(a['to'])
