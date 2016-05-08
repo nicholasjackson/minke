@@ -1,229 +1,47 @@
 namespace :app do
 
-  desc "get dependent packages"
-  task :get => ['config:set_docker_env', 'config:load_config', 'docker:fetch_images'] do
-    config = Minke::Helpers.config
-
-    if config[:build_config][:build][:get] != nil
-      puts "## Get dependent packages"
-      config[:build_config][:build][:get].each do |command|
-      	begin
-          container, ret = Minke::Docker.create_and_run_container config, command
-        ensure
-      		Minke::Docker.delete_container container
-      	end
-      end
-      puts ""
-    end
+  desc "fetch dependent packages"
+  task :fetch => ['config:set_docker_env', 'docker:fetch_images'] do
+    runner = Minke::Tasks::Fetch.new
+    runner.run
   end
 
   desc "build application"
-  task :build => [:get] do
-  	puts "## Build application"
-    config = Minke::Helpers.config
-
-    # do we need to build a custom build container
-    if config['docker']['build'] && config['docker']['build']['docker_file'] != nil
-      puts "## Building custom docker image"
-
-      docker_file = config['docker']['build']['docker_file']
-      image_name = config['application_name'] + "-buildimage"
-
-      Docker.options = {:read_timeout => 6200}
-    	image = Docker::Image.build_from_dir docker_file, {:t => image_name}
-      config[:build_config][:docker][:image] = image_name
-    elsif config['docker']['build'] && config['docker']['build']['image'] != nil
-      config[:build_config][:docker][:image] = config['docker']['build']['image']
-    end
-
-    if config['build'] != nil && config['build']['before'] != nil
-      config['build']['before'].each do |task|
-        puts "## Running before build task: #{task}"
-        Rake::Task[task].invoke
-
-        puts ""
-      end
-    end
-
-    config[:build_config][:build][:build].each do |command|
-    	begin
-    		# Build application
-        container, ret = Minke::Docker.create_and_run_container config, command
-        raise Exception, 'Error running command' unless ret == 0
-      ensure
-    		Minke::Docker.delete_container container
-    	end
-    end
-
-    puts ""
+  task :build => [:fetch] do
+    runner = Minke::Tasks::Run.new
+    runner.run
   end
 
   desc "run unit tests"
   task :test => [:build] do
-    config = Minke::Helpers.config
-
-    if config['test'] != nil && config['test']['before'] != nil
-      config['test']['before'].each do |task|
-        puts "## Running before test task: #{task}"
-        Rake::Task[task].invoke
-
-        puts ""
-      end
-    end
-
-    puts "## Test application"
-      if config[:build_config][:build][:test] != nil
-      config[:build_config][:build][:test].each do |command|
-        begin
-    		  # Test application
-          container, ret = Minke::Docker.create_and_run_container config, command
-        	raise Exception, 'Error running command' unless ret == 0
-        ensure
-      		Minke::Docker.delete_container container
-      	end
-      end
-
-      puts ""
-    end
-
-  end
-
-  task :copy_assets do
-    puts "## Copy assets"
-
-    config = Minke::Helpers.config
-
-    if config['after_build'] != nil && config['after_build']['copy_assets'] != nil
-      Minke::Helpers.copy_files config['after_build']['copy_assets']
-    end
-
-    puts ""
+    runner = Minke::Tasks::Test.new
+    runner.run
   end
 
   desc "build Docker image for application"
-  task :build_server => [:test, :copy_assets] do
-    config = Minke::Helpers.config
-
-  	puts "## Building Docker image"
-
-  	Docker.options = {:read_timeout => 6200}
-  	image = Docker::Image.build_from_dir config['docker']['docker_file'], {:t => config['application_name']}
-
-    puts ""
+  task :build_image => [:test] do
+    runner = Minke::Tasks::BuildImage.new
+    runner.run
   end
 
   desc "run application with Docker Compose"
   task :run => ['config:set_docker_env', 'config:load_config'] do
-    puts "## Run application with docker compose"
-
-    config = Minke::Helpers.config
-
-    if config['run']['docker'] != nil && config['run']['docker']['compose_file'] != nil
-      config_file = config['run']['docker']['compose_file']
-    else
-      config_file = config['docker']['compose_file']
-    end
-
-    compose = Minke::DockerCompose.new config_file
-
-  	begin
-      compose.up
-
-      # do we need to run any tasks after the server starts?
-      if config['run']['after_start'] != nil
-        config['run']['after_start'].each do |task|
-          puts "## Running after_start task: #{task}"
-          Rake::Task[task].invoke
-
-          puts ""
-        end
-      end
-
-      if config['run']['consul_loader']['enabled']
-        Minke::Helpers.wait_until_server_running "#{config['run']['consul_loader']['url']}/v1/status/leader", 0
-        loader = ConsulLoader::Loader.new(ConsulLoader::ConfigParser.new)
-        loader.load_config config['run']['consul_loader']['config_file'], config['run']['consul_loader']['url']
-
-        puts ""
-      end
-
-      compose.logs
-  	rescue SystemExit, Interrupt
-  		compose.stop
-  		compose.rm unless Docker.info["Driver"] == "btrfs"
-  	end
+    runner = Minke::Tasks::Run.new
+    runner.run
   end
 
   desc "build and run application with Docker Compose"
   task :build_and_run => [:build_server, :run]
 
   desc "run end to end Cucumber tests USAGE: rake app:cucumber[@tag]"
-  task :cucumber, [:feature] => ['config:set_docker_env', 'config:load_config'] do |t, args|
-    config = Minke::Helpers.config
-
-  	puts "## Running cucumber with tags #{args[:feature]}"
-
-  	if args[:feature] != nil
-  		feature = "--tags #{args[:feature]}"
-  	else
-  		feature = ""
-  	end
-
-  	status = 0
-
-    config = Minke::Helpers.config
-
-    if config['cucumber']['docker'] != nil && config['cucumber']['docker']['compose_file'] != nil
-      config_file = config['cucumber']['docker']['compose_file']
-    else
-      config_file = config['docker']['compose_file']
-    end
-
-    compose = Minke::DockerCompose.new config_file
-
-  	begin
-  	  compose.up
-
-      # do we need to run any tasks after the server starts?
-      if config['cucumber']['after_start'] != nil
-        config['cucumber']['after_start'].each do |task|
-          puts "## Running after_start task: #{task}"
-
-          begin
-            Rake::Task[task].invoke
-          rescue Exception => msg
-            puts "Error running rake task: #{msg}"
-            raise msg
-          end
-          puts ""
-        end
-      end
-
-      if config['cucumber']['consul_loader']['enabled']
-        Minke::Helpers.wait_until_server_running "#{config['cucumber']['consul_loader']['url']}/v1/status/leader", 0
-        loader = ConsulLoader::Loader.new(ConsulLoader::ConfigParser.new)
-        loader.load_config config['cucumber']['consul_loader']['config_file'], config['cucumber']['consul_loader']['url']
-      end
-
-      if config['cucumber']['health_check']['enabled']
-        Minke::Helpers.wait_until_server_running config['cucumber']['health_check']['url'], 0, 3
-      end
-
-  		sh "cucumber --color -f pretty #{feature}"
-      status = $?.exitstatus
-  	ensure
-  		compose.stop
-  		compose.rm unless Docker.info["Driver"] == "btrfs"
-
-      abort "Cucumber steps failed" unless status == 0
-  	end
+  task :cucumber, [:feature] => ['config:set_docker_env'] do |t, args|
+    runner = Minke::Tasks::Cucumber.new
+    runner.run
   end
 
   desc "push built image to Docker registry"
-  task :push => ['config:load_config'] do
-  	puts "## Push image to registry"
-
-    config = Minke::Helpers.config
-  	Minke::GoDocker.tag_and_push config
+  task :push  do
+    runner = Minke::Tasks::Push.new
+    runner.run
   end
 end
