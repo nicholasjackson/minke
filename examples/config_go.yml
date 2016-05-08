@@ -11,6 +11,8 @@ docker:
   build_docker_file: [optional]
   application_docker_file: './dockerfiles/event-sauce/Dockerfile'
   application_compose_file: './dockercompose/event-sauce/docker-compose.yml'
+fetch:
+  include: true
 build:
   pre:
     tasks:

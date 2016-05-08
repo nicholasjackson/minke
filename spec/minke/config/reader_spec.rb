@@ -114,6 +114,12 @@ describe Minke::Config::Reader do
     end
   end
 
+  describe 'fetch section' do
+    it 'should correctly read the fetch section' do
+      expect(config.fetch).to be_an_instance_of(Minke::Config::Task)
+    end
+  end
+
   describe 'run section' do
     it 'should correctly read the run section' do
       expect(config.run).to be_an_instance_of(Minke::Config::Task)
