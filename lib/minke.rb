@@ -12,7 +12,7 @@ require 'minke/helpers/wait_for_server'
 require 'minke/docker/docker'
 require 'minke/docker/docker_compose'
 require 'minke/config/config'
-require 'minke/config/config_processor'
+require 'minke/config/reader'
 
 require 'minke/generators/register'
 require 'minke/generators/config'
