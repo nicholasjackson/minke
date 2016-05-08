@@ -6,7 +6,9 @@ describe Minke::Tasks::Build do
   let(:logger) { double "logger" }
 
   let(:task) do
-    Minke::Tasks::Task.new config, docker_runner, logger
+    Minke::Tasks::Build.new config, docker_runner, logger
   end
+
+  
 
 end

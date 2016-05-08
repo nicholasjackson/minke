@@ -9,8 +9,7 @@ require 'logger'
 
 require 'minke/version'
 
-require 'minke/helpers/copy'
-require 'minke/helpers/wait_for_server'
+require 'minke/helpers/helper'
 
 require 'minke/docker/docker_runner'
 require 'minke/docker/docker_compose'

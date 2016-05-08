@@ -75,6 +75,13 @@ module Minke
       	return container, success
       end
 
+      ##
+      # build_image creates a new image from the given Dockerfile and name
+      def build_image dockerfile_dir, name
+        Docker.options = {:read_timeout => 6200}
+        Docker::Image.build_from_dir dockerfile_dir, {:t => name}
+      end
+
       def delete_container container
         if container != nil
           begin

@@ -4,10 +4,42 @@ module Minke
     # Task is a base implementation of a rake task such as fetch, build, etc
     class Task
 
-      def initialize config, docker_runner, logger
+      def initialize config, generator_settings, docker_runner, logger, helper
         @config = config
+        @generator_settings = generator_settings
         @docker_runner = docker_runner
         @logger = logger
+        @helper = helper
+      end
+
+      ##
+      # run_with_config executes the task steps for the given Minke::Config::TaskRunSettings and Minke::Config::DockerSettings
+      def run_with_config main_config, task_config
+        custom_dir = main_config.docker.build_docker_file || task_config.docker.build_docker_file
+        if custom_dir != nil
+          @docker_runner.build_image custom_dir, "#{main_config.application_name}-buildimage"
+        end
+
+        run_steps task_config.pre unless task_config.pre == nil
+      end
+
+      ##
+      # execute the defined steps in the given Minke::Config::TaskRunSettings
+      def run_steps steps
+        execute_rake_tasks steps.tasks unless steps.tasks == nil
+        load_consul_data steps.consul_loader unless steps.consul_loader == nil
+      end
+
+      ##
+      # execute an array of rake tasks
+      def execute_rake_tasks tasks
+        tasks.each { |t| @helper.invoke_task t }
+      end
+
+      ##
+      # load consul config
+      def load_consul_data config
+        @helper.load_consul_data config.url, config.config_file
       end
 
       def run_command_in_container command
@@ -16,7 +48,7 @@ module Minke
 
           # throw exception if failed
         ensure
-          #Minke::Docker.delete_container container
+          @docker_runner.delete_container container
         end
       end
 
