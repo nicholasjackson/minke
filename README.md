@@ -1,5 +1,7 @@
 # Minke
 
+[![Join the chat at https://gitter.im/nicholasjackson/minke](https://badges.gitter.im/nicholasjackson/minke.svg)](https://gitter.im/nicholasjackson/minke?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## NOTE:
 Version 0.13.0 of the gem introduces breaking changes to the configuration files in order to support multiple language builds for swift and go.  Please use version 0.12.0 or upgrade your config to the new specification shown below.  
 
