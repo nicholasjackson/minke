@@ -13,6 +13,11 @@ describe Minke::Tasks::Task do
             cl.url = 'myurl'
             cl.config_file = 'myfile'
           end
+          p.health_check = 'http://health/v1'
+          p.copy = [
+            Minke::Config::Copy.new.tap { |cp| cp.from = '/from1'; cp.to = './to1'},
+            Minke::Config::Copy.new.tap { |cp| cp.from = '/from2'; cp.to = './to2'}
+          ]
         end
       end
     end
@@ -26,6 +31,8 @@ describe Minke::Tasks::Task do
     helper = double "helper"
     allow(helper).to receive(:invoke_task)
     allow(helper).to receive(:load_consul_data)
+    allow(helper).to receive(:wait_for_HTTPOK)
+    allow(helper).to receive(:copy_assets)
     return helper
   end
 
@@ -97,6 +104,24 @@ describe Minke::Tasks::Task do
 
     it 'loads data into consul' do
       expect(helper).to receive(:load_consul_data).with('myurl', 'myfile')
+
+      task.run_steps config.fetch.pre
+    end
+
+    it 'waits for the health check to complete' do
+      expect(helper).to receive(:wait_for_HTTPOK).with('http://health/v1', 3, 0)
+
+      task.run_steps config.fetch.pre
+    end
+
+    it 'copies any assets' do
+      expect(helper).to receive(:copy_assets).with('/from1', './to1')
+
+      task.run_steps config.fetch.pre
+    end
+
+    it 'copies both assets' do
+      expect(helper).to receive(:copy_assets).twice
 
       task.run_steps config.fetch.pre
     end
