@@ -18,10 +18,11 @@ require 'minke/config/config'
 require 'minke/config/reader'
 
 require 'minke/tasks/task'
+require 'minke/tasks/fetch'
 #require 'minke/tasks/build_image'
 #require 'minke/tasks/build'
 #require 'minke/tasks/cucumber'
-#require 'minke/tasks/fetch'
+
 #require 'minke/tasks/push'
 #require 'minke/tasks/run'
 #require 'minke/tasks/test'

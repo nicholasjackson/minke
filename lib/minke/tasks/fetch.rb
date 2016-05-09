@@ -3,14 +3,10 @@ module Minke
     class Fetch < Task
 
       def run
-        if config[:build_config][:build][:get] != nil
-          puts "## Get dependent packages"
-
-          config[:build_config][:build][:get].each do |command|
+        run_with_config @config, @config.fetch do
+          @generator_settings.command.fetch.each do |command|
           	run_command_in_container command
           end
-
-          puts ""
         end
       end
 

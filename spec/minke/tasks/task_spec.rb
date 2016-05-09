@@ -19,6 +19,9 @@ describe Minke::Tasks::Task do
             Minke::Config::Copy.new.tap { |cp| cp.from = '/from2'; cp.to = './to2'}
           ]
         end
+        f.post = Minke::Config::TaskRunSettings.new.tap do |p|
+          p.tasks = ['task3', 'task4']
+        end
       end
     end
   end
@@ -93,10 +96,28 @@ describe Minke::Tasks::Task do
 
       task.run_with_config config, config.fetch
     end
+
+    it 'executes the pre steps' do
+      expect(helper).to receive(:invoke_task).with('task1')
+
+      task.run_with_config config, config.fetch
+    end
+
+    it 'executes the post steps' do
+      expect(helper).to receive(:invoke_task).with('task3')
+
+      task.run_with_config config, config.fetch
+    end
   end
 
   describe 'run_steps' do
     it 'executes the defined rake tasks' do
+      expect(helper).to receive(:invoke_task).with('task1')
+
+      task.run_steps config.fetch.pre
+    end
+
+    it 'executes both defined rake tasks' do
       expect(helper).to receive(:invoke_task).twice
 
       task.run_steps config.fetch.pre

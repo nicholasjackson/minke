@@ -13,14 +13,22 @@ module Minke
       end
 
       ##
-      # run_with_config executes the task steps for the given Minke::Config::TaskRunSettings and Minke::Config::DockerSettings
+      # run_with_config executes the task steps for the given
+      # - Minke::Config::TaskRunSettings
+      # - Minke::Config::DockerSettings
+      # - block containing custom actions
       def run_with_config main_config, task_config
-        custom_dir = main_config.docker.build_docker_file || task_config.docker.build_docker_file
+        custom_dir = main_config.docker.build_docker_file unless main_config.docker.build_docker_file == nil
+        custom_dir = task_config.docker.build_docker_file unless task_config.docker == nil || task_config.docker.build_docker_file == nil
         if custom_dir != nil
           @docker_runner.build_image custom_dir, "#{main_config.application_name}-buildimage"
         end
 
         run_steps task_config.pre unless task_config.pre == nil
+
+        yield if block_given?
+
+        run_steps task_config.post unless task_config.post == nil
       end
 
       ##
