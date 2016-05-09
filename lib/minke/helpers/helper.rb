@@ -23,6 +23,15 @@ module Minke
 
       end
 
+      def execute_shell_command command
+        sh command
+        $?.exitstatus
+      end
+
+      def fatal_error message
+        abort message
+      end
+
       ##
       # waits until a 200 response is received from the given url
       def wait_for_HTTPOK url, count, successes = 0

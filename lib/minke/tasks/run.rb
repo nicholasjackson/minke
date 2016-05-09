@@ -2,44 +2,21 @@ module Minke
   module Tasks
     class Run < Task
 
-      def run
+      def run args = nil
         puts "## Run application with docker compose"
+        compose_file = @config.docker.application_compose_file unless @config.docker.application_compose_file == nil
+        compose_file = @config.cucumber.docker.application_compose_file unless @config.run.docker == nil || @config.run.docker.application_compose_file == nil
 
-        config = Minke::Helpers.config
-
-        if config['run']['docker'] != nil && config['run']['docker']['compose_file'] != nil
-          config_file = config['run']['docker']['compose_file']
-        else
-          config_file = config['docker']['compose_file']
-        end
-
-        compose = Minke::DockerCompose.new config_file
+        compose = @docker_compose_factory.create compose_file
 
       	begin
-          compose.up
+      	  compose.up
 
-          # do we need to run any tasks after the server starts?
-          if config['run']['after_start'] != nil
-            config['run']['after_start'].each do |task|
-              puts "## Running after_start task: #{task}"
-              Rake::Task[task].invoke
+          run_with_block
 
-              puts ""
-            end
-          end
-
-          if config['run']['consul_loader']['enabled']
-            Minke::Helpers.wait_until_server_running "#{config['run']['consul_loader']['url']}/v1/status/leader", 0
-            loader = ConsulLoader::Loader.new(ConsulLoader::ConfigParser.new)
-            loader.load_config config['run']['consul_loader']['config_file'], config['run']['consul_loader']['url']
-
-            puts ""
-          end
-
-          compose.logs
-      	rescue SystemExit, Interrupt
+      	ensure
       		compose.stop
-      		compose.rm unless Docker.info["Driver"] == "btrfs"
+      		compose.rm
       	end
       end
 

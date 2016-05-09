@@ -45,17 +45,17 @@ module Minke
       # Returns:
       # - Docker::Container
       # - sucess (true if command succeded without error)
-      def create_and_run_container args, cmd
+      def create_and_run_container image, volumes, environment, working_directory, cmd
       	# update the timeout for the Excon Http Client
       	# set the chunk size to enable streaming of log files
         ::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
         container = ::Docker::Container.create(
-      		'Image' => args[:build_config][:docker][:image],
+      		'Image' => image,
       		'Cmd' => cmd,
-      		"Binds" => args[:build_config][:docker][:binds],
-      		"Env" => args[:build_config][:docker][:env],
-      		'WorkingDir' => args[:build_config][:docker][:working_directory])
-
+      		"Binds" => volumes,
+      		"Env" => environment,
+      		'WorkingDir' => working_directory)
+          
         success = false
 
         thread = Thread.new {
@@ -92,15 +92,19 @@ module Minke
         end
       end
 
-      def tag_and_push args
-        image =  self.find_image "#{args['go']['application_name']}:latest"
-      	image.tag('repo' => "#{args['docker_registry']['namespace']}/#{args['go']['application_name']}", 'force' => true) unless image.info["RepoTags"].include? "#{args['docker_registry']['namespace']}/#{args['go']['application_name']}:latest"
+      def login_registry url, user, password, email
+        system("docker login -u #{user} -p #{password} -e #{email} #{url}")
+        $?.exitstatus
+      end
 
-      	system("docker login -u #{args['docker_registry']['user']} -p #{args['docker_registry']['password']} -e #{args['docker_registry']['email']} #{args['docker_registry']['url']}")
-        abort "Unable to login" unless $?.exitstatus ==  0
+      def tag_image image_name, tag
+        image =  self.find_image "#{image_name}:latest"
+      	image.tag('repo' => tag, 'force' => true) unless image.info["RepoTags"].include? "#{tag}:latest"
+      end
 
-      	system("docker push #{args['docker_registry']['namespace']}/#{args['go']['application_name']}:latest")
-        abort "Unable to push to registry" unless $?.exitstatus ==  0
+      def push_image image_name
+      	system("docker push #{image_name}:latest")
+        $?.exitstatus ==  0
       end
     end
   end

@@ -19,13 +19,11 @@ require 'minke/config/reader'
 
 require 'minke/tasks/task'
 require 'minke/tasks/fetch'
-#require 'minke/tasks/build_image'
-#require 'minke/tasks/build'
-#require 'minke/tasks/cucumber'
-
-#require 'minke/tasks/push'
-#require 'minke/tasks/run'
-#require 'minke/tasks/test'
+require 'minke/tasks/build'
+require 'minke/tasks/test'
+require 'minke/tasks/cucumber'
+require 'minke/tasks/run'
+require 'minke/tasks/push'
 
 require 'minke/generators/register'
 require 'minke/generators/config'

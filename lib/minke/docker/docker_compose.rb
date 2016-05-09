@@ -1,4 +1,10 @@
 module Minke
+  class DockerComposeFactory
+    def create compose_file
+      Minke::DockerCompose.new compose_file
+    end
+  end
+
   class DockerCompose
     @compose_file = nil
 
@@ -16,7 +22,7 @@ module Minke
     end
 
     def rm
-      execute "echo y | docker-compose -f #{@compose_file} rm -v"
+      execute "echo y | docker-compose -f #{@compose_file} rm -v" unless Docker.info["Driver"] == "btrfs"
     end
 
     def logs

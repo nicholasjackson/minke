@@ -51,6 +51,13 @@ module Minke
       attr_accessor :run
 
       ##
+      # Settings for the run application phase
+      # instance of Minke::Config::Task
+      #
+      # [Optional] if not provided the test commands will not be executed
+      attr_accessor :test
+
+      ##
       # Settings for the cuccumber functional test phase
       # instance of Minke::Config::Task
       #

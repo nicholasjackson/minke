@@ -2,64 +2,35 @@ module Minke
   module Tasks
     class Cucumber < Task
 
-      def run
-        config = Minke::Helpers.config
+      def run args = nil
+      	puts "## Running cucumber with tags #{args}"
 
-      	puts "## Running cucumber with tags #{args[:feature]}"
+        compose_file = @config.docker.application_compose_file unless @config.docker.application_compose_file == nil
+        compose_file = @config.cucumber.docker.application_compose_file unless @config.cucumber.docker == nil || @config.cucumber.docker.application_compose_file == nil
 
-      	if args[:feature] != nil
+        compose = @docker_compose_factory.create compose_file
+
+      	begin
+          status = 0
+      	  compose.up
+
+          run_with_block do
+            status = @helper.execute_shell_command "cucumber --color -f pretty #{get_features args}"
+          end
+
+      	ensure
+      		compose.stop
+      		compose.rm
+
+          @helper.fatal_error "Cucumber steps failed" unless status == 0
+      	end
+      end
+
+      def get_features args
+        if args != nil && args[:feature] != nil
       		feature = "--tags #{args[:feature]}"
       	else
       		feature = ""
-      	end
-
-      	status = 0
-
-        config = Minke::Helpers.config
-
-        if config['cucumber']['docker'] != nil && config['cucumber']['docker']['compose_file'] != nil
-          config_file = config['cucumber']['docker']['compose_file']
-        else
-          config_file = config['docker']['compose_file']
-        end
-
-        compose = Minke::DockerCompose.new config_file
-
-      	begin
-      	  compose.up
-
-          # do we need to run any tasks after the server starts?
-          if config['cucumber']['after_start'] != nil
-            config['cucumber']['after_start'].each do |task|
-              puts "## Running after_start task: #{task}"
-
-              begin
-                Rake::Task[task].invoke
-              rescue Exception => msg
-                puts "Error running rake task: #{msg}"
-                raise msg
-              end
-              puts ""
-            end
-          end
-
-          if config['cucumber']['consul_loader']['enabled']
-            Minke::Helpers.wait_until_server_running "#{config['cucumber']['consul_loader']['url']}/v1/status/leader", 0
-            loader = ConsulLoader::Loader.new(ConsulLoader::ConfigParser.new)
-            loader.load_config config['cucumber']['consul_loader']['config_file'], config['cucumber']['consul_loader']['url']
-          end
-
-          if config['cucumber']['health_check']['enabled']
-            Minke::Helpers.wait_until_server_running config['cucumber']['health_check']['url'], 0, 3
-          end
-
-      		sh "cucumber --color -f pretty #{feature}"
-          status = $?.exitstatus
-      	ensure
-      		compose.stop
-      		compose.rm unless Docker.info["Driver"] == "btrfs"
-
-          abort "Cucumber steps failed" unless status == 0
       	end
       end
 

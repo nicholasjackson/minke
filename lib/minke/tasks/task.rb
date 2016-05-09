@@ -4,31 +4,33 @@ module Minke
     # Task is a base implementation of a rake task such as fetch, build, etc
     class Task
 
-      def initialize config, generator_settings, docker_runner, logger, helper
+      def initialize config, task_settings, generator_settings, docker_runner, docker_compose_factory, logger, helper
         @config = config
+        @task_settings = task_settings
         @generator_settings = generator_settings
         @docker_runner = docker_runner
+        @docker_compose_factory = docker_compose_factory
         @logger = logger
         @helper = helper
+
+        @build_image = @generator_settings.build_settings.docker_settings.image
+        @build_image = config.docker.build_image unless config.docker.build_image == nil
+
+        @build_file = config.docker.build_docker_file unless config.docker.build_docker_file == nil
+        @build_image = task_settings.docker.build_image unless task_settings.docker == nil || task_settings.docker.build_image == nil
+        @build_file = task_settings.docker.build_docker_file unless task_settings.docker == nil || task_settings.docker.build_docker_file == nil
       end
 
       ##
       # run_with_config executes the task steps for the given
-      # - Minke::Config::TaskRunSettings
-      # - Minke::Config::DockerSettings
       # - block containing custom actions
-      def run_with_config main_config, task_config
-        custom_dir = main_config.docker.build_docker_file unless main_config.docker.build_docker_file == nil
-        custom_dir = task_config.docker.build_docker_file unless task_config.docker == nil || task_config.docker.build_docker_file == nil
-        if custom_dir != nil
-          @docker_runner.build_image custom_dir, "#{main_config.application_name}-buildimage"
-        end
-
-        run_steps task_config.pre unless task_config.pre == nil
+      def run_with_block
+        #TODO: Need to add some tests for this stuff
+        run_steps @task_settings.pre unless @task_settings.pre == nil
 
         yield if block_given?
 
-        run_steps task_config.post unless task_config.post == nil
+        run_steps @task_settings.post unless @task_settings.post == nil
       end
 
       ##
@@ -63,9 +65,16 @@ module Minke
 
       def run_command_in_container command
         begin
-          container, ret = @docker_runner.create_and_run_container @config, command
+          settings = @generator_settings.build_settings.docker_settings
+          if @build_file != nil
+            @build_image = "#{@config.application_name}-buildimage"
+            @docker_runner.build_image @build_file, @build_image
+          end
+
+          container, success = @docker_runner.create_and_run_container @build_image, settings.binds, settings.env, settings.working_directory, command
 
           # throw exception if failed
+          @helper.fatal_error "Unable to run command #{command}" unless success
         ensure
           @docker_runner.delete_container container
         end

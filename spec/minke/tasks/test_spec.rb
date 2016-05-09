@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe Minke::Tasks::Fetch do
+describe Minke::Tasks::Test do
   let(:config) do
     Minke::Config::Config.new.tap do |c|
       c.application_name = "testapp"
       c.docker = Minke::Config::DockerSettings.new
-      c.fetch = Minke::Config::Task.new
+      c.test = Minke::Config::Task.new
     end
   end
 
@@ -18,7 +18,7 @@ describe Minke::Tasks::Fetch do
       end
       c.generate_settings = Minke::Generators::GenerateSettings.new.tap do |g|
         g.command = Minke::Generators::BuildCommands.new.tap do |b|
-          b.fetch = ['command1', 'command2']
+          b.test = ['command1', 'command2']
         end
       end
     end
@@ -36,7 +36,7 @@ describe Minke::Tasks::Fetch do
   end
 
   let(:task) do
-    Minke::Tasks::Fetch.new config, config.fetch, generator_config, docker_runner, docker_compose_factory, logger, helper
+    Minke::Tasks::Test.new config, config.test, generator_config, docker_runner, docker_compose_factory, logger, helper
   end
 
   it 'executes the given commands in a container' do

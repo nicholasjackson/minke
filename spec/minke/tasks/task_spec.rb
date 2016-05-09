@@ -26,9 +26,21 @@ describe Minke::Tasks::Task do
     end
   end
 
-  let(:docker_runner) { double "docker_runner" }
+  let(:docker_runner) do
+    runner = double "docker_runner"
+    allow(runner).to receive(:create_and_run_container).and_return(nil, true)
+    allow(runner).to receive(:delete_container)
+    return runner
+  end
   let(:logger) { double "logger" }
-  let(:generator_settings) { double "generator_settings" }
+  let(:generator_config) do
+    Minke::Generators::Config.new.tap do |c|
+      c.build_settings = Minke::Generators::BuildSettings.new.tap do |bs|
+        bs.docker_settings = Minke::Generators::DockerSettings.new
+      end
+    end
+  end
+  let(:docker_compose_factory) { double "docker_compose_factory" }
 
   let(:helper) do
     helper = double "helper"
@@ -36,17 +48,39 @@ describe Minke::Tasks::Task do
     allow(helper).to receive(:load_consul_data)
     allow(helper).to receive(:wait_for_HTTPOK)
     allow(helper).to receive(:copy_assets)
+    allow(helper).to receive(:fatal_error)
     return helper
   end
 
   let(:task) do
-    Minke::Tasks::Task.new config, generator_settings, docker_runner, logger, helper
+    Minke::Tasks::Task.new config, config.fetch, generator_config, docker_runner, docker_compose_factory, logger, helper
   end
 
   describe 'run_command_in_container' do
     it 'creates a container and runs a command with the correct parameters' do
       expect(docker_runner).to receive(:create_and_run_container)
       expect(docker_runner).to receive(:delete_container)
+
+      task.run_command_in_container config
+    end
+
+    it 'builds a custom docker image when the docker_settings contains an override' do
+      config.docker.build_docker_file = './sdsdd'
+      expect(docker_runner).to receive(:build_image)
+
+      task.run_command_in_container config
+    end
+
+    it 'builds a custom docker image when the docker_settings contains an override' do
+      config.fetch.docker.build_docker_file = './sdsdd'
+      expect(docker_runner).to receive(:build_image)
+
+      task.run_command_in_container config
+    end
+
+    it 'set the correct custom docker image name when the docker_settings contains an override' do
+      config.fetch.docker.build_docker_file = './sdsdd'
+      expect(docker_runner).to receive(:build_image).with('./sdsdd', "testapp-buildimage")
 
       task.run_command_in_container config
     end
@@ -76,37 +110,16 @@ describe Minke::Tasks::Task do
   end
 
   describe 'run_with_config' do
-    it 'builds a custom docker image when the docker_settings contains an override' do
-      config.docker.build_docker_file = './sdsdd'
-      expect(docker_runner).to receive(:build_image)
-
-      task.run_with_config config, config.fetch
-    end
-
-    it 'builds a custom docker image when the docker_settings contains an override' do
-      config.fetch.docker.build_docker_file = './sdsdd'
-      expect(docker_runner).to receive(:build_image)
-
-      task.run_with_config config, config.fetch
-    end
-
-    it 'set the correct custom docker image name when the docker_settings contains an override' do
-      config.fetch.docker.build_docker_file = './sdsdd'
-      expect(docker_runner).to receive(:build_image).with('./sdsdd', "testapp-buildimage")
-
-      task.run_with_config config, config.fetch
-    end
-
     it 'executes the pre steps' do
       expect(helper).to receive(:invoke_task).with('task1')
 
-      task.run_with_config config, config.fetch
+      task.run_with_block
     end
 
     it 'executes the post steps' do
       expect(helper).to receive(:invoke_task).with('task3')
 
-      task.run_with_config config, config.fetch
+      task.run_with_block
     end
   end
 
