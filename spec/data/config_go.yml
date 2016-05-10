@@ -1,5 +1,6 @@
 namespace: github.com/nicholasjackson
 application_name: event-sauce
+generator_name: golang
 docker_registry:
   url: <%= ENV['DOCKER_REGISTRY_URL'] %>
   user: <%= ENV['DOCKER_REGISTRY_USER'] %>

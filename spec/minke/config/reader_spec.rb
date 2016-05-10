@@ -23,6 +23,10 @@ describe Minke::Config::Reader do
     expect(config.application_name).to eq('event-sauce')
   end
 
+  it 'should correctly read the generator_name' do
+    expect(config.generator_name).to eq('golang')
+  end
+
   describe 'docker_registry section' do
     it 'should correctly read the url' do
       expect(config.docker_registry.url).to eq(ENV['DOCKER_REGISTRY_URL'])

@@ -15,12 +15,11 @@ describe Minke::Tasks::Fetch do
     Minke::Generators::Config.new.tap do |c|
       c.build_settings = Minke::Generators::BuildSettings.new.tap do |bs|
         bs.docker_settings = Minke::Generators::DockerSettings.new
-      end
-      c.generate_settings = Minke::Generators::GenerateSettings.new.tap do |g|
-        g.command = Minke::Generators::BuildCommands.new.tap do |b|
+        bs.build_commands = Minke::Generators::BuildCommands.new.tap do |b|
           b.fetch = ['command1', 'command2']
         end
       end
+
     end
   end
   let(:docker_compose_factory) { double "docker_compose_factory" }

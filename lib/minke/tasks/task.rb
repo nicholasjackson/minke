@@ -17,8 +17,8 @@ module Minke
         @build_image = config.docker.build_image unless config.docker.build_image == nil
 
         @build_file = config.docker.build_docker_file unless config.docker.build_docker_file == nil
-        @build_image = task_settings.docker.build_image unless task_settings.docker == nil || task_settings.docker.build_image == nil
-        @build_file = task_settings.docker.build_docker_file unless task_settings.docker == nil || task_settings.docker.build_docker_file == nil
+        @build_image = task_settings.docker.build_image unless task_settings == nil || task_settings.docker == nil || task_settings.docker.build_image == nil
+        @build_file = task_settings.docker.build_docker_file unless task_settings == nil || task_settings.docker == nil || task_settings.docker.build_docker_file == nil
       end
 
       ##
@@ -26,11 +26,11 @@ module Minke
       # - block containing custom actions
       def run_with_block
         #TODO: Need to add some tests for this stuff
-        run_steps @task_settings.pre unless @task_settings.pre == nil
+        run_steps @task_settings.pre unless @task_settings == nil || @task_settings.pre == nil
 
         yield if block_given?
 
-        run_steps @task_settings.post unless @task_settings.post == nil
+        run_steps @task_settings.post unless @task_settings == nil || @task_settings.post == nil
       end
 
       ##

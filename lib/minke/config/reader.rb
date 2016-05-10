@@ -12,6 +12,7 @@ module Minke
 
         config.namespace = file['namespace']
         config.application_name = file['application_name']
+        config.generator_name = file['generator_name']
 
         config.docker_registry = read_docker_registry file['docker_registry'] unless file['docker_registry'] == nil
         config.docker          = read_docker_section file['docker']           unless file['docker'] == nil

@@ -4,8 +4,9 @@ module Minke
 
       def run args = nil
         run_with_block do
-          @generator_settings.generate_settings.command.fetch.each do |command|
-          	run_command_in_container command
+          puts @generator_settings.inspect
+          @generator_settings.build_settings.build_commands.fetch.each do |command|
+            run_command_in_container command
           end
         end
       end

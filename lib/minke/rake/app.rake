@@ -2,7 +2,8 @@ namespace :app do
 
   desc "fetch dependent packages"
   task :fetch => ['config:set_docker_env', 'docker:fetch_images'] do
-    runner = Minke::Tasks::Fetch.new
+    create_dependencies
+    runner = Minke::Tasks::Fetch.new @config, @config.fetch, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
     runner.run
   end
 
@@ -43,5 +44,20 @@ namespace :app do
   task :push  do
     runner = Minke::Tasks::Push.new
     runner.run
+  end
+
+  def create_dependencies
+    @config = Minke::Config::Reader.new.read './config.yml' unless @config != nil
+
+    unless @generator_config != nil
+      processor = Minke::Generators::Processor.new @config.application_name, @config.namespace
+      processor.load_generators
+      @generator_config = processor.get_generator @config.generator_name
+    end
+
+    @docker_runner = Minke::Docker::DockerRunner.new
+    @docker_compose_factory = Minke::Docker::DockerComposeFactory
+    @logger = Logger.new(STDOUT)
+    @helper = Minke::Helpers::Helper.new
   end
 end

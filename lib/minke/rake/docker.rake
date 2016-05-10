@@ -1,20 +1,22 @@
 namespace :docker do
   desc "updates build images for swagger and golang will overwrite existing images"
   task :update_images do
-    config = Minke::Helpers.config
+    config = Minke::Config::Reader.new.read './config.yml'
 
     puts "## Updating Docker images"
-  	Minke::Docker.pull_image config[:build_config][:docker][:image]
+    runner = Minke::Docker::DockerRunner.new
+  	runner.pull_image config.docker.build_image
 
     puts ""
   end
 
   desc "pull images for golang from Docker registry if not already downloaded"
   task :fetch_images do
-    config = Minke::Helpers.config
-    
+    config = Minke::Config::Reader.new.read './config.yml'
+
     puts "## Pulling Docker images"
-  	Minke::Docker.pull_image config[:build_config][:docker][:image] unless Minke::Docker.find_image config[:build_config][:docker][:image]
+    runner = Minke::Docker::DockerRunner.new
+  	runner.pull_image config.docker.build_image unless runner.find_image config.docker.build_image
 
     puts ""
   end

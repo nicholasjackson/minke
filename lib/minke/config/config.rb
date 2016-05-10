@@ -16,6 +16,12 @@ module Minke
       attr_accessor :application_name
 
       ##
+      # the name of the generator to use
+      #
+      # [Required]
+      attr_accessor :generator_name
+
+      ##
       # Docker registry settings instance of Minke::Config::DockerRegistrySettings
       #
       # [Optional]
