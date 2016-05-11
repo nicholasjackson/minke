@@ -3,8 +3,8 @@ module Minke
     class Fetch < Task
 
       def run args = nil
+        puts "## Update dependencies"
         run_with_block do
-          puts @generator_settings.inspect
           @generator_settings.build_settings.build_commands.fetch.each do |command|
             run_command_in_container command
           end

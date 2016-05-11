@@ -8,6 +8,7 @@ require 'resolv'
 require 'rest-client'
 require 'rubygems'
 require 'yaml'
+require 'colorize'
 
 require 'minke/version'
 

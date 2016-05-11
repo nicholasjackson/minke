@@ -9,25 +9,29 @@ namespace :app do
 
   desc "build application"
   task :build => [:fetch] do
-    runner = Minke::Tasks::Run.new
+    create_dependencies
+    runner = Minke::Tasks::Build.new @config, @config.build, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
     runner.run
   end
 
   desc "run unit tests"
   task :test => [:build] do
-    runner = Minke::Tasks::Test.new
+    create_dependencies
+    runner = Minke::Tasks::Test.new @config, @config.test, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
     runner.run
   end
 
   desc "build Docker image for application"
   task :build_image => [:test] do
-    runner = Minke::Tasks::BuildImage.new
+    create_dependencies
+    runner = Minke::Tasks::BuildImage.new @config, nil, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
     runner.run
   end
 
   desc "run application with Docker Compose"
-  task :run => ['config:set_docker_env', 'config:load_config'] do
-    runner = Minke::Tasks::Run.new
+  task :run => ['config:set_docker_env'] do
+    create_dependencies
+    runner = Minke::Tasks::Run.new @config, @config.run, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
     runner.run
   end
 
@@ -36,12 +40,14 @@ namespace :app do
 
   desc "run end to end Cucumber tests USAGE: rake app:cucumber[@tag]"
   task :cucumber, [:feature] => ['config:set_docker_env'] do |t, args|
-    runner = Minke::Tasks::Cucumber.new
+    create_dependencies
+    runner = Minke::Tasks::Cucumber.new @config, @config.cucumber, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
     runner.run
   end
 
   desc "push built image to Docker registry"
   task :push  do
+    create_dependencies
     runner = Minke::Tasks::Push.new
     runner.run
   end

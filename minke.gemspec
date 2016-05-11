@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'guard'
   spec.add_development_dependency 'guard-rspec'
 
+  spec.add_runtime_dependency 'colorize'
   spec.add_runtime_dependency 'cucumber'
   spec.add_runtime_dependency 'rake', '~> 10.0'
   spec.add_runtime_dependency 'docker-api'
