@@ -46,6 +46,10 @@ module Minke
       # - Docker::Container
       # - sucess (true if command succeded without error)
       def create_and_run_container image, volumes, environment, working_directory, cmd
+        puts working_directory
+        puts volumes
+        puts cmd
+        puts image
       	# update the timeout for the Excon Http Client
       	# set the chunk size to enable streaming of log files
         ::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
@@ -55,7 +59,7 @@ module Minke
       		"Binds" => volumes,
       		"Env" => environment,
       		'WorkingDir' => working_directory)
-          
+
         success = false
 
         thread = Thread.new {

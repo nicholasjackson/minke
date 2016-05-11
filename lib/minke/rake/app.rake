@@ -47,7 +47,7 @@ namespace :app do
   end
 
   def create_dependencies
-    @config = Minke::Config::Reader.new.read './config.yml' unless @config != nil
+    @config ||= Minke::Config::Reader.new.read './config.yml'
 
     unless @generator_config != nil
       processor = Minke::Generators::Processor.new @config.application_name, @config.namespace
@@ -55,9 +55,9 @@ namespace :app do
       @generator_config = processor.get_generator @config.generator_name
     end
 
-    @docker_runner = Minke::Docker::DockerRunner.new
-    @docker_compose_factory = Minke::Docker::DockerComposeFactory
-    @logger = Logger.new(STDOUT)
-    @helper = Minke::Helpers::Helper.new
+    @docker_runner ||= Minke::Docker::DockerRunner.new
+    @docker_compose_factory ||= Minke::Docker::DockerComposeFactory.new
+    @logger ||= Logger.new(STDOUT)
+    @helper ||= Minke::Helpers::Helper.new
   end
 end
