@@ -15,9 +15,7 @@ describe Minke::Tasks::Build do
     Minke::Generators::Config.new.tap do |c|
       c.build_settings = Minke::Generators::BuildSettings.new.tap do |bs|
         bs.docker_settings = Minke::Generators::DockerSettings.new
-      end
-      c.generate_settings = Minke::Generators::GenerateSettings.new.tap do |g|
-        g.command = Minke::Generators::BuildCommands.new.tap do |b|
+        bs.build_commands = Minke::Generators::BuildCommands.new.tap do |b|
           b.build = ['command1', 'command2']
         end
       end

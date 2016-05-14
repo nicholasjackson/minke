@@ -81,8 +81,17 @@ module Minke
       ##
       # build_image creates a new image from the given Dockerfile and name
       def build_image dockerfile_dir, name
-        Docker.options = {:read_timeout => 6200}
-        Docker::Image.build_from_dir dockerfile_dir, {:t => name}
+        ::Docker.options = {:read_timeout => 6200}
+        begin
+          ::Docker::Image.build_from_dir(dockerfile_dir, {:t => name}) do |v|
+            data = /{"stream.*:"(.*)".*/.match(v)
+            data = data[1].encode(Encoding.find('UTF-8'), {invalid: :replace, undef: :replace, replace: ''}) unless data == nil || data.length < 1
+            $stdout.puts data unless data == nil
+          end
+        rescue => e
+          message = /.*{"message":"(.*?)"}/.match(e.to_s)
+          puts "Error: #{message[1]}" unless message == nil || message.length < 1
+        end
       end
 
       def delete_container container

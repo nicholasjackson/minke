@@ -56,7 +56,13 @@ namespace :app do
     @config ||= Minke::Config::Reader.new.read './config.yml'
 
     unless @generator_config != nil
-      processor = Minke::Generators::Processor.new @config.application_name, @config.namespace
+      variables = Minke::Generators::ConfigVariables.new.tap do |v|
+        v.application_name = @config.application_name
+        v.namespace = @config.namespace
+        v.src_root = File.expand_path('../', __FILE__)
+      end
+
+      processor = Minke::Generators::Processor.new variables
       processor.load_generators
       @generator_config = processor.get_generator @config.generator_name
     end

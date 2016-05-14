@@ -9,6 +9,7 @@ require 'rest-client'
 require 'rubygems'
 require 'yaml'
 require 'colorize'
+require 'multi_json'
 
 require 'minke/version'
 
@@ -27,6 +28,7 @@ require 'minke/tasks/fetch'
 require 'minke/tasks/push'
 require 'minke/tasks/run'
 require 'minke/tasks/test'
+require 'minke/tasks/build_image'
 
 require 'minke/generators/config'
 require 'minke/generators/config_processor'

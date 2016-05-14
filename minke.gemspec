@@ -30,4 +30,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'docker-api'
   spec.add_runtime_dependency 'rest-client', '~> 1.8'
   spec.add_runtime_dependency 'consul_loader', '~> 1.0'
+  spec.add_runtime_dependency 'multi_json'
 end

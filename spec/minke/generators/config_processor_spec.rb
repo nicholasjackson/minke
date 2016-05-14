@@ -49,75 +49,75 @@ describe Minke::Generators::ConfigProcessor do
     processor.process config
   end
 
-  describe '##SRC_ROOT## replacements' do
-    it 'replaces ##SRC_ROOT## in template_location' do
-      generator_config.template_location = '##SRC_ROOT##/subfolder'
+  describe '<%= src_root %> replacements' do
+    it 'replaces <%= src_root %> in template_location' do
+      generator_config.template_location = '<%= src_root %>/subfolder'
       process generator_config
 
       expect(generator_config.template_location).to eq("#{variable_replacements.src_root}/subfolder")
     end
 
-    it 'replaces ##SRC_ROOT## in generate_settings.command' do
-      generate_settings.command = 'build -o ##SRC_ROOT##'
+    it 'replaces <%= src_root %> in generate_settings.command' do
+      generate_settings.command = 'build -o <%= src_root %>'
       process generator_config
 
       expect(generator_config.generate_settings.command).to eq("build -o #{variable_replacements.src_root}")
     end
 
-    it 'replaces ##SRC_ROOT## in generate_settings.command' do
-      generate_settings.docker_file = '##SRC_ROOT##/dockerfile'
+    it 'replaces <%= src_root %> in generate_settings.command' do
+      generate_settings.docker_file = '<%= src_root %>/dockerfile'
       process generator_config
 
       expect(generator_config.generate_settings.docker_file).to eq("#{variable_replacements.src_root}/dockerfile")
     end
 
-    it 'replaces ##SRC_ROOT## in build_settings.build_commands.fetch' do
-      build_commands.fetch = ['fetch ##SRC_ROOT##']
+    it 'replaces <%= src_root %> in build_settings.build_commands.fetch' do
+      build_commands.fetch = ['fetch <%= src_root %>']
       process generator_config
 
       expect(generator_config.build_settings.build_commands.fetch).to eq(["fetch #{variable_replacements.src_root}"])
     end
 
-    it 'replaces ##SRC_ROOT## in build_settings.build_commands.build' do
-      build_commands.build = ['build ##SRC_ROOT##']
+    it 'replaces <%= src_root %> in build_settings.build_commands.build' do
+      build_commands.build = ['build <%= src_root %>']
       process generator_config
 
       expect(generator_config.build_settings.build_commands.build).to eq(["build #{variable_replacements.src_root}"])
     end
 
-    it 'replaces ##SRC_ROOT## in build_settings.build_commands.test' do
-      build_commands.test = ['test ##SRC_ROOT##', 'test2 ##SRC_ROOT##']
+    it 'replaces <%= src_root %> in build_settings.build_commands.test' do
+      build_commands.test = ['test <%= src_root %>', 'test2 <%= src_root %>']
       process generator_config
 
       expect(generator_config.build_settings.build_commands.test).to eq(
         ["test #{variable_replacements.src_root}", "test2 #{variable_replacements.src_root}"])
     end
 
-    it 'replaces ##SRC_ROOT## in build_settings.docker_settings.image' do
-      docker_settings.image = 'image ##SRC_ROOT##'
+    it 'replaces <%= src_root %> in build_settings.docker_settings.image' do
+      docker_settings.image = 'image <%= src_root %>'
       process generator_config
 
       expect(generator_config.build_settings.docker_settings.image).to eq("image #{variable_replacements.src_root}")
     end
 
-    it 'replaces ##SRC_ROOT## in build_settings.docker_settings.env' do
-      docker_settings.env = ['test=##SRC_ROOT##', 'test2=##SRC_ROOT##']
+    it 'replaces <%= src_root %> in build_settings.docker_settings.env' do
+      docker_settings.env = ['test=<%= src_root %>', 'test2=<%= src_root %>']
       process generator_config
 
       expect(generator_config.build_settings.docker_settings.env).to eq(
         ["test=#{variable_replacements.src_root}", "test2=#{variable_replacements.src_root}"])
     end
 
-    it 'replaces ##SRC_ROOT## in build_settings.docker_settings.binds' do
-      docker_settings.binds = ['test:##SRC_ROOT##', 'test2:##SRC_ROOT##']
+    it 'replaces <%= src_root %> in build_settings.docker_settings.binds' do
+      docker_settings.binds = ['test:<%= src_root %>', 'test2:<%= src_root %>']
       process generator_config
 
       expect(generator_config.build_settings.docker_settings.binds).to eq(
         ["test:#{variable_replacements.src_root}", "test2:#{variable_replacements.src_root}"])
     end
 
-    it 'replaces ##SRC_ROOT## in build_settings.docker_settings.working_directory' do
-      docker_settings.working_directory = '/test:##SRC_ROOT##'
+    it 'replaces <%= src_root %> in build_settings.docker_settings.working_directory' do
+      docker_settings.working_directory = '/test:<%= src_root %>'
       process generator_config
 
       expect(generator_config.build_settings.docker_settings.working_directory).to eq("/test:#{variable_replacements.src_root}")

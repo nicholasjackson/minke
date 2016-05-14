@@ -4,9 +4,8 @@ module Minke
     # Process handles the creation of new projects from a generator template.
     class Processor
 
-      def initialize application_name, namespace
-        @application_name = application_name
-        @namespace = namespace
+      def initialize variables
+        @variables = variables
       end
 
       def process generator_name, output_folder
@@ -16,8 +15,8 @@ module Minke
         puts '# Modifiying templates'
         puts "#{generator.template_location}"
 
-        process_directory generator.template_location, '**/*', output_folder, @application_name
-        process_directory generator.template_location, '**/.*', output_folder, @application_name
+        process_directory generator.template_location, '**/*', output_folder, @variables.application_name
+        process_directory generator.template_location, '**/.*', output_folder, @variables.application_name
 
         # run generate command if present
         if generator.generate_settings != nil && generator.generate_settings.command
@@ -86,9 +85,9 @@ module Minke
 
       def render_erb original, new_filename
         b = binding
-        b.local_variable_set(:application_name, @application_name)
-        b.local_variable_set(:namespace, @namespace)
-        b.local_variable_set(:application_location, 'a')
+        b.local_variable_set(:application_name, @variables.application_name)
+        b.local_variable_set(:namespace, @variables.namespace)
+        b.local_variable_set(:src_root, @variables.src_root)
 
         renderer = ERB.new(File.read(original))
         File.open(new_filename, 'w') {|f| f.write renderer.result(b) }
@@ -118,12 +117,13 @@ module Minke
       end
 
       def get_generator generator
-        config = Minke::Generators.get_registrations.select { |config| config.name == generator}.first
+        config = Minke::Generators.get_registrations.select { |c| c.name == generator}.first
         if config == nil
           puts "Generator not installed please select from the above list of installed generators or install the required gem"
           exit 1
         end
-        return config
+        processor = Minke::Generators::ConfigProcessor.new @variables
+        return processor.process config
       end
 
     end

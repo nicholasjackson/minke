@@ -2,7 +2,14 @@ require 'spec_helper'
 
 describe Minke::Generators::Processor do
 
-  let(:processor) { Minke::Generators::Processor.new 'test', 'testnamespace'}
+  let(:processor) {
+    variables = Minke::Generators::ConfigVariables.new.tap do |v|
+      v.application_name = 'application_name'
+      v.namespace = 'namespace'
+      v.src_root = 'srcroot'
+    end
+    Minke::Generators::Processor.new variables
+  }
 
   describe 'create new filename' do
     it 'removes the extension .erb' do

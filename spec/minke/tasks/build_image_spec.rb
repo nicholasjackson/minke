@@ -1,11 +1,13 @@
 require 'spec_helper'
 
-describe Minke::Tasks::Test do
+describe Minke::Tasks::BuildImage do
   let(:config) do
     Minke::Config::Config.new.tap do |c|
-      c.application_name = "testapp"
-      c.docker = Minke::Config::DockerSettings.new
-      c.test = Minke::Config::Task.new
+      c.application_name = 'testapp'
+      c.docker = Minke::Config::DockerSettings.new.tap do |d|
+        d.application_docker_file = './docker'
+      end
+      c.build = Minke::Config::Task.new
     end
   end
 
@@ -15,9 +17,6 @@ describe Minke::Tasks::Test do
     Minke::Generators::Config.new.tap do |c|
       c.build_settings = Minke::Generators::BuildSettings.new.tap do |bs|
         bs.docker_settings = Minke::Generators::DockerSettings.new
-        bs.build_commands = Minke::Generators::BuildCommands.new.tap do |b|
-          b.test = ['command1', 'command2']
-        end
       end
     end
   end
@@ -34,12 +33,11 @@ describe Minke::Tasks::Test do
   end
 
   let(:task) do
-    Minke::Tasks::Test.new config, config.test, generator_config, docker_runner, docker_compose_factory, logger, helper
+    Minke::Tasks::BuildImage.new config, config.build, generator_config, docker_runner, docker_compose_factory, logger, helper
   end
 
-  it 'executes the given commands in a container' do
-    expect(docker_runner).to receive(:create_and_run_container).twice
-    expect(docker_runner).to receive(:delete_container).twice
+  it 'builds an image from the dockerfile' do
+    expect(docker_runner).to receive(:build_image).with('./docker', 'testapp')
 
     task.run
   end
