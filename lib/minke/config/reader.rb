@@ -3,11 +3,18 @@ module Minke
     ##
     # Reader reads a yaml based configuration and processes it into a Minke::Config::Config instance
     class Reader
+      def initialize compose_factory
+        @compose_factory = compose_factory
+      end
+
       ##
       # read yaml config file and return Minke::Config::Config instance
       def read config_file
+        b = binding
+        @public_server_for_replacements = []
+
         config = Config.new
-        file   = ERB.new(File.read(config_file)).result
+        file   = ERB.new(File.read(config_file)).result b
         file   = YAML.load(file)
 
         config.namespace = file['namespace']
@@ -17,12 +24,17 @@ module Minke
         config.docker_registry = read_docker_registry file['docker_registry'] unless file['docker_registry'] == nil
         config.docker          = read_docker_section file['docker']           unless file['docker'] == nil
 
-        config.fetch    = read_task_section file['fetch']    unless file['fetch'] == nil
-        config.build    = read_task_section file['build']    unless file['build'] == nil
-        config.run      = read_task_section file['run']      unless file['run'] == nil
-        config.cucumber = read_task_section file['cucumber'] unless file['cucumber'] == nil
+        config.fetch    = read_task_section file['fetch'], config.docker    unless file['fetch'] == nil
+        config.build    = read_task_section file['build'], config.docker    unless file['build'] == nil
+        config.run      = read_task_section file['run'], config.docker      unless file['run'] == nil
+        config.cucumber = read_task_section file['cucumber'], config.docker unless file['cucumber'] == nil
 
         return config
+      end
+
+      def get_public_server_for server
+        @public_server_for_replacements.push("###{server}##")
+        "###{server}##"
       end
 
       def read_docker_registry section
@@ -44,11 +56,14 @@ module Minke
         end
       end
 
-      def read_task_section section
+      def read_task_section section, docker_config
         Task.new.tap do |t|
+          t.docker = read_docker_section section['docker'] unless section['docker'] == nil
           t.pre    = read_pre_section section['pre']       unless section['pre'] == nil
           t.post   = read_pre_section section['post']      unless section['post'] == nil
-          t.docker = read_docker_section section['docker'] unless section['docker'] == nil
+
+          replace_private_servers t.pre, t.docker, docker_config unless t.pre == nil
+          replace_private_servers t.post, t.docker, docker_config unless t.post == nil
         end
       end
 
@@ -74,6 +89,24 @@ module Minke
         ConsulLoader.new.tap do |c|
           c.config_file = section['config_file']
           c.url         = section['url']
+        end
+      end
+
+      ##
+      # replaces the private servers that have been defined in the config file using the macro
+      # <%= get_public_server_for 'test2:8001' %>
+      def replace_private_servers section, section_docker_config, main_docker_config
+        compose_file = main_docker_config.application_compose_file    unless main_docker_config.application_compose_file == nil
+        compose_file = section_docker_config.application_compose_file unless section_docker_config == nil || section_docker_config.application_compose_file == nil
+
+        compose = @compose_factory.create compose_file
+
+        @public_server_for_replacements.each do |s|
+          parts = s.gsub('##', '').split(':')
+          public_server = compose.get_port_by_name parts.first, parts.last
+
+          section.health_check.gsub!(s, "#{public_server[:name]}:#{public_server[:public_port]}")      unless section.health_check == nil
+          section.consul_loader.url.gsub!(s, "#{public_server[:name]}:#{public_server[:public_port]}") unless section.consul_loader == nil || section.consul_loader.url == nil
         end
       end
 

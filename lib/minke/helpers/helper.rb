@@ -12,7 +12,7 @@ module Minke
         Dir.mkdir directory unless Dir.exist? to
         FileUtils.cp from, to
       end
-
+ 
       ##
       # invoke a rake task
       def invoke_task task
@@ -20,11 +20,14 @@ module Minke
       end
 
       def load_consul_data server, config_file
-
+        wait_for_HTTPOK "#{server}/v1/status/leader", 0, 1
+        loader = ConsulLoader::Loader.new(ConsulLoader::ConfigParser.new)
+        puts config_file
+        loader.load_config config_file, server
       end
 
       def execute_shell_command command
-        sh command
+        puts `#{command}`
         $?.exitstatus
       end
 
@@ -36,26 +39,26 @@ module Minke
       # waits until a 200 response is received from the given url
       def wait_for_HTTPOK url, count, successes = 0
         begin
-          response = RestClient.send("get", server)
+          response = RestClient.send("get", url)
         rescue
 
         end
 
         if response == nil || !response.code.to_i == 200
-          puts "Waiting for server #{server} to start"
+          puts "Waiting for server #{url} to start"
           sleep 1
-          if count < 20
-            self.wait_until_server_running server, count + 1
+          if count < 180
+            wait_for_HTTPOK url, count + 1
           else
             raise 'Server failed to start'
           end
         else
           if successes > 0
-            puts "Server: #{server} passed health check, #{successes} checks to go..."
+            puts "Server: #{url} passed health check, #{successes} checks to go..."
             sleep 1
-            wait_until_server_running server, count + 1, successes - 1
+            wait_for_HTTPOK url, count + 1, successes - 1
           else
-            puts "Server: #{server} healthy"
+            puts "Server: #{url} healthy"
           end
         end
       end

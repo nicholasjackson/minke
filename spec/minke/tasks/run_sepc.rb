@@ -60,6 +60,12 @@ describe Minke::Tasks::Run do
     task.run
   end
 
+  it 'spools the compose logs' do
+    expect(docker_compose).to receive(:logs)
+
+    task.run
+  end
+
   it 'stops copose and removes containers' do
     expect(docker_compose).to receive(:stop)
     expect(docker_compose).to receive(:rm)

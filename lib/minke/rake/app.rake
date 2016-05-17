@@ -36,7 +36,7 @@ namespace :app do
   end
 
   desc "build and run application with Docker Compose"
-  task :build_and_run => [:build_server, :run]
+  task :build_and_run => [:build_image, :run]
 
   desc "run end to end Cucumber tests USAGE: rake app:cucumber[@tag]"
   task :cucumber, [:feature] => ['config:set_docker_env'] do |t, args|
@@ -53,9 +53,14 @@ namespace :app do
   end
 
   def create_dependencies
-    @config ||= Minke::Config::Reader.new.read './config.yml'
+    @docker_compose_factory ||= Minke::Docker::DockerComposeFactory.new
 
-    unless @generator_config != nil
+    if @config == nil
+      @config = Minke::Config::Reader.new @docker_compose_factory
+      @config.read './config.yml'
+    end
+
+    if @generator_config == nil
       variables = Minke::Generators::ConfigVariables.new.tap do |v|
         v.application_name = @config.application_name
         v.namespace = @config.namespace
@@ -68,7 +73,6 @@ namespace :app do
     end
 
     @docker_runner ||= Minke::Docker::DockerRunner.new
-    @docker_compose_factory ||= Minke::Docker::DockerComposeFactory.new
     @logger ||= Logger.new(STDOUT)
     @helper ||= Minke::Helpers::Helper.new
   end

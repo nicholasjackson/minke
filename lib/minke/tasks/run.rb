@@ -10,9 +10,11 @@ module Minke
         compose = @docker_compose_factory.create compose_file
 
       	begin
-      	  compose.up
+          run_with_block do
+            compose.up
+          end
 
-          run_with_block
+          compose.logs
 
       	ensure
       		compose.stop

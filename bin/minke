@@ -31,7 +31,12 @@ OptionParser.new do |opts|
 end.parse!
 
 # load the installed generators
-processor = Minke::Generators::Processor.new options[:name], options[:namespace]
+variables = Minke::Generators::ConfigVariables.new.tap do |v|
+  v.application_name = options[:name]
+  v.namespace = options[:namespace]
+  v.src_root = File.expand_path(options[:output]) unless options[:output] == nil
+end
+processor = Minke::Generators::Processor.new variables
 processor.load_generators
 
 

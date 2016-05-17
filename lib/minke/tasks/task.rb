@@ -38,7 +38,6 @@ module Minke
       def run_steps steps
         execute_rake_tasks steps.tasks unless steps.tasks == nil
         load_consul_data steps.consul_loader unless steps.consul_loader == nil
-        steps.consul_loader unless steps.consul_loader == nil
         wait_for_health_check steps.health_check unless steps.health_check == nil
         copy_assets steps.copy unless steps.copy == nil
       end

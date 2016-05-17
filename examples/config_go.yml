@@ -35,7 +35,7 @@ run:
   pre:
     consul_loader:
       config_file: './config.yml'
-      url: <%= "http://#{ENV['DOCKER_IP']}:9500" %>
+      url: http://<%= get_public_server_for 'test2:9500' %> # specifying the url as a coompose server name and private port will auto resolve
   docker:
     application_compose_file: './dockercompose/event-sauce/docker-compose-alternate.yml'
   post:
@@ -45,9 +45,9 @@ cucumber:
   pre:
     consul_loader:
       config_file: './config.yml'
-      url: <%= "http://#{ENV['DOCKER_IP']}:9500" %>
+      url: http://<%= get_public_server_for 'consul:8500' %>
     health_check:
-      url: <%= "http://#{ENV['DOCKER_IP']}:8001/v1/health" %>
+      url: http://<%= get_public_server_for 'test2:8001' %>/v1/health
   post:
     tasks:
       - 'wait_for_elastic_search'

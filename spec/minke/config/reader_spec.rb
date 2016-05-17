@@ -1,6 +1,23 @@
 require 'spec_helper'
 
 describe Minke::Config::Reader do
+  let(:compose) do
+    c = Minke::Docker::DockerCompose.new nil, nil
+
+    allow(c).to receive(:get_public_ports).and_return([
+      {:name => 'consul', :private_port => '8500', :public_port => '9500', :address => '0.0.0.0'},
+      {:name => 'test2', :private_port => '8001', :public_port => '9001', :address => '0.0.0.0'}
+    ])
+
+    allow(c).to receive(:get_port_by_name).and_call_original
+    return c
+  end
+
+  let(:compose_factory) do
+    dc = double('compose_factory')
+    allow(dc).to receive(:create).and_return(compose)
+    return dc
+  end
 
   let(:config) do
     ENV['DOCKER_REGISTRY_URL'] = 'http://myURL'
@@ -11,7 +28,7 @@ describe Minke::Config::Reader do
     ENV['GOPATH'] = '/go/src'
     ENV['DOCKER_IP'] = 'docker.local'
 
-    reader = Minke::Config::Reader.new
+    reader = Minke::Config::Reader.new compose_factory
     reader.read File.expand_path "../../../data/config_go.yml", __FILE__
   end
 
@@ -94,14 +111,14 @@ describe Minke::Config::Reader do
           expect(config.build.pre.consul_loader.config_file).to eq('./config.yml')
         end
 
-        it 'should read the url correctly' do
-          expect(config.build.pre.consul_loader.url).to eq('http://docker.local:9500')
+        it 'should read the url correctly substituting private for public ports' do
+          expect(config.build.pre.consul_loader.url).to eq('http://consul:9500')
         end
       end
 
       describe 'health_check' do
-        it 'should correctly read the health_check url' do
-          expect(config.build.pre.health_check).to eq('http://docker.local:8001/v1/health')
+        it 'should correctly read the health_check url substituting private for public ports' do
+          expect(config.build.pre.health_check).to eq('http://test2:9001/v1/health')
         end
       end
     end

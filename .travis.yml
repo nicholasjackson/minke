@@ -1,6 +1,9 @@
 language: ruby
 rvm:
-- 2.2.4
+- 2.3.1
+env:
+  global:
+    secure: "ND69gJ0h5JB0I7mogcjIwAr+3lc815M0L9i9xg7CKVdtMKyuLIT/QKoqAJ9ivnYCapnRrxweRco82VlrFz6hru5phhEiCHLLmdyYngZcjVOnTWVLanc9juQ+cz/65lqJl7MbwZxKbdurh4/2FzGoTCMdjIYzMDk+pT0hHHiZ+8p492mj0hdglGX1WfoQJvIsvR94jy+JEDsjzlB6odk+uhD2qlhK0/k2UDG8tlbEPp/zf2dvonhud3TmdvkiVTNKPS1kpB1BJCwkhNfg7ZRKkt0FMMR/g1GAfHlRE/FiUaVCyurUaUVnfAUvhuGZ28XhHotRCogP6YV6hkpWy7wyelool4c+CzSho4cdEwNFiNXME5wbpMUiZN5w9YTBBK11u2uPrhw2tUvJtjNQdvvKKdQw404hPcVaLsGaviK3G6qC1huo3kRQW51HgBF8J99+icCDgTyM+m+iJrQwCGU+darpv/ozpczoM9avE6EOF1Nu+35iRAdu5o4KR4k5EDf7AlXck1B0n5aAYj7t624cVKIF9vusOq7nmT63N8m37ZBWz09aAHasW0bm6ReB6+uOFM776Umh3/A6hr0zYrqiaQuk1zw2PNR5twvrqSLqEAwEK9ozROe3bWMdFlZhoCWNzaKNqMCt0O8B1k5xPClx3uhI63XeykxMWMDFLfvQNtw="
 install: bundle
 script:
 - rake test
