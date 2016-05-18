@@ -133,6 +133,30 @@ describe Minke::Config::Reader do
         expect(config.build.post).to be_an_instance_of(Minke::Config::TaskRunSettings)
       end
     end
+
+    describe 'container_addresses' do
+      it 'should correctly process the container addresses and obtain their public ports using the global compose file' do
+        expect(compose_factory).to have_received(:create).with(config.docker.application_compose_file).twice
+        expect(config.build.container_addresses.length).to be(2)
+      end
+
+      #{:name => 'consul', :private_port => '8500', :public_port => '9500', :address => '0.0.0.0'},
+      it 'should set the correct name' do
+        expect(config.build.container_addresses.first.name).to eq('consul')
+      end
+
+      it 'should set the correct private_port' do
+        expect(config.build.container_addresses.first.private_port).to eq('8500')
+      end
+
+      it 'should set the correct public_port' do
+        expect(config.build.container_addresses.first.public_port).to eq('9500')
+      end
+
+      it 'should set the correct address' do
+        expect(config.build.container_addresses.first.address).to eq('0.0.0.0')
+      end
+    end
   end
 
   describe 'fetch section' do
@@ -144,6 +168,11 @@ describe Minke::Config::Reader do
   describe 'run section' do
     it 'should correctly read the run section' do
       expect(config.run).to be_an_instance_of(Minke::Config::Task)
+    end
+
+    it 'should correctly process the container addresses and obtain their public ports using the task compose file' do
+      expect(compose_factory).to have_received(:create).with(config.run.docker.application_compose_file).twice
+      expect(config.build.container_addresses.length).to be(2)
     end
   end
 

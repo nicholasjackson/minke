@@ -11,6 +11,9 @@ module Minke
       # read yaml config file and return Minke::Config::Config instance
       def read config_file
         b = binding
+
+        # we need to store a list of all the public server lookups as we process the erb in order to
+        # replace them in the config later on
         @public_server_for_replacements = []
 
         config = Config.new
@@ -58,12 +61,13 @@ module Minke
 
       def read_task_section section, docker_config
         Task.new.tap do |t|
-          t.docker = read_docker_section section['docker'] unless section['docker'] == nil
-          t.pre    = read_pre_section section['pre']       unless section['pre'] == nil
-          t.post   = read_pre_section section['post']      unless section['post'] == nil
+          t.docker              = read_docker_section section['docker']               unless section['docker'] == nil
+          t.pre                 = read_pre_section section['pre']                     unless section['pre'] == nil
+          t.post                = read_pre_section section['post']                    unless section['post'] == nil
+          t.container_addresses = process_container_addresses t.docker, docker_config
 
-          replace_private_servers t.pre, t.docker, docker_config unless t.pre == nil
-          replace_private_servers t.post, t.docker, docker_config unless t.post == nil
+          replace_private_servers t.pre, t.container_addresses unless t.pre == nil
+          replace_private_servers t.post, t.container_addresses unless t.post == nil
         end
       end
 
@@ -92,22 +96,36 @@ module Minke
         end
       end
 
-      ##
-      # replaces the private servers that have been defined in the config file using the macro
-      # <%= get_public_server_for 'test2:8001' %>
-      def replace_private_servers section, section_docker_config, main_docker_config
+      def process_container_addresses section_docker_config, main_docker_config
         compose_file = main_docker_config.application_compose_file    unless main_docker_config.application_compose_file == nil
         compose_file = section_docker_config.application_compose_file unless section_docker_config == nil || section_docker_config.application_compose_file == nil
 
         compose = @compose_factory.create compose_file
+        compose.get_public_ports.map do |pp|
+          Minke::Config::ContainerAddress.new.tap do |a|
+            a.name = pp[:name]
+            a.address = pp[:address]
+            a.private_port = pp[:private_port]
+            a.public_port = pp[:public_port]
+          end
+        end
+      end
 
+      ##
+      # replaces the private servers that have been defined in the config file using the macro
+      # <%= get_public_server_for 'test2:8001' %>
+      def replace_private_servers section, container_addresses
         @public_server_for_replacements.each do |s|
           parts = s.gsub('##', '').split(':')
-          public_server = compose.get_port_by_name parts.first, parts.last
+          public_server = get_container_addresses_by_name container_addresses, parts.first, parts.last
 
-          section.health_check.gsub!(s, "#{public_server[:name]}:#{public_server[:public_port]}")      unless section.health_check == nil
-          section.consul_loader.url.gsub!(s, "#{public_server[:name]}:#{public_server[:public_port]}") unless section.consul_loader == nil || section.consul_loader.url == nil
+          section.health_check.gsub!(s, "#{public_server.name}:#{public_server.public_port}")      unless section.health_check == nil
+          section.consul_loader.url.gsub!(s, "#{public_server.name}:#{public_server.public_port}") unless section.consul_loader == nil || section.consul_loader.url == nil
         end
+      end
+
+      def get_container_addresses_by_name container_addresses, name, private_port
+        container_addresses.select { |x| x.name == name && x.private_port == private_port }.first
       end
 
     end

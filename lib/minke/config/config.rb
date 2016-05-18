@@ -157,6 +157,12 @@ module Minke
       #
       # [Optional]
       attr_accessor :docker
+
+      ##
+      # container_addresses contains an array of Minke::Config::ContainerAddress which holds the details
+      # for the address the public and private ports of any containers which will be started by this
+      # task.
+      attr_accessor :container_addresses
     end
 
     ##
@@ -222,6 +228,25 @@ module Minke
       #
       # [Required]
       attr_accessor :to
+    end
+
+
+    class ContainerAddress
+      ##
+      # name of the container when started by docker
+      attr_accessor :name
+
+      ##
+      # the private port the started container is running on
+      attr_accessor :private_port
+
+      ##
+      # the public port the started container is running on
+      attr_accessor :public_port
+
+      ##
+      # the publicly available address for the container
+      attr_accessor :address
     end
   end
 end
