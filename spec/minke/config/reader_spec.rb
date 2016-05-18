@@ -1,23 +1,6 @@
 require 'spec_helper'
 
 describe Minke::Config::Reader do
-  let(:compose) do
-    c = Minke::Docker::DockerCompose.new nil, nil
-
-    allow(c).to receive(:get_public_ports).and_return([
-      {:name => 'consul', :private_port => '8500', :public_port => '9500', :address => '0.0.0.0'},
-      {:name => 'test2', :private_port => '8001', :public_port => '9001', :address => '0.0.0.0'}
-    ])
-
-    allow(c).to receive(:get_port_by_name).and_call_original
-    return c
-  end
-
-  let(:compose_factory) do
-    dc = double('compose_factory')
-    allow(dc).to receive(:create).and_return(compose)
-    return dc
-  end
 
   let(:config) do
     ENV['DOCKER_REGISTRY_URL'] = 'http://myURL'
@@ -28,7 +11,7 @@ describe Minke::Config::Reader do
     ENV['GOPATH'] = '/go/src'
     ENV['DOCKER_IP'] = 'docker.local'
 
-    reader = Minke::Config::Reader.new compose_factory
+    reader = Minke::Config::Reader.new
     reader.read File.expand_path "../../../data/config_go.yml", __FILE__
   end
 
@@ -112,13 +95,41 @@ describe Minke::Config::Reader do
         end
 
         it 'should read the url correctly substituting private for public ports' do
-          expect(config.build.pre.consul_loader.url).to eq('http://consul:9500')
+          expect(config.build.pre.consul_loader.url).to be_an_instance_of(Minke::Config::URL)
         end
       end
 
       describe 'health_check' do
-        it 'should correctly read the health_check url substituting private for public ports' do
-          expect(config.build.pre.health_check).to eq('http://test2:9001/v1/health')
+        it 'should correctly read the health_check url address' do
+          expect(config.build.pre.health_check.address).to eq('test2')
+        end
+
+        it 'should correctly read the health_check url port' do
+          expect(config.build.pre.health_check.port).to eq('8001')
+        end
+
+        it 'should correctly default port to 80 when not present' do
+          expect(config.build.post.health_check.port).to eq('80')
+        end
+
+        it 'should correctly read the health_check url path' do
+          expect(config.build.pre.health_check.path).to eq('/v1/health')
+        end
+
+        it 'should correctly default path to / when not present' do
+          expect(config.build.post.health_check.path).to eq('/')
+        end
+
+        it 'should correctly read the health_check url protocol' do
+          expect(config.build.pre.health_check.protocol).to eq('https')
+        end
+
+        it 'should correctly default protocol to http when not present' do
+          expect(config.build.post.health_check.protocol).to eq('http')
+        end
+
+        it 'should correctly read the health_check url type' do
+          expect(config.build.pre.health_check.type).to eq('private')
         end
       end
     end
@@ -133,30 +144,6 @@ describe Minke::Config::Reader do
         expect(config.build.post).to be_an_instance_of(Minke::Config::TaskRunSettings)
       end
     end
-
-    describe 'container_addresses' do
-      it 'should correctly process the container addresses and obtain their public ports using the global compose file' do
-        expect(compose_factory).to have_received(:create).with(config.docker.application_compose_file).twice
-        expect(config.build.container_addresses.length).to be(2)
-      end
-
-      #{:name => 'consul', :private_port => '8500', :public_port => '9500', :address => '0.0.0.0'},
-      it 'should set the correct name' do
-        expect(config.build.container_addresses.first.name).to eq('consul')
-      end
-
-      it 'should set the correct private_port' do
-        expect(config.build.container_addresses.first.private_port).to eq('8500')
-      end
-
-      it 'should set the correct public_port' do
-        expect(config.build.container_addresses.first.public_port).to eq('9500')
-      end
-
-      it 'should set the correct address' do
-        expect(config.build.container_addresses.first.address).to eq('0.0.0.0')
-      end
-    end
   end
 
   describe 'fetch section' do
@@ -168,11 +155,6 @@ describe Minke::Config::Reader do
   describe 'run section' do
     it 'should correctly read the run section' do
       expect(config.run).to be_an_instance_of(Minke::Config::Task)
-    end
-
-    it 'should correctly process the container addresses and obtain their public ports using the task compose file' do
-      expect(compose_factory).to have_received(:create).with(config.run.docker.application_compose_file).twice
-      expect(config.build.container_addresses.length).to be(2)
     end
   end
 

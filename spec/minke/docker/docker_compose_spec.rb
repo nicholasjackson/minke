@@ -15,6 +15,10 @@ describe Minke::Docker::DockerCompose do
     compose.get_public_ports
   end
 
+  it 'returns nil when a container is not listed in the compose file' do
+    expect(compose.get_port_by_name 'pies', '8000').to be_nil
+  end
+
   it 'caches results when getting ports' do
     expect(runner).to receive(:execute).exactly(4).times
 

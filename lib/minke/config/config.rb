@@ -230,23 +230,34 @@ module Minke
       attr_accessor :to
     end
 
-
-    class ContainerAddress
+    ##
+    # URL represents a url object which is used for health_check and consul_loader locations
+    class URL
       ##
-      # name of the container when started by docker
-      attr_accessor :name
-
-      ##
-      # the private port the started container is running on
-      attr_accessor :private_port
-
-      ##
-      # the public port the started container is running on
-      attr_accessor :public_port
-
-      ##
-      # the publicly available address for the container
+      # address of the server i.e 127.0.0.1 or the docker name consul
       attr_accessor :address
+
+      ##
+      # port which the server is running on
+      # default 80
+      attr_accessor :port
+
+      ##
+      # protocol for the server
+      # - http [default]
+      # - https
+      attr_accessor :protocol
+
+      ##
+      # path for the server
+      # default /
+      attr_accessor :path
+
+      ##
+      # type of the URL
+      # - public
+      # - private used for linked containers
+      attr_accessor :type
     end
   end
 end

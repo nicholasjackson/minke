@@ -53,7 +53,8 @@ namespace :app do
   end
 
   def create_dependencies
-    @docker_compose_factory ||= Minke::Docker::DockerComposeFactory.new
+    @system_runner = Minke::Docker::SystemRunner.new
+    @docker_compose_factory ||= Minke::Docker::DockerComposeFactory.new @system_runner
 
     if @config == nil
       @config = Minke::Config::Reader.new @docker_compose_factory

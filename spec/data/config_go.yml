@@ -28,13 +28,24 @@ build:
         to: ./dockerfile/event-sauce/swagger_spec/swagger.yml
     consul_loader:
       config_file: ./config.yml
-      url: http://<%= get_public_server_for 'consul:8500' %>
-    health_check: http://<%= get_public_server_for 'test2:8001' %>/v1/health
+      url:
+        address: consul
+        port: 8500
+        type: private
+    health_check:
+      address: test2
+      port: 8001
+      path: /v1/health
+      protocol: https
+      type: private
   docker:
     build_image: golang:1.7beta
   post:
     tasks:
       - task2
+    health_check:
+      address: test2
+      type: private
     copy:
       -
         from: <%= "#{ENV['GOPATH']}/src/github.com/nicholasjackson/event-sauce/event-sauce" %>
@@ -43,7 +54,9 @@ run:
   pre:
     consul_loader:
       config_file: ./config.yml
-      url: http://<%= get_public_server_for 'consul:8500' %>
+      url:
+        address: http://consul:8500
+        type: private
   docker:
     application_compose_file: ./dockercompose/event-sauce/docker-compose-alternate.yml
   post:
@@ -54,8 +67,15 @@ cucumber:
   pre:
     consul_loader:
       config_file: ./config.yml
-      url: http://<%= get_public_server_for 'consul:8500' %>
-    health_check: http://<%= get_public_server_for 'test2:8001' %>/v1/health
+      url:
+        address: consul
+        port: 8500
+        type: private
+    health_check:
+      address: test2
+      port: 8001
+      path: /v1/health
+      type: private
   docker:
     application_compose_file: ./dockercompose/event-sauce/docker-compose-alternate.yml
   post:
