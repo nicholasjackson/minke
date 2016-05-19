@@ -1,5 +1,7 @@
 # Minke
 
+[![Join the chat at https://gitter.im/nicholasjackson/minke](https://badges.gitter.im/nicholasjackson/minke.svg)](https://gitter.im/nicholasjackson/minke?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## NOTE:
 Version 1 is pretty much a complete rewrite which supports new generator plugins to scaffold applications and greater compatibility for running docker compose on CI environments.  Documentation is coming soon (as in hopefully tomorrow), but for the moment I apologize but the documentation below is a little out of date.
 
