@@ -17,6 +17,7 @@ Minke is an opinionated build system for Microservices and Docker, like a little
 - Java - Spring Boot
 - Swift - Kitura (Coming Soon)
 - Node - ExpressJS (Coming Soon)
+- Ruby - Rails (Coming Soon)
 
 ## Installation
 
