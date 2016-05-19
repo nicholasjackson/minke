@@ -8,7 +8,13 @@ Version 1 is pretty much a complete rewrite which supports new generator plugins
 Version 1.0 is not compatible with previous versions of minke however upgrading is not so painful, full instructions will be updated shortly.   In the mean time please continue to use the previous stable 0.1.5 [https://github.com/nicholasjackson/minke/tree/0.1.5](https://github.com/nicholasjackson/minke/tree/0.1.5).
 
 **Version 1.0**  
-[![Build Status](https://travis-ci.org/nicholasjackson/minke.svg?branch=master)](https://travis-ci.org/nicholasjackson/minke)
+[![Build Status](https://travis-ci.org/nicholasjackson/minke.svg?branch=master)](https://travis-ci.org/nicholasjackson/minke)  
+
+[![Code Climate](https://codeclimate.com/github/nicholasjackson/minke/badges/gpa.svg)](https://codeclimate.com/github/nicholasjackson/minke)  
+
+[![Test Coverage](https://codeclimate.com/github/nicholasjackson/minke/badges/coverage.svg)](https://codeclimate.com/github/nicholasjackson/minke/coverage)  
+
+[![Issue Count](https://codeclimate.com/github/nicholasjackson/minke/badges/issue_count.svg)](https://codeclimate.com/github/nicholasjackson/minke)
 
 Minke is an opinionated build system for Microservices and Docker, like a little envelope of quality it scaffolds the build, run and test (unit test and functional tests) phases of your microservice project allowing you to simply run and test your images using Docker Compose.  Currently supporting Google's Go, and experimental support for Swift, extensions are planned for Node.js or HTML / Javascript sites with Grunt or Gulp based builds.
 
