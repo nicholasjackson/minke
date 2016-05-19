@@ -19,7 +19,7 @@ Version 1.0 is not compatible with previous versions of minke however upgrading 
 Minke is an opinionated build system for Microservices and Docker, like a little envelope of quality it scaffolds the build, run and test (unit test and functional tests) phases of your microservice project allowing you to simply run and test your images using Docker Compose.  Currently supporting Google's Go, and experimental support for Swift, extensions are planned for Node.js or HTML / Javascript sites with Grunt or Gulp based builds.
 
 ## Generators
-- Go - Go Microservice Template
+- Go - [Go Microservice Template](https://github.com/nicholasjackson/minke-generator-go)
 - Java - Spring Boot
 - Swift - Kitura (Coming Soon)
 - Node - ExpressJS (Coming Soon)
