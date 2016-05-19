@@ -4,7 +4,9 @@ describe Minke::Tasks::Cucumber do
   let(:config) do
     Minke::Config::Config.new.tap do |c|
       c.application_name = "testapp"
-      c.docker = Minke::Config::DockerSettings.new
+      c.docker = Minke::Config::DockerSettings.new.tap do |d|
+        d.application_compose_file = 'df'
+      end
       c.cucumber = Minke::Config::Task.new
     end
   end
@@ -46,7 +48,7 @@ describe Minke::Tasks::Cucumber do
   end
 
   let(:task) do
-    Minke::Tasks::Cucumber.new config, config.cucumber, generator_settings, docker_runner, docker_compose_factory, logger, helper
+    Minke::Tasks::Cucumber.new config, :cucumber, generator_settings, docker_runner, docker_compose_factory, logger, helper
   end
 
   it 'calls create on the compose factory' do

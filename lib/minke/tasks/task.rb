@@ -4,21 +4,23 @@ module Minke
     # Task is a base implementation of a rake task such as fetch, build, etc
     class Task
 
-      def initialize config, task_settings, generator_settings, docker_runner, docker_compose_factory, logger, helper
+      def initialize config, task, generator_settings, docker_runner, docker_compose_factory, logger, helper
         @config = config
-        @task_settings = task_settings
+        @task = task
         @generator_settings = generator_settings
         @docker_runner = docker_runner
-        @docker_compose_factory = docker_compose_factory
         @logger = logger
         @helper = helper
+        @task_settings = config.send(task)
 
         @build_image = @generator_settings.build_settings.docker_settings.image
-        @build_image = config.docker.build_image unless config.docker.build_image == nil
+        @build_image = config.build_image_for(task) unless config.build_image_for(task) == nil
 
-        @build_file = config.docker.build_docker_file unless config.docker.build_docker_file == nil
-        @build_image = task_settings.docker.build_image unless task_settings == nil || task_settings.docker == nil || task_settings.docker.build_image == nil
-        @build_file = task_settings.docker.build_docker_file unless task_settings == nil || task_settings.docker == nil || task_settings.docker.build_docker_file == nil
+        @build_file = config.build_docker_file_for(task)
+
+        @compose_file = config.compose_file_for(task)
+
+        @compose = docker_compose_factory.create @compose_file unless @compose_file == nil
       end
 
       ##
@@ -51,11 +53,11 @@ module Minke
       ##
       # load consul config
       def load_consul_data config
-        @helper.load_consul_data config.url, config.config_file
+        @helper.load_consul_data build_address(config.url), config.config_file
       end
 
       def wait_for_health_check url
-        @helper.wait_for_HTTPOK url, 3, 0
+        @helper.wait_for_HTTPOK build_address(url), 3, 0
       end
 
       def copy_assets assets
@@ -76,6 +78,15 @@ module Minke
           @helper.fatal_error "Unable to run command #{command}" unless success
         ensure
           @docker_runner.delete_container container
+        end
+      end
+
+      def build_address url
+        if url.type == 'public'
+          "#{url.protocol}://#{url.address}:#{url.port}#{url.path}"
+        else
+          public_address = @compose.public_address url.address, url.port
+          "#{url.protocol}://#{public_address}#{url.path}"
         end
       end
 

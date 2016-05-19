@@ -6,14 +6,30 @@ describe Minke::Tasks::Task do
       c.application_name = "testapp"
       c.docker = Minke::Config::DockerSettings.new
       c.fetch = Minke::Config::Task.new.tap do |f|
-        f.docker = Minke::Config::DockerSettings.new
+        f.docker = Minke::Config::DockerSettings.new.tap do |d|
+          d.application_compose_file = './compose_file'
+          d.build_image = 'buildimage'
+          d.build_docker_file = './docker_file'
+        end
         f.pre = Minke::Config::TaskRunSettings.new.tap do |p|
           p.tasks = ['task1', 'task2']
           p.consul_loader = Minke::Config::ConsulLoader.new.tap do |cl|
-            cl.url = 'myurl'
+            cl.url = Minke::Config::URL.new.tap do |u|
+              u.address = 'myfile'
+              u.port = '8080'
+              u.type = 'private'
+              u.protocol = 'http'
+              u.type = 'public'
+            end
             cl.config_file = 'myfile'
           end
-          p.health_check = 'http://health/v1'
+          p.health_check = Minke::Config::URL.new.tap do |u|
+            u.address = 'myhealth'
+            u.port = '8081'
+            u.path = '/v1/health'
+            u.protocol = 'http'
+            u.type = 'private'
+          end
           p.copy = [
             Minke::Config::Copy.new.tap { |cp| cp.from = '/from1'; cp.to = './to1'},
             Minke::Config::Copy.new.tap { |cp| cp.from = '/from2'; cp.to = './to2'}
@@ -40,7 +56,18 @@ describe Minke::Tasks::Task do
       end
     end
   end
-  let(:docker_compose_factory) { double "docker_compose_factory" }
+
+  let(:compose) do
+    d = double "compose"
+    allow(d).to receive(:public_address).and_return('0.0.0.0:8080')
+    d
+  end
+
+  let(:docker_compose_factory) do
+    dc = double "docker_compose_factory"
+    expect(dc).to receive(:create).and_return(compose)
+    dc
+  end
 
   let(:helper) do
     helper = double "helper"
@@ -53,11 +80,13 @@ describe Minke::Tasks::Task do
   end
 
   let(:task) do
-    Minke::Tasks::Task.new config, config.fetch, generator_config, docker_runner, docker_compose_factory, logger, helper
+    Minke::Tasks::Task.new config, :fetch, generator_config, docker_runner, docker_compose_factory, logger, helper
   end
 
   describe 'run_command_in_container' do
     it 'creates a container and runs a command with the correct parameters' do
+      config.fetch.docker.build_docker_file = nil
+
       expect(docker_runner).to receive(:create_and_run_container)
       expect(docker_runner).to receive(:delete_container)
 
@@ -137,13 +166,19 @@ describe Minke::Tasks::Task do
     end
 
     it 'loads data into consul' do
-      expect(helper).to receive(:load_consul_data).with('myurl', 'myfile')
+      expect(helper).to receive(:load_consul_data).with('http://myfile:8080', 'myfile')
+
+      task.run_steps config.fetch.pre
+    end
+
+    it 'fetches the public address when executing health check' do
+      expect(compose).to receive(:public_address).with('myhealth', '8081')
 
       task.run_steps config.fetch.pre
     end
 
     it 'waits for the health check to complete' do
-      expect(helper).to receive(:wait_for_HTTPOK).with('http://health/v1', 3, 0)
+      expect(helper).to receive(:wait_for_HTTPOK).with('http://0.0.0.0:8080/v1/health', 3, 0)
 
       task.run_steps config.fetch.pre
     end

@@ -6,6 +6,11 @@ module Minke
         system("#{command}")
       end
 
+      def execute_and_return command
+        log = `#{command}`
+        return log.strip
+      end
+
     end
   end
 end

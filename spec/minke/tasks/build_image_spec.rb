@@ -33,7 +33,7 @@ describe Minke::Tasks::BuildImage do
   end
 
   let(:task) do
-    Minke::Tasks::BuildImage.new config, config.build, generator_config, docker_runner, docker_compose_factory, logger, helper
+    Minke::Tasks::BuildImage.new config, :build, generator_config, docker_runner, docker_compose_factory, logger, helper
   end
 
   it 'builds an image from the dockerfile' do

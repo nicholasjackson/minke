@@ -116,8 +116,8 @@ describe Minke::Config::Reader do
           expect(config.build.pre.health_check.path).to eq('/v1/health')
         end
 
-        it 'should correctly default path to / when not present' do
-          expect(config.build.post.health_check.path).to eq('/')
+        it 'should correctly default path to  when not present' do
+          expect(config.build.post.health_check.path).to eq('')
         end
 
         it 'should correctly read the health_check url protocol' do

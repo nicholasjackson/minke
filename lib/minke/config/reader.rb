@@ -83,7 +83,7 @@ module Minke
         URL.new.tap do |url|
           url.address  = section['address']
           url.port     = section['port']     != nil ? section['port'].to_s : '80'
-          url.path     = section['path']     != nil ? section['path'] : '/'
+          url.path     = section['path']     != nil ? section['path'] : ''
           url.protocol = section['protocol'] != nil ? section['protocol'] : 'http'
           url.type     = section['type']
         end

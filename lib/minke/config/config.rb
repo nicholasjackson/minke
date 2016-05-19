@@ -69,6 +69,69 @@ module Minke
       #
       # [Optional] if not provided the cucumber commands will not be executed
       attr_accessor :cucumber
+
+      ##
+      # Returns the docker_compose file for the given section,
+      # if the section overrides application_compose_file then this is returned
+      # otherwise the global file is returned
+      # Parameters
+      # - :fetch
+      # - :build
+      # - :run
+      # - :test
+      # - :cucumber
+      def compose_file_for section
+        file = docker.application_compose_file unless docker.application_compose_file == nil
+
+        if self.send(section) != nil &&
+           self.send(section).docker != nil &&
+           self.send(section).docker.application_compose_file != nil
+            file = self.send(section).docker.application_compose_file
+        end
+        return file
+      end
+
+      ##
+      # Returns the build_image file for the given section,
+      # if the section overrides build_image then this is returned
+      # otherwise the global build_image is returned
+      # Parameters
+      # - :fetch
+      # - :build
+      # - :run
+      # - :test
+      # - :cucumber
+      def build_image_for section
+        file = docker.build_image unless docker.build_image == nil
+
+        if self.send(section) != nil &&
+           self.send(section).docker != nil &&
+           self.send(section).docker.build_image != nil
+            file = self.send(section).docker.build_image
+        end
+        return file
+      end
+
+      ##
+      # Returns the docker_compose file for the given section,
+      # if the section overrides application_compose_file then this is returned
+      # otherwise the global file is returned
+      # Parameters
+      # - :fetch
+      # - :build
+      # - :run
+      # - :test
+      # - :cucumber
+      def build_docker_file_for section
+        file = docker.build_docker_file unless docker.build_docker_file == nil
+
+        if self.send(section) != nil &&
+           self.send(section).docker != nil &&
+           self.send(section).docker.build_docker_file != nil
+            file = self.send(section).docker.build_docker_file
+        end
+        return file
+      end
     end
 
     ##

@@ -3,35 +3,35 @@ namespace :app do
   desc "fetch dependent packages"
   task :fetch => ['config:set_docker_env', 'docker:fetch_images'] do
     create_dependencies
-    runner = Minke::Tasks::Fetch.new @config, @config.fetch, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
+    runner = Minke::Tasks::Fetch.new @config, :fetch, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
     runner.run
   end
 
   desc "build application"
   task :build => [:fetch] do
     create_dependencies
-    runner = Minke::Tasks::Build.new @config, @config.build, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
+    runner = Minke::Tasks::Build.new @config, :build, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
     runner.run
   end
 
   desc "run unit tests"
   task :test => [:build] do
     create_dependencies
-    runner = Minke::Tasks::Test.new @config, @config.test, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
+    runner = Minke::Tasks::Test.new @config, :test, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
     runner.run
   end
 
   desc "build Docker image for application"
   task :build_image => [:test] do
     create_dependencies
-    runner = Minke::Tasks::BuildImage.new @config, nil, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
+    runner = Minke::Tasks::BuildImage.new @config, :test, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
     runner.run
   end
 
   desc "run application with Docker Compose"
   task :run => ['config:set_docker_env'] do
     create_dependencies
-    runner = Minke::Tasks::Run.new @config, @config.run, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
+    runner = Minke::Tasks::Run.new @config, :run, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
     runner.run
   end
 
@@ -41,7 +41,7 @@ namespace :app do
   desc "run end to end Cucumber tests USAGE: rake app:cucumber[@tag]"
   task :cucumber, [:feature] => ['config:set_docker_env'] do |t, args|
     create_dependencies
-    runner = Minke::Tasks::Cucumber.new @config, @config.cucumber, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
+    runner = Minke::Tasks::Cucumber.new @config, :cucumber, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
     runner.run
   end
 
@@ -57,8 +57,8 @@ namespace :app do
     @docker_compose_factory ||= Minke::Docker::DockerComposeFactory.new @system_runner
 
     if @config == nil
-      @config = Minke::Config::Reader.new @docker_compose_factory
-      @config.read './config.yml'
+      reader = Minke::Config::Reader.new
+      @config = reader.read './config.yml'
     end
 
     if @generator_config == nil

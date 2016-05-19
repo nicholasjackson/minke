@@ -17,8 +17,8 @@ require 'minke/helpers/helper'
 
 require 'minke/docker/docker_compose'
 require 'minke/docker/docker_runner'
-require 'minke/docker/service_discovery'
 require 'minke/docker/system_runner'
+require 'minke/docker/service_discovery'
 
 require 'minke/config/config'
 require 'minke/config/reader'

@@ -34,7 +34,7 @@ describe Minke::Tasks::Build do
   end
 
   let(:task) do
-    Minke::Tasks::Build.new config, config.build, generator_config, docker_runner, docker_compose_factory, logger, helper
+    Minke::Tasks::Build.new config, :build, generator_config, docker_runner, docker_compose_factory, logger, helper
   end
 
   it 'executes the given commands in a container' do

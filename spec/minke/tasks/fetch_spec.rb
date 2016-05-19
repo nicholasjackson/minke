@@ -35,7 +35,7 @@ describe Minke::Tasks::Fetch do
   end
 
   let(:task) do
-    Minke::Tasks::Fetch.new config, config.fetch, generator_config, docker_runner, docker_compose_factory, logger, helper
+    Minke::Tasks::Fetch.new config, :fetch, generator_config, docker_runner, docker_compose_factory, logger, helper
   end
 
   it 'executes the given commands in a container' do

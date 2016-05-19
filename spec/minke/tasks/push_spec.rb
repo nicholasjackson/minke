@@ -33,7 +33,7 @@ describe Minke::Tasks::Push do
   end
 
   let(:task) do
-    Minke::Tasks::Push.new config, config.run, generator_config, docker_runner, nil, logger, nil
+    Minke::Tasks::Push.new config, :run, generator_config, docker_runner, nil, logger, nil
   end
 
   it 'logs into the registry' do

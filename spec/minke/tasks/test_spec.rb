@@ -34,7 +34,7 @@ describe Minke::Tasks::Test do
   end
 
   let(:task) do
-    Minke::Tasks::Test.new config, config.test, generator_config, docker_runner, docker_compose_factory, logger, helper
+    Minke::Tasks::Test.new config, :test, generator_config, docker_runner, docker_compose_factory, logger, helper
   end
 
   it 'executes the given commands in a container' do
