@@ -4,6 +4,6 @@ source 'https://rubygems.org'
 gemspec
 
 gem "codeclimate-test-reporter", group: :test, require: nil
-gem 'minke-generator-go', :path => '/Users/nicj/Developer/gems/minke-generator-go'
+#gem 'minke-generator-go', :path => '/Users/nicj/Developer/gems/minke-generator-go'
 #gem 'minke-generator-node', :path => '/Users/nicj/Developer/gems/minke-generator-node'
 #gem 'minke-generator-spring', :github => 'notonthehighstreet/minke-generator-spring', :branch => 'master'
