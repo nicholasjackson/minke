@@ -3,20 +3,20 @@
 [![Join the chat at https://gitter.im/nicholasjackson/minke](https://badges.gitter.im/nicholasjackson/minke.svg)](https://gitter.im/nicholasjackson/minke?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## NOTE:
-Version 0.13.0 of the gem introduces breaking changes to the configuration files in order to support multiple language builds for swift and go.  Please use version 0.12.0 or upgrade your config to the new specification shown below.  
+Version 1 is pretty much a complete rewrite which supports new generator plugins to scaffold applications and greater compatibility for running docker compose on CI environments.  Documentation is coming soon (as in hopefully tomorrow), but for the moment I apologize but the documentation below is a little out of date.
 
-**Version 0.15.0**  
+Version 1.0 is not compatible with previous versions of minke however upgrading is not so painful, full instructions will be updated shortly.   In the mean time please continue to use the previous stable 0.1.5 [https://github.com/nicholasjackson/minke/tree/0.1.5](https://github.com/nicholasjackson/minke/tree/0.1.5).
+
+**Version 1.0**  
 [![Build Status](https://travis-ci.org/nicholasjackson/minke.svg?branch=master)](https://travis-ci.org/nicholasjackson/minke)
 
 Minke is an opinionated build system for Microservices and Docker, like a little envelope of quality it scaffolds the build, run and test (unit test and functional tests) phases of your microservice project allowing you to simply run and test your images using Docker Compose.  Currently supporting Google's Go, and experimental support for Swift, extensions are planned for Node.js or HTML / Javascript sites with Grunt or Gulp based builds.
 
-## Supported languages
-- Go
-- Swift
-
-## Languages coming soon
-- Node
-- Java
+## Generators
+- Go - Go Microservice Template
+- Java - Spring Boot
+- Swift - Kitura (Coming Soon)
+- Node - ExpressJS (Coming Soon)
 
 ## Installation
 

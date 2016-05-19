@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+require 'optparse'
+require 'minke'
+
+ASCII_ART = <<eos
+888b     d888 d8b          888
+8888b   d8888 Y8P          888
+88888b.d88888              888
+888Y88888P888 888 88888b.  888  888  .d88b.
+888 Y888P 888 888 888 "88b 888 .88P d8P  Y8b
+888  Y8P  888 888 888  888 888888K  88888888
+888   "   888 888 888  888 888 "88b Y8b.
+888       888 888 888  888 888  888  "Y8888
+eos
+
+puts ""
+puts ASCII_ART
+puts ""
+puts "Version: #{Minke::VERSION}"
+puts ""
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: example.rb [options]"
+
+  opts.on('-g', '--generator GENERATOR', 'Generator plugin to use') { |v| options[:generator] = v }
+  opts.on('-o', '--output OUTPUT', 'Output folder') { |v| options[:output] = v }
+  opts.on('-a', '--application_name NAME', 'Application name') { |v| options[:name] = v }
+  opts.on('-n', '--namespace NAMESPACE', 'Application namespace') { |v| options[:namespace] = v }
+
+end.parse!
+
+# load the installed generators
+variables = Minke::Generators::ConfigVariables.new.tap do |v|
+  v.application_name = options[:name]
+  v.namespace = options[:namespace]
+  v.src_root = File.expand_path(options[:output]) unless options[:output] == nil
+end
+processor = Minke::Generators::Processor.new variables
+processor.load_generators
+
+
+if options[:generator] == nil || options[:output] == nil || options[:name] == nil || options[:namespace] == nil
+  puts "Please specify options use: minke --help for help on command line options"
+  exit 0
+end
+
+processor.process options[:generator], options[:output]
