@@ -7,7 +7,7 @@ Version 1 is pretty much a complete rewrite which supports new generator plugins
 
 Version 1.0 is not compatible with previous versions of minke however upgrading is not so painful, full instructions will be updated shortly.   In the mean time please continue to use the previous stable 0.1.5 [https://github.com/nicholasjackson/minke/tree/0.1.5](https://github.com/nicholasjackson/minke/tree/0.1.5).
 
-**Version 1.0**  
+**Version 1.0.1**  
 [![Build Status](https://travis-ci.org/nicholasjackson/minke.svg?branch=master)](https://travis-ci.org/nicholasjackson/minke)  
 
 [![Code Climate](https://codeclimate.com/github/nicholasjackson/minke/badges/gpa.svg)](https://codeclimate.com/github/nicholasjackson/minke)  

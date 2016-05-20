@@ -12,7 +12,7 @@ module Minke
         Dir.mkdir directory unless Dir.exist? to
         FileUtils.cp from, to
       end
- 
+
       ##
       # invoke a rake task
       def invoke_task task
@@ -37,7 +37,7 @@ module Minke
 
       ##
       # waits until a 200 response is received from the given url
-      def wait_for_HTTPOK url, count, successes = 0
+      def wait_for_HTTPOK url, count, successes = 3
         begin
           response = RestClient.send("get", url)
         rescue

@@ -36,7 +36,7 @@ variables = Minke::Generators::ConfigVariables.new.tap do |v|
   v.namespace = options[:namespace]
   v.src_root = File.expand_path(options[:output]) unless options[:output] == nil
 end
-processor = Minke::Generators::Processor.new variables
+processor = Minke::Generators::Processor.new variables, Minke::Docker::DockerRunner.new
 processor.load_generators
 
 

@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Minke::Generators::Processor do
+  let(:runner) { double("runner") }
 
   let(:processor) {
     variables = Minke::Generators::ConfigVariables.new.tap do |v|
@@ -8,7 +9,7 @@ describe Minke::Generators::Processor do
       v.namespace = 'namespace'
       v.src_root = 'srcroot'
     end
-    Minke::Generators::Processor.new variables
+    Minke::Generators::Processor.new variables, runner
   }
 
   describe 'create new filename' do

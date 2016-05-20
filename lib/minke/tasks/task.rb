@@ -57,7 +57,7 @@ module Minke
       end
 
       def wait_for_health_check url
-        @helper.wait_for_HTTPOK build_address(url), 3, 0
+        @helper.wait_for_HTTPOK build_address(url), 0, 3
       end
 
       def copy_assets assets

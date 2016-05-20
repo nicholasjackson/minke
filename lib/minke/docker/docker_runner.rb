@@ -48,6 +48,10 @@ module Minke
       def create_and_run_container image, volumes, environment, working_directory, cmd
       	# update the timeout for the Excon Http Client
       	# set the chunk size to enable streaming of log files
+        #puts working_directory
+        puts volumes
+        #puts environment
+
         ::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
         container = ::Docker::Container.create(
       		'Image' => image,

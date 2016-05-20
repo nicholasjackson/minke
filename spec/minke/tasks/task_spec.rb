@@ -178,7 +178,7 @@ describe Minke::Tasks::Task do
     end
 
     it 'waits for the health check to complete' do
-      expect(helper).to receive(:wait_for_HTTPOK).with('http://0.0.0.0:8080/v1/health', 3, 0)
+      expect(helper).to receive(:wait_for_HTTPOK).with('http://0.0.0.0:8080/v1/health', 0, 3)
 
       task.run_steps config.fetch.pre
     end

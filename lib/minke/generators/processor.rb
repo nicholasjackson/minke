@@ -4,8 +4,9 @@ module Minke
     # Process handles the creation of new projects from a generator template.
     class Processor
 
-      def initialize variables
+      def initialize variables, docker_runner
         @variables = variables
+        @docker_runner = docker_runner
       end
 
       def process generator_name, output_folder
@@ -19,43 +20,38 @@ module Minke
         process_directory generator.template_location, '**/.*', output_folder, @variables.application_name
 
         # run generate command if present
-        if generator.generate_settings != nil && generator.generate_settings.command
-          build_image unless generator.generate_settings.command.docker_file == nil
-          fetch_image unless generator.generate_settings.command.docker_image == nil
+        puts generator.inspect
+        if generator.generate_settings != nil && generator.generate_settings.command != nil
+          image = build_image generator.generate_settings.docker_file  unless generator.generate_settings.docker_file == nil
+          image = fetch_image generator.generate_settings.docker_image unless generator.generate_settings.docker_image == nil
 
-          #run_command_in_container
+          run_command_in_container image, generator.generate_settings.command unless generator.generate_settings.command == nil
         end
       end
 
-      def build_image
+      def build_image docker_file
         puts "## Building custom docker image"
 
-        image_name = APPLICATION_NAME + "-buildimage"
-        Docker.options = {:read_timeout => 6200}
-        image = Docker::Image.build_from_dir generator.generate_command_docker_file, {:t => image}
+        image_name = @variables.application_name + "-buildimage"
+        puts @docker_runner.build_image docker_file, image_name
       end
 
-      def fetch_image
-        Minke::Docker.pull_image generator.generate_command_docker_image unless Minke::Docker.find_image generator.generate_command_docker_image
-        image_name = generator.generate_command_docker_image
+      def fetch_image docker_image
+        @docker_runner.pull_image docker_image unless @docker_runner.find_image docker_image
+        docker_image
       end
 
-      def run_command_in_container
+      def run_command_in_container build_image, command
+        puts command
         begin
-          config = {
-            :build_config => {
-              :docker => {
-                :image => image_name,
-                :binds => ["#{File.expand_path(options[:output])}:/src"],
-                :working_directory => "/src"
-              }
-            }
-          }
+          container, success = @docker_runner.create_and_run_container build_image, ["#{File.expand_path(@variables.src_root)}:/src"], nil, '/src', command
 
+          # throw exception if failed
+          @helper.fatal_error "Unable to run command #{command}" unless success
           #command = Minke::Helpers.replace_vars_in_section generator.generate_command, '##SERVICE_NAME##', APPLICATION_NAME
           #container, ret = Minke::Docker.create_and_run_container config, command
         ensure
-        #  Minke::Docker.delete_container container
+          @docker_runner.delete_container container
         end
       end
 
