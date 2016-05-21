@@ -46,6 +46,7 @@ describe Minke::Tasks::Task do
     runner = double "docker_runner"
     allow(runner).to receive(:create_and_run_container).and_return(nil, true)
     allow(runner).to receive(:delete_container)
+    allow(runner).to receive(:get_docker_ip_address)
     return runner
   end
   let(:logger) { double "logger" }
@@ -190,6 +191,14 @@ describe Minke::Tasks::Task do
 
     it 'fetches the public address when executing health check' do
       expect(compose).to receive(:public_address).with('myhealth', '8081')
+
+      task.run_steps config.fetch.pre
+    end
+
+    it 'replaces the ip address for the docker host if docker toolbox' do
+      allow(docker_runner).to receive(:get_docker_ip_address).and_return('192.168.99.100')
+      expect(docker_runner).to receive(:get_docker_ip_address).once
+      expect(helper).to receive(:wait_for_HTTPOK).with('http://192.168.99.100:8080/v1/health', 0, 3)
 
       task.run_steps config.fetch.pre
     end
