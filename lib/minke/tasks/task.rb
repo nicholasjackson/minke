@@ -70,6 +70,8 @@ module Minke
           if @build_file != nil
             @build_image = "#{@config.application_name}-buildimage"
             @docker_runner.build_image @build_file, @build_image
+          else
+            @docker_runner.pull_image @build_image unless @docker_runner.find_image @build_image
           end
 
           container, success = @docker_runner.create_and_run_container @build_image, settings.binds, settings.env, settings.working_directory, command

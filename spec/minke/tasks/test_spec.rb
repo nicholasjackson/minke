@@ -38,6 +38,8 @@ describe Minke::Tasks::Test do
   end
 
   it 'executes the given commands in a container' do
+    expect(docker_runner).to receive(:find_image).twice
+    expect(docker_runner).to receive(:pull_image).twice
     expect(docker_runner).to receive(:create_and_run_container).twice
     expect(docker_runner).to receive(:delete_container).twice
 

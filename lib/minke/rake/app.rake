@@ -1,7 +1,7 @@
 namespace :app do
 
   desc "fetch dependent packages"
-  task :fetch => ['config:set_docker_env', 'docker:fetch_images'] do
+  task :fetch => ['config:set_docker_env'] do
     create_dependencies
 
     if @config.fetch != nil
