@@ -44,4 +44,13 @@ describe Minke::Tasks::Build do
     task.run
   end
 
+  it 'does nothing when there are no commands' do
+    generator_config.build_settings.build_commands.build = nil
+
+    expect(docker_runner).to receive(:create_and_run_container).never
+    expect(docker_runner).to receive(:delete_container).never
+
+    task.run
+  end
+
 end

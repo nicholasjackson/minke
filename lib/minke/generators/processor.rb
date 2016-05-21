@@ -20,7 +20,6 @@ module Minke
         process_directory generator.template_location, '**/.*', output_folder, @variables.application_name
 
         # run generate command if present
-        puts generator.inspect
         if generator.generate_settings != nil && generator.generate_settings.command != nil
           image = build_image generator.generate_settings.docker_file  unless generator.generate_settings.docker_file == nil
           image = fetch_image generator.generate_settings.docker_image unless generator.generate_settings.docker_image == nil

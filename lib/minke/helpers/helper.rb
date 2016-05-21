@@ -10,7 +10,7 @@ module Minke
         end
 
         Dir.mkdir directory unless Dir.exist? to
-        FileUtils.cp from, to
+        FileUtils.cp_r from, to
       end
 
       ##

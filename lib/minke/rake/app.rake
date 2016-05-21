@@ -5,6 +5,7 @@ namespace :app do
     create_dependencies
 
     if @config.fetch != nil
+      puts 'run fetch'
       runner = Minke::Tasks::Fetch.new @config, :fetch, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
       runner.run
     end
