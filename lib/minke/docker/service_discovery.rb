@@ -17,7 +17,14 @@ module Minke
       # - task: :run, :cucumber search either the run or cucumber section of the config
       def public_address_for container_name, private_port, task
         compose = Minke::Docker::DockerCompose.new @config.compose_file_for(task), Minke::Docker::SystemRunner.new
-        compose.public_address container_name, private_port
+        public_address = compose.public_address container_name, private_port
+
+        ip = @docker_runner.get_docker_ip_address
+        if  ip != "127.0.0.1" && ip != "0.0.0.0" && ip != nil
+          public_address.gsub!('0.0.0.0', ip)
+        end
+
+        public_address
       end
     end
   end
