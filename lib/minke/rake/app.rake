@@ -67,7 +67,7 @@ namespace :app do
   desc "push built image to Docker registry"
   task :push  do
     create_dependencies
-    runner = Minke::Tasks::Push.new
+    runner = Minke::Tasks::Push.new @config, :cucumber, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
     runner.run
   end
 
