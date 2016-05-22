@@ -20,6 +20,7 @@ Minke is an opinionated build system for Microservices and Docker, like a little
 
 ## Generators
 - Go - [Go Microservice Template](https://github.com/nicholasjackson/minke-generator-go)
+- .NET Core - [.NET MVC Microservice Template](https://github.com/nicholasjackson/minke-generator-netmvc)
 - Java - Spring Boot
 - Swift - Kitura (Coming Soon)
 - Node - ExpressJS (Coming Soon)
