@@ -107,7 +107,12 @@ module Minke
       end
 
       def login_registry url, user, password, email
-        system("docker login -u #{user} -p #{password} #{url}")
+        if docker_version.start_with? '1.11'
+          # email is removed for login in docker 1.11
+          system("docker login -u #{user} -p #{password} #{url}")
+        else
+          system("docker login -u #{user} -p #{password} -e #{email} #{url}")
+        end
         $?.exitstatus
       end
 
@@ -119,6 +124,10 @@ module Minke
       def push_image image_name
       	system("docker push #{image_name}:latest")
         $?.exitstatus ==  0
+      end
+
+      def docker_version
+        ::Docker.version['Version']
       end
     end
   end
