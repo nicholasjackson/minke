@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Minke by nicholasjackson</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Minke</h1>
+      <h2 class="project-tagline">Suite of rake tasks for building microservices in Go with Docker</h2>
+      <a href="https://github.com/nicholasjackson/minke" class="btn">View on GitHub</a>
+      <a href="https://github.com/nicholasjackson/minke/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/nicholasjackson/minke/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="minke" class="anchor" href="#minke" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Minke</h1>
+
+<p><a href="https://gitter.im/nicholasjackson/minke?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/nicholasjackson/minke.svg" alt="Join the chat at https://gitter.im/nicholasjackson/minke"></a></p>
+
+<h2>
+<a id="note" class="anchor" href="#note" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>NOTE:</h2>
+
+<p>Version 1 is pretty much a complete rewrite which supports new generator plugins to scaffold applications and greater compatibility for running docker compose on CI environments.  Documentation is coming soon (as in hopefully tomorrow), but for the moment I apologize but the documentation below is a little out of date.</p>
+
+<p>Version 1.0 is not compatible with previous versions of minke however upgrading is not so painful, full instructions will be updated shortly.   In the mean time please continue to use the previous stable 0.1.5 <a href="https://github.com/nicholasjackson/minke/tree/0.1.5">https://github.com/nicholasjackson/minke/tree/0.1.5</a>.</p>
+
+<p><strong>Version 1.0.1</strong><br>
+<a href="https://travis-ci.org/nicholasjackson/minke"><img src="https://travis-ci.org/nicholasjackson/minke.svg?branch=master" alt="Build Status"></a>  </p>
+
+<p><a href="https://codeclimate.com/github/nicholasjackson/minke"><img src="https://codeclimate.com/github/nicholasjackson/minke/badges/gpa.svg" alt="Code Climate"></a>  </p>
+
+<p><a href="https://codeclimate.com/github/nicholasjackson/minke/coverage"><img src="https://codeclimate.com/github/nicholasjackson/minke/badges/coverage.svg" alt="Test Coverage"></a>  </p>
+
+<p><a href="https://codeclimate.com/github/nicholasjackson/minke"><img src="https://codeclimate.com/github/nicholasjackson/minke/badges/issue_count.svg" alt="Issue Count"></a></p>
+
+<p>Minke is an opinionated build system for Microservices and Docker, like a little envelope of quality it scaffolds the build, run and test (unit test and functional tests) phases of your microservice project allowing you to simply run and test your images using Docker Compose.  Currently supporting Google's Go, and experimental support for Swift, extensions are planned for Node.js or HTML / Javascript sites with Grunt or Gulp based builds.</p>
+
+<h2>
+<a id="generators" class="anchor" href="#generators" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Generators</h2>
+
+<ul>
+<li>Go - <a href="https://github.com/nicholasjackson/minke-generator-go">Go Microservice Template</a>
+</li>
+<li>.NET Core - <a href="https://github.com/nicholasjackson/minke-generator-netmvc">.NET MVC Microservice Template</a>
+</li>
+<li>Java - Spring Boot</li>
+<li>Swift - Kitura (Coming Soon)</li>
+<li>Node - ExpressJS (Coming Soon)</li>
+<li>Ruby - Rails (Coming Soon)</li>
+</ul>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Add this line to your application's Gemfile:</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">'</span>minke<span class="pl-pds">'</span></span></pre></div>
+
+<p>And then execute:</p>
+
+<pre><code>$ bundle
+</code></pre>
+
+<p>Or install it yourself as:</p>
+
+<pre><code>$ gem install minke
+</code></pre>
+
+<h2>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<h3>
+<a id="docker" class="anchor" href="#docker" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Docker</h3>
+
+<p>You need to have docker, docker-machine, and docker-compose installed on your build machine and the docker environment variables must be set.  If using the docker-toolkit on a mac you can set these by running...</p>
+
+<div class="highlight highlight-source-shell"><pre><span class="pl-c1">eval</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>docker-machine env default<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span></pre></div>
+
+<h2>
+<a id="not-for-docker-for-mac-beta-users" class="anchor" href="#not-for-docker-for-mac-beta-users" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Not for Docker for Mac Beta users</h2>
+
+<p>If you use docker for mac please set the environment variable, this will auto resolve once Docker for mac exits beta.</p>
+
+<pre><code>DOCKER_IP=[your docker vm ip]
+</code></pre>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Include the rake tasks in your Rakefile</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>minke<span class="pl-pds">'</span></span>
+
+spec <span class="pl-k">=</span> <span class="pl-c1">Gem</span>::<span class="pl-c1">Specification</span>.find_by_name <span class="pl-s"><span class="pl-pds">'</span>minke<span class="pl-pds">'</span></span>
+<span class="pl-c1">Rake</span>.add_rakelib <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pse">#{</span><span class="pl-s1">spec.gem_dir</span><span class="pl-pse"><span class="pl-s1">}</span></span>/lib/minke/rake<span class="pl-pds">"</span></span></pre></div>
+
+<p>By default Go builder looks for a config file (config.yml) in the same folder as your Rakefile</p>
+
+<p>Go builder provides the following tasks...</p>
+
+<h3>
+<a id="rake-apptest" class="anchor" href="#rake-apptest" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>rake app:test</h3>
+
+<p>Gets your packages dependencies then executes go test against the package.</p>
+
+<h3>
+<a id="rake-appbuild" class="anchor" href="#rake-appbuild" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>rake app:build</h3>
+
+<p>Creates a linux binary for your application, runs app:test before execution.</p>
+
+<h3>
+<a id="rake-appbuild_server" class="anchor" href="#rake-appbuild_server" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>rake app:build_server</h3>
+
+<p>Creates a docker image for your application, runs app:build before execution.</p>
+
+<h3>
+<a id="rake-appbuild_and_run" class="anchor" href="#rake-appbuild_and_run" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>rake app:build_and_run</h3>
+
+<p>Creates a docker image for your application then starts the application using docker-compose, runs app:build_server before execution.</p>
+
+<h3>
+<a id="rake-appcucumberoptional-feature-tag" class="anchor" href="#rake-appcucumberoptional-feature-tag" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>rake app:cucumber[optional feature tag]</h3>
+
+<p>Starts the application and then runs cucumber to execute your features, you can optionally pass a feature tag to this command to configure which part of your test suite you would like to run.  Does not build the server before running, this needs to be done when you change your source code with app:build_server.</p>
+
+<h3>
+<a id="rake-apppush" class="anchor" href="#rake-apppush" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>rake app:push</h3>
+
+<p>Pushes the built image to the configured registry, does not build the image before execution, this can be done manually with app:build_server.</p>
+
+<h2>
+<a id="config-file" class="anchor" href="#config-file" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Config File</h2>
+
+<p>The config file config.yml is where you set the various configuration for the build process.</p>
+
+<h3>
+<a id="example-config-file" class="anchor" href="#example-config-file" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Config File</h3>
+
+<div class="highlight highlight-source-yaml"><pre><span class="pl-s"><span class="pl-ent">namespace:</span> <span class="pl-s"><span class="pl-pds">'</span>github.com/nicholasjackson<span class="pl-pds">'</span></span></span>
+<span class="pl-s"><span class="pl-ent">application_name:</span> <span class="pl-s"><span class="pl-pds">'</span>event-sauce<span class="pl-pds">'</span></span></span>
+<span class="pl-s"><span class="pl-ent">language:</span> <span class="pl-s">go</span></span>
+<span class="pl-s"><span class="pl-ent">docker_registry:</span></span>
+  <span class="pl-s"><span class="pl-ent">url:</span> <span class="pl-s">&lt;%= ENV['DOCKER_REGISTRY_URL'] %&gt;</span></span>
+  <span class="pl-s"><span class="pl-ent">user:</span> <span class="pl-s">&lt;%= ENV['DOCKER_REGISTRY_USER'] %&gt;</span></span>
+  <span class="pl-s"><span class="pl-ent">password:</span> <span class="pl-s">&lt;%= ENV['DOCKER_REGISTRY_PASS'] %&gt;</span></span>
+  <span class="pl-s"><span class="pl-ent">email:</span> <span class="pl-s">&lt;%= ENV['DOCKER_REGISTRY_EMAIL'] %&gt;</span></span>
+  <span class="pl-s"><span class="pl-ent">namespace:</span> <span class="pl-s">&lt;%= ENV['DOCKER_NAMESPACE'] %&gt;</span></span>
+<span class="pl-s"><span class="pl-ent">docker:</span></span>
+  <span class="pl-s"><span class="pl-ent">docker_file:</span> <span class="pl-s"><span class="pl-pds">'</span>./dockerfiles/event-sauce/Dockerfile<span class="pl-pds">'</span></span></span>
+  <span class="pl-s"><span class="pl-ent">compose_file:</span> <span class="pl-s"><span class="pl-pds">'</span>./dockercompose/event-sauce/docker-compose.yml<span class="pl-pds">'</span></span></span>
+  <span class="pl-s"><span class="pl-ent">build:</span></span>
+    <span class="pl-s"><span class="pl-ent">image:</span> <span class="pl-s">[optional]</span></span>
+    <span class="pl-s"><span class="pl-ent">docker_file:</span> <span class="pl-s">[optional]</span></span>
+<span class="pl-s"><span class="pl-ent">after_build:</span></span>
+  <span class="pl-s"><span class="pl-ent">copy_assets:</span></span>
+    <span class="pl-s">-</span>
+      <span class="pl-s"><span class="pl-ent">from:</span> <span class="pl-s">&lt;%= "#{ENV['GOPATH']}/src/github.com/nicholasjackson/event-sauce/event-sauce" %&gt;</span></span>
+      <span class="pl-s"><span class="pl-ent">to:</span> <span class="pl-s"><span class="pl-pds">'</span>./docker/event-sauce<span class="pl-pds">'</span></span></span>
+    <span class="pl-s">-</span>
+      <span class="pl-s"><span class="pl-ent">from:</span> <span class="pl-s"><span class="pl-pds">'</span>./swagger_spec/swagger.yml<span class="pl-pds">'</span></span></span>
+      <span class="pl-s"><span class="pl-ent">to:</span> <span class="pl-s"><span class="pl-pds">'</span>./dockerfile/event-sauce/swagger_spec/swagger.yml<span class="pl-pds">'</span></span></span>
+<span class="pl-s"><span class="pl-ent">run:</span></span>
+  <span class="pl-s"><span class="pl-ent">consul_loader:</span></span>
+    <span class="pl-s"><span class="pl-ent">enabled:</span> <span class="pl-c1">true</span></span>
+    <span class="pl-s"><span class="pl-ent">config_file:</span> <span class="pl-s"><span class="pl-pds">'</span>./config.yml<span class="pl-pds">'</span></span></span>
+    <span class="pl-s"><span class="pl-ent">url:</span> <span class="pl-s">&lt;%= "http://#{ENV['DOCKER_IP']}:9500" %&gt;</span></span>
+  <span class="pl-s"><span class="pl-ent">docker:</span></span>
+    <span class="pl-s"><span class="pl-ent">compose_file:</span> <span class="pl-s"><span class="pl-pds">'</span>./dockercompose/event-sauce/docker-compose-alternate.yml<span class="pl-pds">'</span></span></span>
+<span class="pl-s"><span class="pl-ent">cucumber:</span></span>
+  <span class="pl-s"><span class="pl-ent">consul_loader:</span></span>
+    <span class="pl-s"><span class="pl-ent">enabled:</span> <span class="pl-c1">true</span></span>
+    <span class="pl-s"><span class="pl-ent">config_file:</span> <span class="pl-s"><span class="pl-pds">'</span>./config.yml<span class="pl-pds">'</span></span></span>
+    <span class="pl-s"><span class="pl-ent">url:</span> <span class="pl-s">&lt;%= "http://#{ENV['DOCKER_IP']}:9500" %&gt;</span></span>
+  <span class="pl-s"><span class="pl-ent">health_check:</span></span>
+    <span class="pl-s"><span class="pl-ent">enabled:</span> <span class="pl-c1">true</span></span>
+    <span class="pl-s"><span class="pl-ent">url:</span> <span class="pl-s">&lt;%= "http://#{ENV['DOCKER_IP']}:8001/v1/health" %&gt;</span></span>
+  <span class="pl-s"><span class="pl-ent">after_start:</span></span>
+    <span class="pl-s">- <span class="pl-s"><span class="pl-pds">'</span>wait_for_elastic_search<span class="pl-pds">'</span></span></span></pre></div>
+
+<h4>
+<a id="head" class="anchor" href="#head" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>head:</h4>
+
+<p>This section contains the configuration for the build process.<br>
+<strong>namespace:</strong> namespace for your application code within your GOPATH, this is generally the same as your repository.<br>
+<strong>application_name:</strong> name of the built binary.<br>
+<strong>language</strong> (go|swift) language type of the build swift is currently experimental and uses the v3 dev branch which is compatible with Kitura</p>
+
+<h4>
+<a id="docker_registry" class="anchor" href="#docker_registry" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>docker_registry:</h4>
+
+<p>This section contains the configuration for the docker registry to push the image to.  Images are pushed to the registry prefixed with the namespace and application_name, e.g. nicholasjackson/event-sauce:latest.<br>
+<strong>url:</strong> url for the docker registry.<br>
+<strong>user:</strong> username to use when logging into the registry.<br>
+<strong>password:</strong> password to use when logging into the registry.<br>
+<strong>email:</strong> email address to use when logging into the registry.<br>
+<strong>namespace:</strong> namespace of your image to use when pushing the image to the registry.  </p>
+
+<h4>
+<a id="after_build" class="anchor" href="#after_build" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>after_build:</h4>
+
+<p>This section allows you to copy assets such as binaries or files which you would like to include into your Docker image.</p>
+
+<h5>
+<a id="copy_assets" class="anchor" href="#copy_assets" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>copy_assets:</h5>
+
+<p>An array of elements with the following parameters:<br>
+<strong>from:</strong> the source file or directory<br>
+<strong>to:</strong> the destination file or directory</p>
+
+<h4>
+<a id="docker-1" class="anchor" href="#docker-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>docker:</h4>
+
+<p>This section contains configuration for the Docker build and run process.<br>
+<strong>docker_file:</strong> path to the folder containing your Dockerfile used by the build_server task.<br>
+<strong>compose_file:</strong> path to your docker-compose file for run and cucumber tasks.
+<strong>build:</strong> This section allows you to override the language default used for building your application code.</p>
+
+<ul>
+<li>
+<strong>image [optional]:</strong> specify a different image from your registry or local machine to use for building the application.</li>
+<li>
+<strong>docker_file [optional]:</strong> specify a dockerfile which will be built into an image and then used for building the application.</li>
+</ul>
+
+<h4>
+<a id="run" class="anchor" href="#run" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>run:</h4>
+
+<p>The run section defines config for running your microservice with Docker Compose.</p>
+
+<h5>
+<a id="consul_loader" class="anchor" href="#consul_loader" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>consul_loader:</h5>
+
+<p>When the application is run using docker-compose you can load some default config into your consul server.  Told you this was opinionated, if you are building microservices you are using consul right?<br>
+<strong>enabled:</strong> boolean determining if this feature is enabled.<br>
+<strong>config_file:</strong> path to a yaml file containing the key values you would like to load into consul. consul_loader flattens the structure of your yaml file and converts this into key values. For more information please see <a href=""></a></p>
+
+<h5>
+<a id="docker-2" class="anchor" href="#docker-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>docker:</h5>
+
+<p>This section allows you to override the docker compose file specified in the main section incase you would like a different config for testing.<br>
+<strong>compose_file:</strong> path to your docker-compose file for run and cucumber tasks.</p>
+
+<h5>
+<a id="after_start" class="anchor" href="#after_start" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>after_start:</h5>
+
+<p>This section is an array of rake tasks which will be run after docker compose has started, you can define these rake tasks in your main Rakefile.  e.g.  </p>
+
+<ul>
+<li>'wait_for_elastic_search'</li>
+<li>'es:create_indexes'</li>
+</ul>
+
+<h4>
+<a id="cucumber" class="anchor" href="#cucumber" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>cucumber:</h4>
+
+<p>The cucumber section defines config for running and testing your microservice with Docker Compose and cucumber, the config options are the same as in <strong>run:</strong> with the addition of health_check.</p>
+
+<h5>
+<a id="health_check" class="anchor" href="#health_check" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>health_check:</h5>
+
+<p>After the Docker Compose startup the application can wait until the main application has started before running the cucumber tests, to enable this specify true for the enabled: section then specify your health check url.<br>
+<strong>enabled</strong> (true|false) enable or disable the health check.<br>
+<strong>url</strong> url to use for health checks.  </p>
+
+<h2>
+<a id="development" class="anchor" href="#development" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Development</h2>
+
+<p>After checking out the repo, run <code>bin/setup</code> to install dependencies. Then, run <code>rake rspec</code> to run the tests. You can also run <code>bin/console</code> for an interactive prompt that will allow you to experiment.</p>
+
+<p>To install this gem onto your local machine, run <code>bundle exec rake install</code>. To release a new version, update the version number in <code>version.rb</code>, and then run <code>bundle exec rake release</code>, which will create a git tag for the version, push git commits and tags, and push the <code>.gem</code> file to <a href="https://rubygems.org">rubygems.org</a>.</p>
+
+<h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>Bug reports and pull requests are welcome on GitHub at <a href="https://github.com/%5BUSERNAME%5D/go_builder">https://github.com/[USERNAME]/go_builder</a>. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the <a href="contributor-covenant.org">Contributor Covenant</a> code of conduct.</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>The gem is available as open source under the terms of the <a href="http://opensource.org/licenses/MIT">MIT License</a>.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/nicholasjackson/minke">Minke</a> is maintained by <a href="https://github.com/nicholasjackson">nicholasjackson</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
