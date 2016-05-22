@@ -107,7 +107,8 @@ module Minke
       end
 
       def login_registry url, user, password, email
-        system("docker login -u #{user} -p #{password} -e #{email} #{url}")
+        puts "docker login -u #{user} -p #{password} #{url}"
+        system("docker login -u #{user} -p #{password} #{url}")
         $?.exitstatus
       end
 
