@@ -19,9 +19,9 @@ Minke has the capability to scaffold a new service, to do this it uses generator
 ## Create a Gemfile  
 
 
-~~~ruby
+```ruby
 source 'http://rubygems.org'
 
 gem 'minke'
 gem 'minke-generator-go'
-~~~  
+```  

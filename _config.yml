@@ -14,9 +14,9 @@ gems:
   - jekyll-paginate
 
 #Others
+encoding: utf-8
 markdown: kramdown
 highlighter: rouge
-
 kramdown:
   input: GFM
   syntax_highlighter: rouge
