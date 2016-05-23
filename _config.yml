@@ -1,0 +1,22 @@
+# Setup
+title:        Minke
+tagline:      Build tools and generators for your μServices workflow.
+baseurl:      ""
+paginate:     1
+
+# About/contact
+author:
+  name:       Nic Jackson
+  url:        http://github.com/nicholasjackson
+
+# Gems
+gems:
+  - jekyll-paginate
+
+#Others
+markdown: kramdown
+highlighter: rouge
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
