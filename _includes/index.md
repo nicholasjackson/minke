@@ -36,15 +36,16 @@ $ minke
 ```
 
 You should see the below output with the go generator successfully installed.
+
 ```
 
 888b     d888 d8b          888
 8888b   d8888 Y8P          888
 88888b.d88888              888
 888Y88888P888 888 88888b.  888  888  .d88b.
-888 Y888P 888 888 888 "88b 888 .88P d8P  Y8b
+888 Y888P 888 888 888  88b 888 .88P d8P  Y8b
 888  Y8P  888 888 888  888 888888K  88888888
-888   "   888 888 888  888 888 "88b Y8b.
+888   "   888 888 888  888 888  88b Y8b.
 888       888 888 888  888 888  888  "Y8888
 
 Version: 1.2.0
@@ -57,12 +58,14 @@ Please specify options use: minke --help for help on command line options
 
 ## Scaffold a project
 We can now scaffold a new go μService using the following command:
+
 ```bash
 $ minke -g minke-generator-go -o $GOPATH/src/github.com/nicholasjackson/helloworld
   -a helloworld -n github.com/nicholasjackson
 ```
 since this is a Go service it needs to be in your GOPATH and the namespace needs to be the same as your github or bitbucket url for the import statements.  
 If look at the output folder we will see something like the below folder structure, all our source code is in the root and there is a **_build** folder, this is where Minke stores things like the Docker and Docker Compose files and configuration.
+
 ```
 total 12520
     0 drwxr-xr-x  17 nicj  NOTHS\Domain Users      578 23 May 15:09 .
@@ -86,6 +89,7 @@ total 12520
 
 ## Building and testing your application
 Change to the **_build** folder
+
 ```
 $ cd _build
 ```
@@ -106,6 +110,7 @@ rake docker:update_images   # updates build images for swagger and golang will o
 
 ### Building the application
 To build the application simply execute:
+
 ```bash
 $ rake app:build
 ```
