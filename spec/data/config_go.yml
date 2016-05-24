@@ -14,6 +14,8 @@ docker:
   application_compose_file: ./dockercompose/event-sauce/docker-compose.yml
 fetch:
   include: true
+test:
+  include: true
 build:
   pre:
     tasks:
