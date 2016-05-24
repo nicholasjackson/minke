@@ -21,6 +21,7 @@ module Minke
 
         config.fetch    = read_task_section file['fetch'], config.docker    unless file['fetch'] == nil
         config.build    = read_task_section file['build'], config.docker    unless file['build'] == nil
+        config.test     = read_task_section file['test'], config.docker     unless file['test'] == nil
         config.run      = read_task_section file['run'], config.docker      unless file['run'] == nil
         config.cucumber = read_task_section file['cucumber'], config.docker unless file['cucumber'] == nil
 
