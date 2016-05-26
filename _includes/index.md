@@ -22,7 +22,7 @@ Minke has the capability to scaffold a new service, to do this it uses generator
 source 'http://rubygems.org'
 
 gem 'minke'
-gem 'minke-generator-go'
+gem 'minke-generator-netmvc'
 ```  
 
 ## Install the gems
@@ -51,7 +51,7 @@ You should see the below output with the go generator successfully installed.
 Version: 1.2.0
 
 # Loading installed generators:
-  * minke-generator-go
+  * minke-generator-netmvc
 
 Please specify options use: minke --help for help on command line options
 ```
@@ -60,10 +60,10 @@ Please specify options use: minke --help for help on command line options
 We can now scaffold a new go μService using the following command:
 
 ```bash
-$ minke -g minke-generator-go -o $GOPATH/src/github.com/nicholasjackson/helloworld
-  -a helloworld -n github.com/nicholasjackson
+$ minke -g minke-generator-netmvc -o ~/nicholasjackson/helloworld
+  -a helloworld -n HelloWorld
 ```
-since this is a Go service it needs to be in your GOPATH and the namespace needs to be the same as your github or bitbucket url for the import statements.  
+ 
 If look at the output folder we will see something like the below folder structure, all our source code is in the root and there is a **_build** folder, this is where Minke stores things like the Docker and Docker Compose files and configuration.
 
 ```
