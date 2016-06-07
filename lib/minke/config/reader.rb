@@ -91,7 +91,7 @@ module Minke
       end
 
       def read_secure hash
-        key_path = ENV['SSL_KEY_PATH'].to_s == '' ? '~/.ssh' : ENV['SSL_KEY_PATH']
+        key_path = ENV['SSL_KEY_PATH'].to_s == '' ? "#{ENV['HOME']}/.ssh" : ENV['SSL_KEY_PATH']
 
 
         fingerprint = hash['secure']['fingerprint']
