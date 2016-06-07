@@ -91,7 +91,6 @@ module Minke
       end
 
       def read_secure hash
-        puts hash.inspect
         key_path = ENV['SSL_KEY_PATH'].to_s == '' ? "#{ENV['HOME']}/.ssh" : ENV['SSL_KEY_PATH']
 
         fingerprint = hash['secure']['fingerprint']
@@ -99,8 +98,6 @@ module Minke
 
         locator = Minke::Encryption::KeyLocator.new key_path
         key_path = locator.locate_key fingerprint
-
-        puts key_path
 
         encrypt = Minke::Encryption::Encryption.new key_path
         encrypt.decrypt_string value
