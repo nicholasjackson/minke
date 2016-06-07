@@ -13,7 +13,7 @@ module Minke
 
             return full_path if key.fingerprint == fingerprint
           rescue
-            puts "failed to read #{f}"
+            
           end
         end
       end
