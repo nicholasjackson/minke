@@ -41,10 +41,16 @@ end
 processor = Minke::Generators::Processor.new variables, Minke::Docker::DockerRunner.new
 processor.load_generators
 
+puts ""
+puts ""
+
 if options[:encrypt] != nil
   puts "Please specify a key to use for encryption using -k [path to file]" if options[:key] == nil
 
   encrypt = Minke::Encryption::Encryption.new options[:key]
+
+  puts 'Copy the below to your minke config file:'
+  puts ''
   puts 'secure:'
   puts "  fingerprint: #{encrypt.fingerprint}"
   puts '  value: >'
