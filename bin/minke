@@ -21,8 +21,10 @@ puts ""
 
 options = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: example.rb [options]"
+  opts.banner = "Usage: minke [options]"
 
+  opts.on('-e', '--encrypt STRING', 'Encrypt a string') { |v| options[:encrypt] = v }
+  opts.on('-k', '--key STRING', 'Private key to use for encryption') { |v| options[:key] = v }
   opts.on('-g', '--generator GENERATOR', 'Generator plugin to use') { |v| options[:generator] = v }
   opts.on('-o', '--output OUTPUT', 'Output folder') { |v| options[:output] = v }
   opts.on('-a', '--application_name NAME', 'Application name') { |v| options[:name] = v }
@@ -39,6 +41,17 @@ end
 processor = Minke::Generators::Processor.new variables, Minke::Docker::DockerRunner.new
 processor.load_generators
 
+if options[:encrypt] != nil
+  puts "Please specify a key to use for encryption using -k [path to file]" if options[:key] == nil
+
+  encrypt = Minke::Encryption::Encryption.new options[:key]
+  puts 'secure:'
+  puts "  fingerprint: #{encrypt.fingerprint}"
+  puts '  value: >'
+  encrypt.encrypt_string(options[:encrypt]).split("\n").each { |l| puts "    #{l}"}
+
+  exit 0
+end
 
 if options[:generator] == nil || options[:output] == nil || options[:name] == nil || options[:namespace] == nil
   puts "Please specify options use: minke --help for help on command line options"

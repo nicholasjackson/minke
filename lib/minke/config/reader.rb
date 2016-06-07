@@ -30,11 +30,11 @@ module Minke
 
       def read_docker_registry section
         DockerRegistrySettings.new.tap do |d|
-          d.url       = section['url']
-          d.user      = section['user']
-          d.password  = section['password']
-          d.email     = section['email']
-          d.namespace = section['namespace']
+          d.url       = section['url'].is_a?(Hash) ? read_secure(section['url']) : section['url']
+          d.user      = section['user'].is_a?(Hash) ? read_secure(section['user']) : section['user']
+          d.password  = section['password'].is_a?(Hash) ? read_secure(section['password']) : section['password']
+          d.email     = section['email'].is_a?(Hash) ? read_secure(section['email']) : section['email']
+          d.namespace = section['namespace'].is_a?(Hash) ? read_secure(section['namespace']) : section['namespace']
         end
       end
 
@@ -88,6 +88,17 @@ module Minke
           url.protocol = section['protocol'] != nil ? section['protocol'] : 'http'
           url.type     = section['type']
         end
+      end
+
+      def read_secure hash
+        fingerprint = hash['secure']['fingerprint']
+        value = hash['secure']['value']
+
+        locator = Minke::Encryption::KeyLocator.new ENV['SSL_KEY_PATH']
+        key_path = locator.locate_key fingerprint
+
+        encrypt = Minke::Encryption::Encryption.new key_path
+        encrypt.decrypt_string value
       end
 
     end

@@ -10,6 +10,9 @@ require 'rubygems'
 require 'yaml'
 require 'colorize'
 require 'multi_json'
+require 'openssl'
+require 'base64'
+require 'sshkey'
 
 require 'minke/version'
 
@@ -37,3 +40,6 @@ require 'minke/generators/config_processor'
 require 'minke/generators/config_variables'
 require 'minke/generators/processor'
 require 'minke/generators/register'
+
+require 'minke/encryption/encryption'
+require 'minke/encryption/key_locator'

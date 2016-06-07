@@ -10,6 +10,7 @@ describe Minke::Config::Reader do
     ENV['DOCKER_NAMESPACE'] = 'namespace/namespace'
     ENV['GOPATH'] = '/go/src'
     ENV['DOCKER_IP'] = 'docker.local'
+    ENV['SSL_KEY_PATH'] = File.expand_path("../../../data", __FILE__)
 
     reader = Minke::Config::Reader.new
     reader.read File.expand_path "../../../data/config_go.yml", __FILE__
@@ -28,8 +29,8 @@ describe Minke::Config::Reader do
   end
 
   describe 'docker_registry section' do
-    it 'should correctly read the url' do
-      expect(config.docker_registry.url).to eq(ENV['DOCKER_REGISTRY_URL'])
+    it 'should correctly read the url when the url is secure' do
+      expect(config.docker_registry.url).to eq('http://myURL')
     end
 
     it 'should correctly read the user' do
