@@ -4,6 +4,11 @@ module Minke
       ##
       # returns the ip address that docker is running on
       def get_docker_ip_address
+        # first try to get the ip from docker-ip env
+        if !ENV['DOCKER_IP'].to_s.empty?
+          return ENV['DOCKER_IP']
+        end
+
         if !ENV['DOCKER_HOST'].to_s.empty?
       		# dockerhost set
       		host = ENV['DOCKER_HOST'].dup
