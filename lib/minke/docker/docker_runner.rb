@@ -39,7 +39,7 @@ module Minke
       # pull_image pulls a new copy of the given image from the registry
       def pull_image image_name
       	puts "Pulling Image: #{image_name}"
-      	puts `docker pull #{image_name}`
+        ::Docker::Image.create('fromImage' => image_name)
       end
 
       ##

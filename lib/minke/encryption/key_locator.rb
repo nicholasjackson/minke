@@ -17,7 +17,7 @@ module Minke
           end
         end
 
-        throw "Unable to find SSL key matching fingerprint if your SSL keys are not in ~/.ssh you can set the environment variable SSL_KEY_PATH to point to the correct directory."
+        return nil
       end
     end
   end

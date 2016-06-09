@@ -103,6 +103,12 @@ module Minke
         locator = Minke::Encryption::KeyLocator.new key_path
         key_path = locator.locate_key fingerprint
 
+        puts key_path
+        if key_path.to_s.empty?
+          puts "Unable to find SSL key matching fingerprint if your SSL keys are not in ~/.ssh you can set the environment variable SSL_KEY_PATH to point to the correct directory."
+          return
+        end
+
         encrypt = Minke::Encryption::Encryption.new key_path
         encrypt.decrypt_string value
       end
