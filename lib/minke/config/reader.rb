@@ -92,7 +92,7 @@ module Minke
 
       def read_secure hash
         key_path = ENV['SSL_KEY_PATH'].to_s == '' ? "#{ENV['HOME']}/.ssh" : ENV['SSL_KEY_PATH']
-        unless Dir.exists? keypath
+        unless Dir.exists? key_path
           puts "Unable to find SSH keys to decrypt secrets, please set environment variable SSL_KEY_PATH or place the keys in ~/.ssh"
           return
         end
