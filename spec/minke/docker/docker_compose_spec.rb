@@ -85,7 +85,7 @@ networks:
       end
 
       it 'calls docker compose with the correct settings' do
-        expect(system_runner).to receive(:execute).with("docker-compose -f #{composepath} -f ./tmp/docker-compose.yml up -d")
+        expect(system_runner).to receive(:execute).with("docker-compose -f #{composepath} -f ./tmp/docker-compose.yml down")
 
         dockercompose.down
       end
