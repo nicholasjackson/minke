@@ -11,6 +11,18 @@ module Minke
         return log.strip
       end
 
+      def mktmpdir
+        Dir.mktmpdir
+      end
+
+      def remove_entry_secure dir
+        FileUtils.remove_entry_secure dir
+      end
+
+      def write_file filename, data
+        File.open(filename, 'w') { |file| file.write(data) }
+      end
+
     end
   end
 end

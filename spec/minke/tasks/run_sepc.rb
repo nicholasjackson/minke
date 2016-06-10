@@ -67,8 +67,7 @@ describe Minke::Tasks::Run do
   end
 
   it 'stops copose and removes containers' do
-    expect(docker_compose).to receive(:stop)
-    expect(docker_compose).to receive(:rm)
+    expect(docker_compose).to receive(:down)
 
     task.run
   end

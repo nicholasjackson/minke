@@ -24,7 +24,7 @@ describe Minke::Tasks::Cucumber do
 
   let(:docker_compose) do
     dc = double "docker_compose"
-    allow(dc).to receive(:stop)
+    allow(dc).to receive(:down)
     allow(dc).to receive(:up)
     allow(dc).to receive(:rm)
     return dc
@@ -70,8 +70,7 @@ describe Minke::Tasks::Cucumber do
   end
 
   it 'stops copose and removes containers' do
-    expect(docker_compose).to receive(:stop)
-    expect(docker_compose).to receive(:rm)
+    expect(docker_compose).to receive(:down)
 
     task.run
   end

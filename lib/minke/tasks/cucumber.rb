@@ -14,8 +14,7 @@ module Minke
           end
 
       	ensure
-      		@compose.stop
-      		@compose.rm
+      		@compose.down
 
           @helper.fatal_error "Cucumber steps failed" unless status == 0
       	end

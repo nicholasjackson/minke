@@ -13,8 +13,7 @@ module Minke
           end
 
       	ensure
-      		@compose.stop
-      		@compose.rm
+      		@compose.down
       	end
       end
 
