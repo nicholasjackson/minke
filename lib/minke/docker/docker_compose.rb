@@ -42,7 +42,7 @@ module Minke
           @system_runner.execute "docker-compose -f #{@compose_file} -f #{directory + '/docker-compose.yml'} down"
           @system_runner.remove_entry_secure directory
         else
-          @system_runner.execute "docker-compose -f #{@compose_file} down -d"
+          @system_runner.execute "docker-compose -f #{@compose_file} down -v"
         end
       end
 
