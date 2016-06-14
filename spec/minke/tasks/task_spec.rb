@@ -17,7 +17,6 @@ describe Minke::Tasks::Task do
             cl.url = Minke::Config::URL.new.tap do |u|
               u.address = 'myfile'
               u.port = '8080'
-              u.type = 'private'
               u.protocol = 'http'
               u.type = 'public'
             end
@@ -28,7 +27,7 @@ describe Minke::Tasks::Task do
             u.port = '8081'
             u.path = '/v1/health'
             u.protocol = 'http'
-            u.type = 'private'
+            u.type = 'public'
           end
           p.copy = [
             Minke::Config::Copy.new.tap { |cp| cp.from = '/from1'; cp.to = './to1'},
@@ -59,15 +58,20 @@ describe Minke::Tasks::Task do
   end
 
   let(:compose) do
-    d = double "compose"
-    allow(d).to receive(:public_address).and_return('0.0.0.0:8080')
-    d
+    double "compose"
   end
 
   let(:docker_compose_factory) do
     dc = double "docker_compose_factory"
     expect(dc).to receive(:create).and_return(compose)
     dc
+  end
+
+  let(:service_discovery) do
+    sd = double "service_discovery"
+    allow(sd).to receive(:public_address_for).and_return('0.0.0.0:8080')
+    allow(sd).to receive(:bridge_address_for).and_return('172.156.23.1:8080')
+    sd
   end
 
   let(:helper) do
@@ -81,7 +85,7 @@ describe Minke::Tasks::Task do
   end
 
   let(:task) do
-    Minke::Tasks::Task.new config, :fetch, generator_config, docker_runner, docker_compose_factory, logger, helper
+    Minke::Tasks::Task.new config, :fetch, generator_config, docker_runner, docker_compose_factory, service_discovery, logger, helper
   end
 
   describe 'run_command_in_container' do
@@ -184,20 +188,27 @@ describe Minke::Tasks::Task do
     end
 
     it 'loads data into consul' do
-      expect(helper).to receive(:load_consul_data).with('http://myfile:8080', 'myfile')
+      expect(helper).to receive(:load_consul_data).with('http://0.0.0.0:8080', 'myfile')
 
       task.run_steps config.fetch.pre
     end
 
     it 'fetches the public address when executing health check' do
-      expect(compose).to receive(:public_address).with('myhealth', '8081')
+      expect(service_discovery).to receive(:public_address_for).with('myhealth', '8081')
+
+      task.run_steps config.fetch.pre
+    end
+
+    it 'fetches the bridge address when executing health check' do
+      config.fetch.pre.health_check.type = 'bridge'
+      expect(service_discovery).to receive(:bridge_address_for).with('myhealth', '8081')
 
       task.run_steps config.fetch.pre
     end
 
     it 'replaces the ip address for the docker host if docker toolbox' do
       allow(docker_runner).to receive(:get_docker_ip_address).and_return('192.168.99.100')
-      expect(docker_runner).to receive(:get_docker_ip_address).once
+      expect(docker_runner).to receive(:get_docker_ip_address).twice
       expect(helper).to receive(:wait_for_HTTPOK).with('http://192.168.99.100:8080/v1/health', 0, 3)
 
       task.run_steps config.fetch.pre

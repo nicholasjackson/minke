@@ -24,6 +24,8 @@ describe Minke::Tasks::Fetch do
   end
   let(:docker_compose_factory) { double "docker_compose_factory" }
 
+  let(:service_discovery) { double "service_discovery" }
+
   let(:helper) do
     helper = double "helper"
     allow(helper).to receive(:invoke_task)
@@ -35,7 +37,7 @@ describe Minke::Tasks::Fetch do
   end
 
   let(:task) do
-    Minke::Tasks::Fetch.new config, :fetch, generator_config, docker_runner, docker_compose_factory, logger, helper
+    Minke::Tasks::Fetch.new config, :fetch, generator_config, docker_runner, docker_compose_factory, service_discovery, logger, helper
   end
 
   it 'executes the given commands in a container' do

@@ -4,11 +4,12 @@ module Minke
     # Task is a base implementation of a rake task such as fetch, build, etc
     class Task
 
-      def initialize config, task, generator_settings, docker_runner, docker_compose_factory, logger, helper
+      def initialize config, task, generator_settings, docker_runner, docker_compose_factory, service_discovery, logger, helper
         @config = config
         @task = task
         @generator_settings = generator_settings
         @docker_runner = docker_runner
+        @service_discovery = service_discovery
         @logger = logger
         @helper = helper
         @task_settings = config.send(task)
@@ -84,18 +85,21 @@ module Minke
       end
 
       def build_address url
-        if url.type == 'public'
+        if url.type == 'external'
           "#{url.protocol}://#{url.address}:#{url.port}#{url.path}"
-        else
-          # if running on docker for mac we need to replace the ip address with the docker hosts
-          public_address = @compose.public_address url.address, url.port
+        elsif url.type == 'bridge'
+          address = @service_discovery.bridge_address_for url.address, url.port
+          "#{url.protocol}://#{address}#{url.path}"
+        elsif url.type == 'public'
+          address = @service_discovery.public_address_for url.address, url.port
 
+          # if running on docker for mac we need to replace the ip address with the docker hosts
           ip = @docker_runner.get_docker_ip_address
           if  ip != "127.0.0.1" && ip != "0.0.0.0" && ip != nil
-            public_address.gsub!('0.0.0.0', ip)
+            address.gsub!('0.0.0.0', ip)
           end
 
-          "#{url.protocol}://#{public_address}#{url.path}"
+          "#{url.protocol}://#{address}#{url.path}"
         end
       end
 

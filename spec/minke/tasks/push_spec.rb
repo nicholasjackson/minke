@@ -23,7 +23,9 @@ describe Minke::Tasks::Push do
     allow(runner).to receive(:push_image)
     return runner
   end
+
   let(:logger) { double 'logger' }
+
   let(:generator_config) do
     Minke::Generators::Config.new.tap do |c|
       c.build_settings = Minke::Generators::BuildSettings.new.tap do |bs|
@@ -33,7 +35,7 @@ describe Minke::Tasks::Push do
   end
 
   let(:task) do
-    Minke::Tasks::Push.new config, :run, generator_config, docker_runner, nil, logger, nil
+    Minke::Tasks::Push.new config, :run, generator_config, docker_runner, nil, nil, logger, nil
   end
 
   it 'logs into the registry' do

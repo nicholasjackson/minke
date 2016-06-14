@@ -22,6 +22,7 @@ describe Minke::Tasks::Build do
     end
   end
   let(:docker_compose_factory) { double "docker_compose_factory" }
+  let(:service_discovery) { double "service_discovery" }
 
   let(:helper) do
     helper = double "helper"
@@ -34,7 +35,7 @@ describe Minke::Tasks::Build do
   end
 
   let(:task) do
-    Minke::Tasks::Build.new config, :build, generator_config, docker_runner, docker_compose_factory, logger, helper
+    Minke::Tasks::Build.new config, :build, generator_config, docker_runner, docker_compose_factory, service_discovery, logger, helper
   end
 
   it 'executes the given commands in a container' do

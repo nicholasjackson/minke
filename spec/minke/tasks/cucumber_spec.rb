@@ -36,6 +36,8 @@ describe Minke::Tasks::Cucumber do
      return dc
    end
 
+  let(:service_discovery) { double "service_discovery" }
+
   let(:helper) do
     helper = double "helper"
     allow(helper).to receive(:invoke_task)
@@ -48,7 +50,7 @@ describe Minke::Tasks::Cucumber do
   end
 
   let(:task) do
-    Minke::Tasks::Cucumber.new config, :cucumber, generator_settings, docker_runner, docker_compose_factory, logger, helper
+    Minke::Tasks::Cucumber.new config, :cucumber, generator_settings, docker_runner, docker_compose_factory, service_discovery, logger, helper
   end
 
   it 'calls create on the compose factory' do

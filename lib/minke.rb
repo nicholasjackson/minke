@@ -12,6 +12,7 @@ require 'colorize'
 require 'multi_json'
 require 'openssl'
 require 'base64'
+require 'securerandom'
 require 'sshkey'
 
 require 'minke/version'

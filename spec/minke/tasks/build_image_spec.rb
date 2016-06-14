@@ -22,6 +22,8 @@ describe Minke::Tasks::BuildImage do
   end
   let(:docker_compose_factory) { double "docker_compose_factory" }
 
+  let(:service_discovery) { double "service_discovery" }
+
   let(:helper) do
     helper = double "helper"
     allow(helper).to receive(:invoke_task)
@@ -33,7 +35,7 @@ describe Minke::Tasks::BuildImage do
   end
 
   let(:task) do
-    Minke::Tasks::BuildImage.new config, :build, generator_config, docker_runner, docker_compose_factory, logger, helper
+    Minke::Tasks::BuildImage.new config, :build, generator_config, docker_runner, docker_compose_factory, service_discovery, logger, helper
   end
 
   it 'builds an image from the dockerfile' do

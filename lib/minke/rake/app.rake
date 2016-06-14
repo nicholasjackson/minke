@@ -72,8 +72,9 @@ namespace :app do
   end
 
   def create_dependencies
+    @project_name = "minke#{SecureRandom.urlsafe_base64(12)}"
     @system_runner = Minke::Docker::SystemRunner.new
-    @docker_compose_factory ||= Minke::Docker::DockerComposeFactory.new @system_runner
+    @docker_compose_factory ||= Minke::Docker::DockerComposeFactory.new @system_runner, @project_name
     @docker_runner ||= Minke::Docker::DockerRunner.new
 
     if @config == nil

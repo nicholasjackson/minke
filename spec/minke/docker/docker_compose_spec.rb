@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Minke::Docker::DockerCompose do
 
+  let(:project_name) { "tester" }
+
   let(:system_runner) do
     double("system_runner").tap do |sr|
       allow(sr).to receive(:execute)
@@ -11,7 +13,7 @@ describe Minke::Docker::DockerCompose do
     end
   end
 
-  let(:dockercompose) { Minke::Docker::DockerCompose.new composepath, system_runner }
+  let(:dockercompose) { Minke::Docker::DockerCompose.new composepath, system_runner, project_name }
 
   let(:composepath) { File.expand_path("../../../data/docker-compose.yml", __FILE__) }
 
@@ -51,7 +53,7 @@ networks:
       end
 
       it 'calls docker compose with the correct settings' do
-        expect(system_runner).to receive(:execute).with("docker-compose -f #{composepath} -f ./tmp/docker-compose.yml up -d")
+        expect(system_runner).to receive(:execute).with("docker-compose -f #{composepath} -f ./tmp/docker-compose.yml -p #{project_name} up -d")
 
         dockercompose.up
       end
@@ -85,7 +87,7 @@ networks:
       end
 
       it 'calls docker compose with the correct settings' do
-        expect(system_runner).to receive(:execute).with("docker-compose -f #{composepath} -f ./tmp/docker-compose.yml down")
+        expect(system_runner).to receive(:execute).with("docker-compose -f #{composepath} -f ./tmp/docker-compose.yml -p #{project_name} down")
 
         dockercompose.down
       end
@@ -94,6 +96,15 @@ networks:
         expect(system_runner).to receive(:remove_entry_secure).with('./tmp')
 
         dockercompose.down
+      end
+
+    end
+
+    describe 'streaming the logs' do
+      it 'calls docker compose with the correct settings' do
+        expect(system_runner).to receive(:execute).with("docker-compose -f #{composepath} -f ./tmp/docker-compose.yml -p #{project_name} logs -f")
+
+        dockercompose.logs
       end
 
     end

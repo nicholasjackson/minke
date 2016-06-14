@@ -1,19 +1,21 @@
 module Minke
   module Docker
     class DockerComposeFactory
-      def initialize system_runner
+      def initialize system_runner, project_name
+        @project_name = project_name
         @system_runner = system_runner
       end
 
       def create compose_file
-        Minke::Docker::DockerCompose.new compose_file, @system_runner
+        Minke::Docker::DockerCompose.new compose_file, @system_runner, @project_name
       end
     end
 
     class DockerCompose
       @compose_file = nil
 
-      def initialize compose_file, system_runner
+      def initialize compose_file, system_runner, project_name
+        @project_name = project_name
         @compose_file = compose_file
         @system_runner = system_runner
       end
@@ -21,14 +23,7 @@ module Minke
       ##
       # start the containers in a stack defined by the docker compose file
       def up
-        unless ENV['DOCKER_NETWORK'].to_s.empty?
-          directory = create_compose_network_file
-
-          @system_runner.execute "docker-compose -f #{@compose_file} -f #{directory + '/docker-compose.yml'} up -d"
-          @system_runner.remove_entry_secure directory
-        else
-          @system_runner.execute "docker-compose -f #{@compose_file} up -d"
-        end
+        execute_command "up -d"
 
         sleep 2
       end
@@ -36,14 +31,7 @@ module Minke
       ##
       # stop the containers in a stack and removes them as defined by the docker compose file
       def down
-        unless ENV['DOCKER_NETWORK'].to_s.empty?
-          directory = create_compose_network_file
-
-          @system_runner.execute "docker-compose -f #{@compose_file} -f #{directory + '/docker-compose.yml'} down"
-          @system_runner.remove_entry_secure directory
-        else
-          @system_runner.execute "docker-compose -f #{@compose_file} down -d"
-        end
+        execute_command "down"
       end
 
       ##
@@ -55,13 +43,24 @@ module Minke
       ##
       # stream the logs for the current running stack
       def logs
-        @system_runner.execute "docker-compose -f #{@compose_file} logs -f"
+        execute_command "logs -f"
       end
 
       ##
       # return the local address and port of a containers private port
       def public_address container, private_port
         @system_runner.execute_and_return "docker-compose -f #{@compose_file} port #{container} #{private_port}"
+      end
+
+      def execute_command command
+        unless ENV['DOCKER_NETWORK'].to_s.empty?
+          directory = create_compose_network_file
+
+          @system_runner.execute "docker-compose -f #{@compose_file} -f #{directory + '/docker-compose.yml'} -p #{@project_name} #{command}"
+          @system_runner.remove_entry_secure directory
+        else
+          @system_runner.execute "docker-compose -f #{@compose_file} -p #{@project_name} #{command}"
+        end
       end
 
       def create_compose_network_file

@@ -43,6 +43,15 @@ module Minke
       end
 
       ##
+      # running_images returns a list of running containers
+      # Returns
+      #
+      # Array of Docker::Image
+      def running_containers
+        ::Docker::Container.all(all: true, filters: { status: ["running"] }.to_json)
+      end
+
+      ##
       # create_and_run_container starts a conatainer of the given image name and executes a command
       #
       # Returns:

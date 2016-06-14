@@ -10,6 +10,7 @@ describe Minke::Tasks::Test do
   end
 
   let(:docker_runner) { double "docker_runner" }
+  let(:service_discovery) { double "service_discovery" }
   let(:logger) { double "logger" }
   let(:generator_config) do
     Minke::Generators::Config.new.tap do |c|
@@ -34,7 +35,7 @@ describe Minke::Tasks::Test do
   end
 
   let(:task) do
-    Minke::Tasks::Test.new config, :test, generator_config, docker_runner, docker_compose_factory, logger, helper
+    Minke::Tasks::Test.new config, :test, generator_config, docker_runner, docker_compose_factory, service_discovery, logger, helper
   end
 
   it 'executes the given commands in a container' do
