@@ -17,9 +17,13 @@ module Minke
       # Returns:
       # public address for the container e.g. 0.0.0.0:8080
       def public_address_for service_name, private_port
-        ip = @docker_runner.get_docker_ip_address
-        container_details = find_container_by_name "/#{@project_name}_#{service_name}_1"
-        ports = container_details['Ports'].select { |p| p['PrivatePort'] == private_port }.first
+        begin
+          ip = @docker_runner.get_docker_ip_address
+          container_details = find_container_by_name "/#{@project_name}_#{service_name}_1"
+          ports = container_details.first.info['Ports'].select { |p| p['PrivatePort'] == private_port }.first
+        rescue
+          raise "Unable to find public address for '#{service_name}' on port #{private_port}"
+        end
 
         return "#{ip}:#{ports['PublicPort']}"
       end
@@ -33,15 +37,20 @@ module Minke
       # Returns:
       # private address for the container e.g. 172.17.0.2:8080
       def bridge_address_for service_name, private_port
-        container_details = find_container_by_name "/#{@project_name}_#{service_name}_1"
-        ip = container_details['NetworkSettings']['Networks']['bridge']['IPAddress']
-
+        begin
+          puts "/#{@project_name}_#{service_name}_1"
+          container_details = find_container_by_name "/#{@project_name}_#{service_name}_1"
+          ip = container_details.first.info['NetworkSettings']['Networks']['bridge']['IPAddress']
+        rescue
+          raise "Unable to find bridge address for '#{service_name}' on port #{private_port}"
+        end
         return "#{ip}:#{private_port}"
       end
 
       :private
       def find_container_by_name name
-        @docker_runner.running_containers.select { |c| c['Names'].include?(name) }.first
+        containers = @docker_runner.running_containers
+        containers.select { |c| c.info['Names'].include?(name) }
       end
     end
   end

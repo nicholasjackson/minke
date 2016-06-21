@@ -3,7 +3,6 @@ require 'spec_helper'
 describe Minke::Docker::ServiceDiscovery do
   let (:containers) do
     j = <<-EOF
-    [
       {
         "Names":["/tester_syslog_1"],
         "State": "Running",
@@ -16,10 +15,11 @@ describe Minke::Docker::ServiceDiscovery do
           }
         }
       }
-    ]
     EOF
 
-    JSON.parse j
+    containers = OpenStruct.new
+    containers.info = JSON.parse(j)
+    return [containers]
   end
 
   let(:project_name) { 'tester' }
@@ -38,10 +38,20 @@ describe Minke::Docker::ServiceDiscovery do
     expect(address).to eq('127.0.0.1:3333')
   end
 
+  it 'throws an exception when the public address can not be found' do
+    allow(docker_runner).to receive(:running_containers).and_return(nil)
+    expect{ discovery.public_address_for('syslog', 2222) }.to raise_error("Unable to find public address for 'syslog' on port 2222")
+  end
+
   it 'returns the private address for the given container' do
     address = discovery.bridge_address_for 'syslog', 2222
 
     expect(address).to eq('172.17.0.2:2222')
+  end
+
+  it 'throws an exception when the bridge address can not be found' do
+    allow(docker_runner).to receive(:running_containers).and_return(nil)
+    expect{ discovery.bridge_address_for('syslog', 2222) }.to raise_error("Unable to find bridge address for 'syslog' on port 2222")
   end
 
 end

@@ -48,7 +48,8 @@ module Minke
       #
       # Array of Docker::Image
       def running_containers
-        ::Docker::Container.all(all: true, filters: { status: ["running"] }.to_json)
+        containers = ::Docker::Container.all(all: true, filters: { status: ["running"] }.to_json)
+        return containers
       end
 
       ##

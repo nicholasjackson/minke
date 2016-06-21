@@ -46,7 +46,7 @@ namespace :app do
     create_dependencies
 
     if @config.run != nil
-      runner = Minke::Tasks::Run.new @config, :run, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
+      runner = Minke::Tasks::Run.new @config, :run, @generator_config, @docker_runner, @docker_compose_factory, @service_discovery, @logger, @helper
       runner.run
     end
   end
@@ -59,7 +59,7 @@ namespace :app do
     create_dependencies
 
     if @config.cucumber != nil
-      runner = Minke::Tasks::Cucumber.new @config, :cucumber, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
+      runner = Minke::Tasks::Cucumber.new @config, :cucumber, @generator_config, @docker_runner, @docker_compose_factory, @service_discovery, @logger, @helper
       runner.run
     end
   end
@@ -72,10 +72,11 @@ namespace :app do
   end
 
   def create_dependencies
-    @project_name = "minke#{SecureRandom.urlsafe_base64(12)}"
+    @project_name = "minke#{SecureRandom.urlsafe_base64(12)}".downcase
     @system_runner = Minke::Docker::SystemRunner.new
     @docker_compose_factory ||= Minke::Docker::DockerComposeFactory.new @system_runner, @project_name
     @docker_runner ||= Minke::Docker::DockerRunner.new
+    @service_discovery ||= Minke::Docker::ServiceDiscovery.new @project_name, @docker_runner
 
     if @config == nil
       reader = Minke::Config::Reader.new
