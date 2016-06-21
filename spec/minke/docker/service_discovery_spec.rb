@@ -20,6 +20,7 @@ describe Minke::Docker::ServiceDiscovery do
     containers = OpenStruct.new
     containers.info = JSON.parse(j)
     return [containers]
+
   end
 
   let(:project_name) { 'tester' }
@@ -43,8 +44,8 @@ describe Minke::Docker::ServiceDiscovery do
     expect{ discovery.public_address_for('syslog', 2222) }.to raise_error("Unable to find public address for 'syslog' on port 2222")
   end
 
-  it 'returns the private address for the given container' do
-    address = discovery.bridge_address_for 'syslog', 2222
+  it 'returns the bridge address for the given container' do
+    address = discovery.bridge_address_for 'bridge', 'syslog', 2222
 
     expect(address).to eq('172.17.0.2:2222')
   end

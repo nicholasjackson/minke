@@ -88,7 +88,7 @@ module Minke
         if url.type == 'external'
           "#{url.protocol}://#{url.address}:#{url.port}#{url.path}"
         elsif url.type == 'bridge'
-          address = @service_discovery.bridge_address_for url.address, url.port
+          address = @service_discovery.bridge_address_for ENV['DOCKER_NETWORK'], url.address, url.port
           "#{url.protocol}://#{address}#{url.path}"
         elsif url.type == 'public'
           address = @service_discovery.public_address_for url.address, url.port

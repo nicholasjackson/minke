@@ -201,7 +201,9 @@ describe Minke::Tasks::Task do
 
     it 'fetches the bridge address when executing health check' do
       config.fetch.pre.health_check.type = 'bridge'
-      expect(service_discovery).to receive(:bridge_address_for).with('myhealth', '8081')
+      ENV['DOCKER_NETWORK'] = 'tester'
+
+      expect(service_discovery).to receive(:bridge_address_for).with('tester', 'myhealth', '8081')
 
       task.run_steps config.fetch.pre
     end
