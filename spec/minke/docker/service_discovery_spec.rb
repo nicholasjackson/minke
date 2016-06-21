@@ -52,7 +52,7 @@ describe Minke::Docker::ServiceDiscovery do
 
   it 'throws an exception when the bridge address can not be found' do
     allow(docker_runner).to receive(:running_containers).and_return(nil)
-    expect{ discovery.bridge_address_for('syslog', 2222) }.to raise_error("Unable to find bridge address for 'syslog' on port 2222")
+    expect{ discovery.bridge_address_for('bridge', 'syslog', 2222) }.to raise_error("Unable to find bridge address for 'syslog' on port 2222")
   end
 
 end
