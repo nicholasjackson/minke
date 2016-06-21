@@ -24,26 +24,25 @@ module Minke
       # start the containers in a stack defined by the docker compose file
       def up
         execute_command "up -d"
-
         sleep 2
       end
 
       ##
       # stop the containers in a stack and removes them as defined by the docker compose file
       def down
-        execute_command "down"
+        execute_command "down -v"
       end
 
       ##
       # remove the containers started in a stack defined by the docker compose file
       def rm
-        @system_runner.execute "echo y | docker-compose -f #{@compose_file} rm -v" unless ::Docker.info["Driver"] == "btrfs"
+        execute_command 'rm -v' unless ::Docker.info["Driver"] == "btrfs"
       end
 
       ##
       # stream the logs for the current running stack
       def logs
-        execute_command "logs -f"
+        execute_command 'logs -f'
       end
 
       ##
