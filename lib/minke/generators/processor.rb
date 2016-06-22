@@ -26,6 +26,9 @@ module Minke
 
           run_command_in_container image, generator.generate_settings.command unless generator.generate_settings.command == nil
         end
+
+        # write the shell script
+        Minke::Generators::write_bash_script output_folder + "/_build/minke.sh"
       end
 
       def build_image docker_file

@@ -6,7 +6,7 @@ namespace :app do
 
     if @config.fetch != nil
       puts 'run fetch'
-      runner = Minke::Tasks::Fetch.new @config, :fetch, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
+      runner = Minke::Tasks::Fetch.new @config, :fetch, @generator_config, @docker_runner, @docker_compose_factory, @service_discovery, @logger, @helper
       runner.run
     end
   end
@@ -16,7 +16,7 @@ namespace :app do
     create_dependencies
 
     if @config.build != nil
-      runner = Minke::Tasks::Build.new @config, :build, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
+      runner = Minke::Tasks::Build.new @config, :build, @generator_config, @docker_runner, @docker_compose_factory, @service_discovery, @logger, @helper
       runner.run
     end
   end
@@ -26,7 +26,7 @@ namespace :app do
     create_dependencies
 
     if @config.test != nil
-      runner = Minke::Tasks::Test.new @config, :test, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
+      runner = Minke::Tasks::Test.new @config, :test, @generator_config, @docker_runner, @docker_compose_factory, @service_discovery, @logger, @helper
       runner.run
     end
   end
@@ -36,7 +36,7 @@ namespace :app do
     create_dependencies
 
     if @config.build != nil
-      runner = Minke::Tasks::BuildImage.new @config, :build, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
+      runner = Minke::Tasks::BuildImage.new @config, :build, @generator_config, @docker_runner, @docker_compose_factory, @service_discovery, @logger, @helper
       runner.run
     end
   end
@@ -67,7 +67,7 @@ namespace :app do
   desc "push built image to Docker registry"
   task :push  do
     create_dependencies
-    runner = Minke::Tasks::Push.new @config, :cucumber, @generator_config, @docker_runner, @docker_compose_factory, @logger, @helper
+    runner = Minke::Tasks::Push.new @config, :cucumber, @generator_config, @docker_runner, @docker_compose_factory, @service_discovery, @logger, @helper
     runner.run
   end
 
