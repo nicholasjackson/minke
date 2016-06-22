@@ -92,8 +92,9 @@ namespace :app do
         v.src_root = File.expand_path('../')
       end
 
+      Minke::Generators::Processor.load_generators
       processor = Minke::Generators::Processor.new variables, @docker_runner
-      processor.load_generators
+      
       @generator_config = processor.get_generator @config.generator_name
     end
 
