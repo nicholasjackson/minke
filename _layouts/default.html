@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  
   {% include head.html %}
 
   <body>
-    {% include page-header.html %}
+
+    {% include menu.html %}
+    {% page.url %}
+    {% if page.url == "home.html" }
+      {% include page-header.html %}
+    {% endif %}
 
     <section class="main-content">
-      
+
       {{ content }}
 
       {% include page-footer.html %}
