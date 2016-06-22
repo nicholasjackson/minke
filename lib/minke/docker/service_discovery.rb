@@ -42,7 +42,7 @@ module Minke
           container_details = find_container_by_name "/#{@project_name}_#{service_name}_1"
           ip = container_details.first.info['NetworkSettings']['Networks']["#{network}"]['IPAddress']
         rescue
-          raise "Unable to find bridge address for '#{service_name}' on port #{private_port}"
+          raise "Unable to find bridge address for network: #{network}, container: #{service_name}, port: #{private_port}"
         end
         return "#{ip}:#{private_port}"
       end
