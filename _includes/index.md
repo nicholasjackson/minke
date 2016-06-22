@@ -3,6 +3,7 @@ Minke is an opinionated build system for μServices and Docker, it uses generato
 
 The intention is to produce a 0 dependency standardised build and test framework that works equally well on CI as it does on your local machine.
 
+
 # Like make on steroids
 Minke is almost a 0 dependency setup for building your source code you will need three things.
 1. A computer, Mac or Linux (Windows too if someone would like to write a bat script).
@@ -19,8 +20,13 @@ Minke just deals with the other stuff; Minke and it's generators are built in Ru
 
 It is completely extensible, for example you are building a Microservice and would like to automatically setup the database schema or load some initial data.  This can easily be achieved by writing your own Rake tasks.
 
+
 # Isolated
 The core concept of Minke is that it should be possible to run two Minke builds on the same machine with no port or container conflicts.  For this reason Minke automatically creates a Docker network and gives unique names to the containers to avoid conflict.  To avoid the need for exposing public ports for setup or functional testing Minke has service discovery built in you can simply use the discovery API to resolve any containers address.
+
+
+# Secure
+Minke can encrypt config variables with a private key so you don't have to expose your passwords to the whole internet.
 
 
 # Generators

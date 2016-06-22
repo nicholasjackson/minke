@@ -6,33 +6,40 @@ Following on from the quick start lets have a little deeper look at how Minke ac
 $ docker run --rm -v $(pwd):$(pwd) -w $(pwd) nicholasjackson/minke /bin/bash -c 'minke'
 ```
 
-You should see the below output with the go generator successfully installed.
+You should see the below output showing the help options and the currently installed generators.
 
 ```
-
 888b     d888 d8b          888
 8888b   d8888 Y8P          888
 88888b.d88888              888
 888Y88888P888 888 88888b.  888  888  .d88b.
-888 Y888P 888 888 888  88b 888 .88P d8P  Y8b
+888 Y888P 888 888 888 "88b 888 .88P d8P  Y8b
 888  Y8P  888 888 888  888 888888K  88888888
-888   "   888 888 888  888 888  88b Y8b.
+888   "   888 888 888  888 888 "88b Y8b.
 888       888 888 888  888 888  888  "Y8888
 
-Version: 1.2.0
+Version: 1.9.1
 
-# Loading installed generators:
-  * minke-generator-netmvc
+# Loading installed generators
+registered minke-generator-go
+registered minke-generator-netmvc
+registered minke-generator-swift
 
-Please specify options use: minke --help for help on command line options
+
+Usage: minke [options]
+    -e, --encrypt STRING             Encrypt a string
+    -k, --key STRING                 Private key to use for encryption
+    -g, --generator GENERATOR        Generator plugin to use
+    -o, --output OUTPUT              Output folder
+    -a, --application_name NAME      Application name
+    -n, --namespace NAMESPACE        Application namespace
 ```
 
 ## Scaffold a project
 We can now scaffold a new go μService using the following command:
 
 ```bash
-$ minke -g minke-generator-netmvc -o ~/nicholasjackson/helloworld
-  -a helloworld -n HelloWorld
+$ docker run --rm -v $(pwd):$(pwd) -w $(pwd) nicholasjackson/minke /bin/bash -c 'minke -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a helloworld'
 ```
 
 If look at the output folder we will see something like the below folder structure, all our source code is in the root and there is a **_build** folder, this is where Minke stores things like the Docker and Docker Compose files and configuration.
@@ -64,7 +71,9 @@ Change to the **_build** folder
 ```
 $ cd _build
 ```
-Since Minke is primarily uses Rake you can run `$ Rake -T` to see the various options available to you.
+To avoid the pain of having to craft a ridiculously long docker run cmd every time you want to run a command there is a bash script `minke.sh` in the build folder.  This simply runs the commands specified as arguments inside the Minke Docker container.  The parent folder to _build (source root) is mapped as a volume inside the container with the same path as your local folder and the working directory is set to _build folder.
+
+Since Minke is primarily uses Rake you can run `$ ./minke.sh rake -T` to see the various options available to you.
 
 ```
 rake app:build              # build application
@@ -83,11 +92,15 @@ rake docker:update_images   # updates build images for swagger and golang will o
 To build the application simply execute:
 
 ```bash
-$ rake app:build
+$ ./minke.sh rake app:build
 ```
-This will download a docker image for the language (in this instance Go), and run the commands.  No build commands are executed directly on your machine which is great as you do not need to manage all the dependencies.  
-The output will look something like below.
+The steps minke performs are:
+1. Download Docker image or build image specified by the generator.
+2. Start a new build container.
+3. Fetch any dependencies.
+4. Execute build command specified by the generator.
 
+The output will look something like below.
 ```bash
 # Loading installed generators
 registered minke-generator-netmvc
