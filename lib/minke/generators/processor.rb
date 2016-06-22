@@ -4,6 +4,15 @@ module Minke
     # Process handles the creation of new projects from a generator template.
     class Processor
 
+      def self.load_generators
+        puts '# Loading installed generators'
+        Gem::Specification.find_all.each do |spec|
+          if spec.metadata != nil && spec.metadata['entrypoint'] != nil
+            require spec.metadata['entrypoint']
+          end
+        end
+      end
+
       def initialize variables, docker_runner
         @variables = variables
         @docker_runner = docker_runner
@@ -103,15 +112,6 @@ module Minke
       #
       def local_gems
          Gem::Specification.sort_by{ |g| [g.name.downcase, g.version] }.group_by{ |g| g.name }
-      end
-
-      def load_generators
-        puts '# Loading installed generators'
-        Gem::Specification.find_all.each do |spec|
-          if spec.metadata != nil && spec.metadata['entrypoint'] != nil
-            require spec.metadata['entrypoint']
-          end
-        end
       end
 
       def get_generator generator

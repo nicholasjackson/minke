@@ -19,6 +19,11 @@ puts ""
 puts "Version: #{Minke::VERSION}"
 puts ""
 
+Minke::Generators::Processor.load_generators
+
+puts ""
+puts ""
+
 options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: minke [options]"
@@ -39,10 +44,6 @@ variables = Minke::Generators::ConfigVariables.new.tap do |v|
   v.src_root = File.expand_path(options[:output]) unless options[:output] == nil
 end
 processor = Minke::Generators::Processor.new variables, Minke::Docker::DockerRunner.new
-processor.load_generators
-
-puts ""
-puts ""
 
 if options[:encrypt] != nil
   puts "Please specify a key to use for encryption using -k [path to file]" if options[:key] == nil
