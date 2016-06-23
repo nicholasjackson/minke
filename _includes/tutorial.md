@@ -18,7 +18,7 @@ You should see the below output showing the help options and the currently insta
 888   "   888 888 888  888 888 "88b Y8b.
 888       888 888 888  888 888  888  "Y8888
 
-Version: 1.9.1
+Version: 1.9.2
 
 # Loading installed generators
 registered minke-generator-go
@@ -39,30 +39,21 @@ Usage: minke [options]
 We can now scaffold a new go μService using the following command:
 
 ```bash
-$ docker run --rm -v $(pwd):$(pwd) -w $(pwd) nicholasjackson/minke /bin/bash -c 'minke -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a helloworld'
+$ docker run --rm -v $(pwd):$(pwd) -w $(pwd) nicholasjackson/minke /bin/bash -c 'minke -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a crapola'
 ```
 
 If look at the output folder we will see something like the below folder structure, all our source code is in the root and there is a **_build** folder, this is where Minke stores things like the Docker and Docker Compose files and configuration.
 
 ```
-total 12520
-    0 drwxr-xr-x  17 nicj  NOTHS\Domain Users      578 23 May 15:09 .
-    0 drwxr-xr-x  10 nicj  NOTHS\Domain Users      340 23 May 15:07 ..
-    0 drwxr-xr-x   3 nicj  NOTHS\Domain Users      102 25 Apr 16:30 .bundle
-    0 drwxr-xr-x  13 nicj  NOTHS\Domain Users      442 23 May 15:09 .git
-    8 -rw-r--r--   1 nicj  NOTHS\Domain Users      123 18 Apr 15:43 .gitignore
-    8 -rw-r--r--   1 nicj  NOTHS\Domain Users       11 18 Apr 15:43 .ruby-gemset
-    8 -rw-r--r--   1 nicj  NOTHS\Domain Users        6 18 Apr 15:43 .ruby-version
-    8 -rw-r--r--   1 nicj  NOTHS\Domain Users     1083 18 Apr 15:43 LICENSE
-    8 -rw-r--r--   1 nicj  NOTHS\Domain Users      258 18 Apr 15:43 Readme.md
-    0 drwxr-xr-x  12 nicj  NOTHS\Domain Users      408 25 Apr 15:57 _build
-    8 -rw-r--r--   1 nicj  NOTHS\Domain Users      629 18 Apr 15:43 circle.yml
-    0 drwxr-xr-x   3 nicj  NOTHS\Domain Users      102 18 Apr 15:43 global
-    0 drwxr-xr-x  10 nicj  NOTHS\Domain Users      340 18 Apr 15:43 handlers
-12464 -rwxr-xr-x   1 nicj  NOTHS\Domain Users  6379552 25 Apr 16:45 helloworld
-    0 drwxr-xr-x   3 nicj  NOTHS\Domain Users      102 18 Apr 15:43 logging
-    8 -rw-r--r--   1 nicj  NOTHS\Domain Users     1290 18 Apr 15:43 main.go
-    0 drwxr-xr-x   3 nicj  NOTHS\Domain Users      102 18 Apr 15:43 mocks
+0 drwxr-xr-x   9 nicj  129917615   306 22 Jun 16:31 .
+0 drwxr-xr-x  15 nicj  129917615   510 22 Jun 16:30 ..
+8 -rw-r--r--   1 nicj  129917615     9 22 Jun 16:31 .gitignore
+0 drwxr-xr-x  14 nicj  129917615   476 22 Jun 16:31 _build
+0 drwxr-xr-x   3 nicj  129917615   102 22 Jun 16:31 global
+0 drwxr-xr-x  10 nicj  129917615   340 22 Jun 16:31 handlers
+0 drwxr-xr-x   3 nicj  129917615   102 22 Jun 16:31 logging
+8 -rw-r--r--   1 nicj  129917615  1582 22 Jun 16:31 main.go
+0 drwxr-xr-x   3 nicj  129917615   102 22 Jun 16:31 mocks
 ```
 
 ## Building and testing your application
@@ -103,55 +94,70 @@ The steps minke performs are:
 The output will look something like below.
 ```bash
 # Loading installed generators
+registered minke-generator-go
 registered minke-generator-netmvc
+registered minke-generator-swift
 run fetch
 ## Update dependencies
-/Users/nicj/Developer/transform/api-ipad:/apiipad
-log  : Restoring packages for /apiipad/test/apiipad.Tests/project.json...
-info :   GET https://api.nuget.org/v3-flatcontainer/microsoft.netcore.dotnethostresolver/index.json
-info :   OK https://api.nuget.org/v3-flatcontainer/microsoft.netcore.dotnethostresolver/index.json 451ms
-info :   GET https://api.nuget.org/v3-flatcontainer/microsoft.netcore.dotnethost/index.json
-info :   OK https://api.nuget.org/v3-flatcontainer/microsoft.netcore.dotnethost/index.json 488ms
-
-...
-
-Project apiipad (.NETCoreApp,Version=v1.0) will be compiled because expected outputs are missing
-
-Compiling
-apiipad for .NETCoreApp,Version=v1.0
-
-Compilation succeeded.
-0 Warning(s)
-0 Error(s)
-
-
-Time elapsed 00:00:05.2253203
+/Users/nicj/Developer/crapola:/go/src/github.com/nicholasjackson/myservice
+/Users/nicj/Developer/crapola/vendor:/packages/src
+github.com/alexcesaro/statsd (download)
+Fetching https://gopkg.in/alexcesaro/statsd.v2?go-get=1
+Parsing meta tags from https://gopkg.in/alexcesaro/statsd.v2?go-get=1 (status code 200)
+get "gopkg.in/alexcesaro/statsd.v2": found meta tag main.metaImport{Prefix:"gopkg.in/alexcesaro/statsd.v2", VCS:"git", RepoRoot:"https://gopkg.in/alexcesaro/statsd.v2"} at https://gopkg.in/alexcesaro/statsd.v2?go-get=1
+gopkg.in/alexcesaro/statsd.v2 (download)
+github.com/facebookgo/inject (download)
+github.com/facebookgo/structtag (download)
+github.com/facebookgo/ensure (download)
+github.com/davecgh/go-spew (download)
+github.com/facebookgo/stack (download)
+github.com/facebookgo/subset (download)
+github.com/asaskevich/govalidator (download)
+github.com/gorilla/context (download)
+github.com/gorilla/pat (download)
+github.com/gorilla/mux (download)
+github.com/stretchr/testify (download)
+Downloaded packages
+## Build application
+["/bin/bash", "-c", "go build -a -installsuffix cgo -ldflags '-s' -o myservice"]
+/Users/nicj/Developer/crapola:/go/src/github.com/nicholasjackson/myservice
+/Users/nicj/Developer/crapola/vendor:/packages/src
 ```
 
-The build task has a dependency on the fetch task so before we try to build anything we will fetch the dependencies (in this instance from nuget) before executing the build.
-All of the code is run inside the docker container however most generators will use the physical disk of the Docker server to cache the output.  This just speeds up the whole process and allows you to utilise any caching behaviour of your CI environment if needed.
+The build task has a dependency on the fetch task so before we try to build anything we will fetch the dependencies (in this instance using go get) before executing the build.  
+All of the code is run inside the docker container however most generators will use the physical disk of the Docker server to cache the output.  This speeds up the whole process and allows you to utilise any caching behavior of your CI environment if needed.
 
 ### Running the unit tests
 ```bash
-$ rake app:test
+$ ./minke.sh rake app:test
 ```
-Running the unit tests is a similar process, before we run the tests we will build the application code and fetch any dependencies.  It all runs inside a container.
+Running the unit tests is a similar process, before we run the tests we will build the application code and fetch any dependencies.   It all runs inside a container.
+```bash
+## Test application
+/Users/nicj/Developer/crapola:/go/src/github.com/nicholasjackson/crapola
+/Users/nicj/Developer/crapola/vendor:/packages/src
+?   	github.com/nicholasjackson/crapola	[no test files]
+?   	github.com/nicholasjackson/crapola/global	[no test files]
+ok  	github.com/nicholasjackson/crapola/handlers	0.013s
+?   	github.com/nicholasjackson/crapola/logging	[no test files]
+?   	github.com/nicholasjackson/crapola/mocks	[no test files]
+```
 
 ### Build yourself an image
 So we are going to run the cucumber tests against a Docker container and ultimately you want to run this on your server anyway so lets build an image which can be launched.
 ```bash
-$ rake app:build_image
+$ ./minke.sh rake app:build_image
 ```
 
-Thats all you need this will build and test your application code then copy the assets into the right location to be packaged up into a Docker image, all of the steps is configurable checkout the section on Config for more information.
+That's all you need this will build and test your application code then copy the assets into the right location to be packaged up into a Docker image, all of the steps is configurable checkout the section on Config for more information.
 
 ### Functional tests
-Having unit tests for your code covers you a little however there is a real benefit to having a good behavioural test suite which may even test the integration of your application with other dependencies such as database servers.
+Having unit tests for your code covers you a little however there is a real benefit to having a good behavioral test suite which may even test the integration of your application with other dependencies such as database servers.
 Minke uses Cucumber and Docker to facilitate this, it spins up a stack using Docker Compose and executes the Cucumber tests against it.  
 Running the functional tests is as easy as...
 
 ```bash
-$ rake app:cucumber
+$ ./minke rake app:cucumber
 ```
 
 This will start the stack with Docker Compose using a standard format compose file which can be found in the **_build** folder, it loads any config that we may require for the service into Consul and then waits for the service to start before executing the Cucumber tests.  
