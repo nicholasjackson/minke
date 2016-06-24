@@ -38,7 +38,7 @@ module Minke
 
         # write the shell script
         Minke::Generators::write_bash_script output_folder + "/_build/minke.sh"
-        Minke::Generators::create_rvm_files output_folder + "/_build/", "@variables.application_name
+        Minke::Generators::create_rvm_files output_folder + "/_build/", @variables.application_name
       end
 
       def build_image docker_file
