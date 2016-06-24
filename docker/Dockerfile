@@ -9,5 +9,11 @@ RUN apt-get update -q \
 		"https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-Linux-x86_64" \
 	&& chmod +x /usr/local/bin/docker-compose
 
+RUN curl -sSL https://rvm.io/mpapis.asc | gpg --import -
+RUN curl -sSL https://get.rvm.io | bash -s stable --ruby --with-gems="bundle"
+
 COPY ./Gemfile Gemfile
-RUN bundle install
+
+RUN /bin/bash -c "source /usr/local/rvm/scripts/rvm && rvm @global do bundle install"
+
+CMD ["source /usr/local/rvm/scripts/rvm"]

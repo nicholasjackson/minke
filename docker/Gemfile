@@ -1,8 +1,12 @@
 source 'https://rubygems.org'
 
 gem "rake"
-gem "cucumber", "~> 1.3.10"
+gem "bundler"
+gem "cucumber"
 gem "cucumber-rest-api", "= 0.3"
+gem 'cucumber-api', '~> 0.3'
+gem 'nokogiri'
+
 gem 'minke'
 gem 'minke-generator-swift'
 gem 'minke-generator-netmvc'
