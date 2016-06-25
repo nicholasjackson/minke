@@ -3,7 +3,7 @@ module Minke
     SCRIPT = <<-EOF
     #!/bin/bash
     DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
-    BUNDLE_COMMAND="bundle install -j3 && bundle update"
+    BUNDLE_COMMAND="source /usr/local/rvm/scripts/rvm && bundle install -j3 && bundle update"
     ERROR="Please specify a command e.g. ./minke.sh rake app:test"
     COMMAND=""
     NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')
