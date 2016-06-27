@@ -209,9 +209,7 @@ describe Minke::Tasks::Task do
     end
 
     it 'replaces the ip address for the docker host if docker toolbox' do
-      allow(docker_runner).to receive(:get_docker_ip_address).and_return('192.168.99.100')
-      expect(docker_runner).to receive(:get_docker_ip_address).twice
-      expect(helper).to receive(:wait_for_HTTPOK).with('http://192.168.99.100:8080/v1/health', 0, 3)
+      expect(helper).to receive(:wait_for_HTTPOK).with('http://0.0.0.0:8080/v1/health', 0, 3)
 
       task.run_steps config.fetch.pre
     end

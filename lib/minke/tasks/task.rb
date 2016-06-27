@@ -93,12 +93,6 @@ module Minke
         elsif url.type == 'public'
           address = @service_discovery.public_address_for url.address, url.port
 
-          # if running on docker for mac we need to replace the ip address with the docker hosts
-          ip = @docker_runner.get_docker_ip_address
-          if  ip != "127.0.0.1" && ip != "0.0.0.0" && ip != nil
-            address.gsub!('0.0.0.0', ip)
-          end
-
           "#{url.protocol}://#{address}#{url.path}"
         end
       end
