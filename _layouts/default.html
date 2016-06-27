@@ -5,8 +5,8 @@
   <body>
 
     {% include menu.html %}
-    {% page.url %}
-    {% if page.url == "home.html" }
+
+    {% if page.url == '/' %}
       {% include page-header.html %}
     {% endif %}
 
