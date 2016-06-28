@@ -49,8 +49,14 @@ describe Minke::Tasks::Cucumber do
     return helper
   end
 
+  let(:system_runner) do
+    runner = double 'system_runner'
+    allow(runner).to receive(:execute)
+    return runner
+  end
+
   let(:task) do
-    Minke::Tasks::Cucumber.new config, :cucumber, generator_settings, docker_runner, docker_compose_factory, service_discovery, logger, helper
+    Minke::Tasks::Cucumber.new config, :cucumber, generator_settings, docker_runner, docker_compose_factory, service_discovery, logger, helper, system_runner
   end
 
   it 'calls create on the compose factory' do

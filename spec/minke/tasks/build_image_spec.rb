@@ -34,8 +34,14 @@ describe Minke::Tasks::BuildImage do
     return helper
   end
 
+  let(:system_runner) do
+    runner = double 'system_runner'
+    allow(runner).to receive(:execute)
+    return runner
+  end
+
   let(:task) do
-    Minke::Tasks::BuildImage.new config, :build, generator_config, docker_runner, docker_compose_factory, service_discovery, logger, helper
+    Minke::Tasks::BuildImage.new config, :build, generator_config, docker_runner, docker_compose_factory, service_discovery, logger, helper, system_runner
   end
 
   it 'builds an image from the dockerfile' do

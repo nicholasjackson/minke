@@ -3,7 +3,7 @@ module Minke
     SCRIPT = <<-EOF
     #!/bin/bash
     DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
-    BUNDLE_COMMAND="source /usr/local/rvm/scripts/rvm && bundle install -j3 && bundle update"
+    RVM_COMMAND="source /usr/local/rvm/scripts/rvm"
     ERROR="Please specify a command e.g. ./minke.sh rake app:test"
     COMMAND=""
     NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')
@@ -21,7 +21,7 @@ module Minke
     echo "Running command: ${COMMAND}"
 
     eval "docker network create minke_${NEW_UUID}"
-    eval "docker run --rm -it --net=minke_${NEW_UUID} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor/gems:${GEMSETFOLDER} -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_build nicholasjackson/minke /bin/bash -c '${BUNDLE_COMMAND} && ${COMMAND}'"
+    eval "docker run --rm -it --net=minke_${NEW_UUID} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor/gems:${GEMSETFOLDER} -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_build nicholasjackson/minke /bin/bash -c '${RVM_COMMAND} && ${COMMAND}'"
     eval "docker network rm minke_${NEW_UUID}"
     EOF
 

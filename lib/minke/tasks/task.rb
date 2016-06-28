@@ -4,7 +4,7 @@ module Minke
     # Task is a base implementation of a rake task such as fetch, build, etc
     class Task
 
-      def initialize config, task, generator_settings, docker_runner, docker_compose_factory, service_discovery, logger, helper
+      def initialize config, task, generator_settings, docker_runner, docker_compose_factory, service_discovery, logger, helper, system_runner
         @config = config
         @task = task
         @generator_settings = generator_settings
@@ -13,6 +13,7 @@ module Minke
         @logger = logger
         @helper = helper
         @task_settings = config.send(task)
+        @system_runner = system_runner
 
         @build_image = @generator_settings.build_settings.docker_settings.image
         @build_image = config.build_image_for(task) unless config.build_image_for(task) == nil
@@ -92,7 +93,6 @@ module Minke
           "#{url.protocol}://#{address}#{url.path}"
         elsif url.type == 'public'
           address = @service_discovery.public_address_for url.address, url.port
-
           "#{url.protocol}://#{address}#{url.path}"
         end
       end

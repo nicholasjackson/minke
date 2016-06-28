@@ -34,8 +34,14 @@ describe Minke::Tasks::Push do
     end
   end
 
+  let(:system_runner) do
+    runner = double 'system_runner'
+    allow(runner).to receive(:execute)
+    return runner
+  end
+
   let(:task) do
-    Minke::Tasks::Push.new config, :run, generator_config, docker_runner, nil, nil, logger, nil
+    Minke::Tasks::Push.new config, :run, generator_config, docker_runner, nil, nil, logger, nil, system_runner
   end
 
   it 'logs into the registry' do

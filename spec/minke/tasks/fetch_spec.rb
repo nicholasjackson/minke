@@ -26,6 +26,12 @@ describe Minke::Tasks::Fetch do
 
   let(:service_discovery) { double "service_discovery" }
 
+  let(:system_runner) do
+    runner = double 'system_runner'
+    allow(runner).to receive(:execute)
+    return runner
+  end
+
   let(:helper) do
     helper = double "helper"
     allow(helper).to receive(:invoke_task)
@@ -37,7 +43,7 @@ describe Minke::Tasks::Fetch do
   end
 
   let(:task) do
-    Minke::Tasks::Fetch.new config, :fetch, generator_config, docker_runner, docker_compose_factory, service_discovery, logger, helper
+    Minke::Tasks::Fetch.new config, :fetch, generator_config, docker_runner, docker_compose_factory, service_discovery, logger, helper, system_runner
   end
 
   it 'executes the given commands in a container' do
@@ -45,6 +51,13 @@ describe Minke::Tasks::Fetch do
     expect(docker_runner).to receive(:pull_image).twice
     expect(docker_runner).to receive(:create_and_run_container).twice
     expect(docker_runner).to receive(:delete_container).twice
+
+    task.run
+  end
+
+  it 'calls bundle' do
+    generator_config.build_settings.build_commands.fetch = nil
+    expect(system_runner).to receive(:execute).with('bundle install -j3 && bundle update')
 
     task.run
   end
