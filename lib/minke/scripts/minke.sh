@@ -4,7 +4,7 @@ RVM_COMMAND="source /usr/local/rvm/scripts/rvm"
 ERROR="Please specify a command e.g. ./minke.sh rake app:test"
 COMMAND=""
 NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')
-GEMSET=$(<.ruby-gemset)
+GEMSET='minkegems'
 GEMSETFOLDER="/usr/local/rvm/gems/ruby-2.3.1@${GEMSET}"
 
 if [ "$1" == '' ]; then
