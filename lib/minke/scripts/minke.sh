@@ -14,7 +14,7 @@ fi
 
 COMMAND=$*
 
-if [[ $1 == -g* ]]; then
+if [[ $1 == \ -g* ]]; then
   echo "Generating new template"
   DIR=${PWD}
   DOCKER_RUN="docker run --rm -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor/gems:${GEMSETFOLDER} -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR} nicholasjackson/minke /bin/bash -c '${RVM_COMMAND} && bundle install && minke ${COMMAND}'"
