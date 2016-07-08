@@ -15,11 +15,11 @@ fi
 COMMAND=$*
 CURRENT_DIR=${PWD##*/}
 
-if ["$CURRENT_DIR" == "_build"]; then
+if [ "$CURRENT_DIR" == "_build" ]; then
   DIR=$(dirname `pwd`)
 fi
 
-if ["$CURRENT_DIR" != "_build"]; then
+if [ "$CURRENT_DIR" != "_build" ]; then
   DIR=${PWD}
 fi
 
