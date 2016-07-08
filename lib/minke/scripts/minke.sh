@@ -18,7 +18,3 @@ DIR=$(dirname `pwd`)
 echo "Running command: ${COMMAND}"
 DOCKER_RUN="docker run --rm --net=minke_${NEW_UUID} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor/gems:${GEMSETFOLDER} -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_build nicholasjackson/minke /bin/bash -c '${RVM_COMMAND} && ${COMMAND}'"
 echo $DOCKER_RUN
-
-eval "docker network create minke_${NEW_UUID}"
-eval "${DOCKER_RUN}"
-eval "docker network rm minke_${NEW_UUID}"
