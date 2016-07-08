@@ -13,10 +13,21 @@ if [ "$1" == '' ]; then
 fi
 
 COMMAND=$*
-DIR=$(dirname `pwd`)
 
-echo "Running command: ${COMMAND}"
+if [[ $1 == \ -g* ]]; then
+  echo "Generating new template"
+  DIR=${PWD}
+  DOCKER_RUN="docker run --rm -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor/gems:${GEMSETFOLDER} -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR} nicholasjackson/minke /bin/bash -c '${RVM_COMMAND} && bundle install && minke ${COMMAND}'"
+  eval "${DOCKER_RUN}"
+fi
 
-eval "docker network create minke_${NEW_UUID}"
-eval "docker run --rm --net=minke_${NEW_UUID} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor/gems:${GEMSETFOLDER} -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_build nicholasjackson/minke /bin/bash -c '${RVM_COMMAND} && ${COMMAND}'"
-eval "docker network rm minke_${NEW_UUID}"
+if [[ $1 != \ -g* ]]; then
+  DIR=$(dirname `pwd`)
+  DOCKER_RUN="docker run --rm --net=minke_${NEW_UUID} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor/gems:${GEMSETFOLDER} -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_build nicholasjackson/minke /bin/bash -c '${RVM_COMMAND} && ${COMMAND}'"
+
+  echo "Running command: ${COMMAND}"
+
+  eval "docker network create minke_${NEW_UUID}"
+  eval "${DOCKER_RUN}"
+  eval "docker network rm minke_${NEW_UUID}"
+fi
