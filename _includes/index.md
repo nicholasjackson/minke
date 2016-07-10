@@ -35,9 +35,9 @@ The table below shows the currently available generators, to create your own ple
 | Language  |  Gem                                                                                      | Example      |
 | --------- | ----------------------------------------------------------------------------------------- | ------------ |
 | Go        | [Go μService Template](https://github.com/nicholasjackson/minke-generator-go)             |              |
-| .NET Core | [.NET MVC](https://github.com/nicholasjackson/minke-generator-netmvc)   |              |
+| .NET Core | [.NET MVC](https://github.com/nicholasjackson/minke-generator-netmvc)                     |              |
 | Java      | [Spring Boot](https://github.com/notonthehighstreet/minke-generator-spring)               |              |
-| Swift 3.0 | [IBM Kitura](https://github.com/nicholasjackson/minke-generator-swift)                                                                      |              |
+| Swift 3.0 | [IBM Kitura](https://github.com/nicholasjackson/minke-generator-swift)                    |              |
 | Node      | ExpressJS (Coming Soon)                                                                   |              |
 | Ruby      | Rails (Coming Soon)                                                                       |              |
 
@@ -45,23 +45,27 @@ The table below shows the currently available generators, to create your own ple
 
 ## Scaffold a new service
 1. Create the folder where you would like the new service and change into that directory.  Whilst we are building a Go microservice in this example you do not need to create this folder in your GOPATH if you are only going to build with Minke as the generator uses the new vendoring capability introduced in Go 1.5.
+
 ```bash
 $ mkdir ~/myservice
 $ cd ~/myservice
 ```
 
 2. Run the generator command in a docker container.
+
 ```bash
-$ docker run --rm -v $(pwd):$(pwd) -w $(pwd) nicholasjackson/minke /bin/bash -c 'minke -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'
+$ curl -L -s get.minke.rocks | bash -s ' -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'
 ```
 
 3. Build a Docker image
+
 ```bash
 $ cd _build
 $ ./minke.sh rake app:build_image
 ```
 
 4. Execute the functional tests
+
 ```bash
 $ ./minke.sh rake app:cucumber
 ```

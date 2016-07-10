@@ -24,6 +24,7 @@
     <li><a href="#contact">Functional Tests</a></li>
     <li><a href="#contact">Extending Minke</a></li>
     <li><a href="#contact">Using Custom Generators</a></li>
+    <li><a href="#change_log.html">Change Log</a></li>
     <li><a href="about.html">About</a></li>
     <li class="icon">
       <a href="javascript:void(0);" onclick="showHideMenu()">&#9776;</a>
@@ -34,7 +35,8 @@
 
     
       <section class="page-header">
-  <h1 class="project-name">Minke</h1>
+  <div><img style="width:90%;" src="img/minke_logo.png" alt="minke"/></div>
+  <h2 class="project-tagline"><b>version 1.10.0</b></h2>
   <h2 class="project-tagline">Build tools and generators for your μServices workflow.</h2>
   <a href="https://github.com/nicholasjackson/minke" class="btn">View on GitHub</a>
   <a href="https://github.com/nicholasjackson/minke/archive/master.zip" class="btn">Download .zip</a>
@@ -125,33 +127,38 @@
 
 <h2 id="scaffold-a-new-service">Scaffold a new service</h2>
 <ol>
-  <li>
-    <p>Create the folder where you would like the new service and change into that directory.  Whilst we are building a Go microservice in this example you do not need to create this folder in your GOPATH if you are only going to build with Minke as the generator uses the new vendoring capability introduced in Go 1.5.
-<code class="highlighter-rouge">bash
-$ mkdir ~/myservice
-$ cd ~/myservice
-</code></p>
-  </li>
-  <li>
-    <p>Run the generator command in a docker container.
-<code class="highlighter-rouge">bash
-$ docker run --rm -v $(pwd):$(pwd) -w $(pwd) nicholasjackson/minke /bin/bash -c 'minke -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'
-</code></p>
-  </li>
-  <li>
-    <p>Build a Docker image
-<code class="highlighter-rouge">bash
-$ cd _build
-$ ./minke.sh rake app:build_image
-</code></p>
-  </li>
-  <li>
-    <p>Execute the functional tests
-<code class="highlighter-rouge">bash
-$ ./minke.sh rake app:cucumber
-</code></p>
-  </li>
+  <li>Create the folder where you would like the new service and change into that directory.  Whilst we are building a Go microservice in this example you do not need to create this folder in your GOPATH if you are only going to build with Minke as the generator uses the new vendoring capability introduced in Go 1.5.</li>
 </ol>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>mkdir ~/myservice
+<span class="gp">$ </span><span class="nb">cd</span> ~/myservice
+</code></pre>
+</div>
+
+<ol>
+  <li>Run the generator command in a docker container.</li>
+</ol>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>curl -L -s get.minke.rocks | bash -s <span class="s1">' -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'</span>
+</code></pre>
+</div>
+
+<ol>
+  <li>Build a Docker image</li>
+</ol>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">cd </span>_build
+<span class="gp">$ </span>./minke.sh rake app:build_image
+</code></pre>
+</div>
+
+<ol>
+  <li>Execute the functional tests</li>
+</ol>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>./minke.sh rake app:cucumber
+</code></pre>
+</div>
 
 <p>You now have a working microservice ready to be pushed to a Docker registry and deployed to a server.  For more detailed information please see the <a href="tutorial.html">tutorial</a>.</p>
 
