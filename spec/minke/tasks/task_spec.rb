@@ -193,6 +193,14 @@ describe Minke::Tasks::Task do
       task.run_steps config.fetch.pre
     end
 
+    it 'starts consul' do
+      expect(true).to eq(false)
+    end
+
+    it 'waits for consul to start' do
+      expect(true).to eq(false)
+    end
+
     it 'loads data into consul' do
       expect(helper).to receive(:load_consul_data).with('http://0.0.0.0:8080', 'myfile')
 
@@ -236,6 +244,10 @@ describe Minke::Tasks::Task do
       expect(helper).to receive(:copy_assets).twice
 
       task.run_steps config.fetch.pre
+    end
+
+    it 'stops consul' do
+      expect(true).to eq(false)
     end
   end
 

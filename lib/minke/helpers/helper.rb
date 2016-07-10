@@ -20,7 +20,6 @@ module Minke
       end
 
       def load_consul_data server, config_file
-        wait_for_HTTPOK "#{server}/v1/status/leader", 0, 1
         loader = ConsulLoader::Loader.new(ConsulLoader::ConfigParser.new)
         puts config_file
         loader.load_config config_file, server

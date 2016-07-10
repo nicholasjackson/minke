@@ -1,3 +1,5 @@
+require 'minke'
+
 namespace :app do
 
   desc "fetch dependent packages"
@@ -6,7 +8,7 @@ namespace :app do
 
     if @config.fetch != nil
       puts 'run fetch'
-      runner = Minke::Tasks::Fetch.new @config, :fetch, @generator_config, @docker_runner, @docker_compose_factory, @service_discovery, @logger, @helper, @system_runner
+      runner = Minke::Tasks::Fetch.new @args
       runner.run
     end
   end
@@ -16,7 +18,7 @@ namespace :app do
     create_dependencies
 
     if @config.build != nil
-      runner = Minke::Tasks::Build.new @config, :build, @generator_config, @docker_runner, @docker_compose_factory, @service_discovery, @logger, @helper, @system_runner
+      runner = Minke::Tasks::Build.new @args
       runner.run
     end
   end
@@ -26,7 +28,7 @@ namespace :app do
     create_dependencies
 
     if @config.test != nil
-      runner = Minke::Tasks::Test.new @config, :test, @generator_config, @docker_runner, @docker_compose_factory, @service_discovery, @logger, @helper, @system_runner
+      runner = Minke::Tasks::Test.new @args
       runner.run
     end
   end
@@ -36,7 +38,7 @@ namespace :app do
     create_dependencies
 
     if @config.build != nil
-      runner = Minke::Tasks::BuildImage.new @config, :build, @generator_config, @docker_runner, @docker_compose_factory, @service_discovery, @logger, @helper, @system_runner
+      runner = Minke::Tasks::BuildImage.new @args
       runner.run
     end
   end
@@ -46,7 +48,7 @@ namespace :app do
     create_dependencies
 
     if @config.run != nil
-      runner = Minke::Tasks::Run.new @config, :run, @generator_config, @docker_runner, @docker_compose_factory, @service_discovery, @logger, @helper, @system_runner
+      runner = Minke::Tasks::Run.new @args
       runner.run
     end
   end
@@ -59,7 +61,7 @@ namespace :app do
     create_dependencies
 
     if @config.cucumber != nil
-      runner = Minke::Tasks::Cucumber.new @config, :cucumber, @generator_config, @docker_runner, @docker_compose_factory, @service_discovery, @logger, @helper, @system_runner
+      runner = Minke::Tasks::Cucumber.new @args
       runner.run
     end
   end
@@ -67,7 +69,7 @@ namespace :app do
   desc "push built image to Docker registry"
   task :push  do
     create_dependencies
-    runner = Minke::Tasks::Push.new @config, :cucumber, @generator_config, @docker_runner, @docker_compose_factory, @service_discovery, @logger, @helper, @system_runner
+    runner = Minke::Tasks::Push.new @args
     runner.run
   end
 
@@ -75,15 +77,18 @@ namespace :app do
     @project_name = "minke#{SecureRandom.urlsafe_base64(12)}".downcase.gsub('-', '')
     ENV["DOCKER_PROJECT"] = @project_name
 
-    @system_runner = Minke::Docker::SystemRunner.new
-    @docker_compose_factory ||= Minke::Docker::DockerComposeFactory.new @system_runner, @project_name
-    @docker_runner ||= Minke::Docker::DockerRunner.new
-    @service_discovery ||= Minke::Docker::ServiceDiscovery.new @project_name, @docker_runner
+    reader = Minke::Config::Reader.new
+    config = reader.read './config.yml'
 
-    if @config == nil
-      reader = Minke::Config::Reader.new
-      @config = reader.read './config.yml'
-    end
+    @args = {
+      :system_runner => Minke::Docker::SystemRunner.new,
+      :docker_compose_factory => Minke::Docker::DockerComposeFactory.new(@system_runner, @project_name),
+      :docker_runner => Minke::Docker::DockerRunner.new,
+      :service_discovery => Minke::Docker::ServiceDiscovery.new(@project_name, @docker_runner),
+      :config => config,
+      :logger => Logger.new(STDOUT),
+      :helper => Minke::Helpers::Helper.new
+    }
 
     if @generator_config == nil
       variables = Minke::Generators::ConfigVariables.new.tap do |v|
@@ -98,7 +103,5 @@ namespace :app do
       @generator_config = processor.get_generator @config.generator_name
     end
 
-    @logger ||= Logger.new(STDOUT)
-    @helper ||= Minke::Helpers::Helper.new
   end
 end

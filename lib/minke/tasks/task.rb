@@ -41,7 +41,7 @@ module Minke
       # execute the defined steps in the given Minke::Config::TaskRunSettings
       def run_steps steps
         execute_rake_tasks steps.tasks unless steps.tasks == nil
-        load_consul_data steps.consul_loader unless steps.consul_loader == nil
+        start_consul_and_load_data steps.consul_loader unless steps.consul_loader == nil
         wait_for_health_check steps.health_check unless steps.health_check == nil
         copy_assets steps.copy unless steps.copy == nil
       end
@@ -53,9 +53,23 @@ module Minke
       end
 
       ##
+      # start_consul_and_load_data config
+      def start_consul_and_load_data
+        #start consul
+        #wait_for_HTTPOK "#{server}/v1/status/leader", 0, 1
+        load_consul_data steps.consul_loader
+      end
+
+      ##
       # load consul config
       def load_consul_data config
         @helper.load_consul_data build_address(config.url), config.config_file
+      end
+
+      ##
+      # stop consul
+      def stop_consul
+
       end
 
       def wait_for_health_check url
