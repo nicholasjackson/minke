@@ -6,7 +6,7 @@ module Minke
         puts "## Update dependencies"
 
         puts '### Install gems'
-        @system_runner.execute('bundle install -j3 && bundle update')
+        @shell_helper.execute('bundle install -j3 && bundle update')
 
         puts '### Install generator dependencies'
         run_with_block do

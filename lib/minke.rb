@@ -23,6 +23,7 @@ require 'minke/docker/docker_compose'
 require 'minke/docker/docker_runner'
 require 'minke/docker/system_runner'
 require 'minke/docker/service_discovery'
+require 'minke/docker/health_check'
 
 require 'minke/config/config'
 require 'minke/config/reader'

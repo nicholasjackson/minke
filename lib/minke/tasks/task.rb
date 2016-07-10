@@ -4,32 +4,25 @@ module Minke
     # Task is a base implementation of a rake task such as fetch, build, etc
     class Task
 
-      def initialize config, task, generator_settings, docker_runner, docker_compose_factory, service_discovery, logger, helper, system_runner
-        @config = config
-        @task = task
-        @generator_settings = generator_settings
-        @docker_runner = docker_runner
-        @service_discovery = service_discovery
-        @logger = logger
-        @helper = helper
+      def initialize args
+        @config = args[:config]
+        @task_name = args[:task]
+        @docker_runner = args[:docker_runner]
+        @task_runner = args[:task_runner]
+        @docker_network = args[:docker_network] #ENV['DOCKER_NETWORK']
+        @error_helper = args[:error_helper]
+        @shell_helper = args[:shell_helper]
+        @logger_helper = args[:logger_helper]
+        @generator_config = args[:generator_config]
+        @docker_compose_factory = args[:docker_compose_factory]
+
         @task_settings = config.send(task)
-        @system_runner = system_runner
-
-        @build_image = @generator_settings.build_settings.docker_settings.image
-        @build_image = config.build_image_for(task) unless config.build_image_for(task) == nil
-
-        @build_file = config.build_docker_file_for(task)
-
-        @compose_file = config.compose_file_for(task)
-
-        @compose = docker_compose_factory.create @compose_file unless @compose_file == nil
       end
 
       ##
       # run_with_config executes the task steps for the given
       # - block containing custom actions
       def run_with_block
-        #TODO: Need to add some tests for this stuff
         run_steps @task_settings.pre unless @task_settings == nil || @task_settings.pre == nil
 
         yield if block_given?
@@ -38,89 +31,38 @@ module Minke
       end
 
       ##
-      # execute the defined steps in the given Minke::Config::TaskRunSettings
-      def run_steps steps
-        execute_rake_tasks steps.tasks unless steps.tasks == nil
-        start_consul_and_load_data steps.consul_loader unless steps.consul_loader == nil
-        wait_for_health_check steps.health_check unless steps.health_check == nil
-        copy_assets steps.copy unless steps.copy == nil
-      end
-
-      ##
-      # execute an array of rake tasks
-      def execute_rake_tasks tasks
-        tasks.each { |t| @helper.invoke_task t }
-      end
-
-      ##
-      # start_consul_and_load_data config
-      def start_consul_and_load_data
-        #start consul
-        #wait_for_HTTPOK "#{server}/v1/status/leader", 0, 1
-        load_consul_data steps.consul_loader
-      end
-
-      ##
-      # load consul config
-      def load_consul_data config
-        @helper.load_consul_data build_address(config.url), config.config_file
-      end
-
-      ##
-      # stop consul
-      def stop_consul
-
-      end
-
-      def wait_for_health_check url
-        @helper.wait_for_HTTPOK build_address(url), 0, 3
-      end
-
-      def copy_assets assets
-        assets.each { |a| @helper.copy_assets a.from, a.to }
-      end
-
+      # runs the given command in a docker container
       def run_command_in_container command
         begin
           settings = @generator_settings.build_settings.docker_settings
-          if @build_file != nil
-            @build_image = "#{@config.application_name}-buildimage"
-            @docker_runner.build_image @build_file, @build_image
-          else
-            @docker_runner.pull_image @build_image unless @docker_runner.find_image @build_image
-          end
+          build_image = create_container_image
 
-          container, success = @docker_runner.create_and_run_container @build_image, settings.binds, settings.env, settings.working_directory, command
+          container, success = @docker_runner.create_and_run_container build_image, settings.binds, settings.env, settings.working_directory, command
 
           # throw exception if failed
-          @helper.fatal_error "Unable to run command #{command}" unless success
+          @error_helper.fatal_error "Unable to run command #{command}" unless success
         ensure
           @docker_runner.delete_container container
         end
       end
 
-      def build_address url
-        if url.type == 'external'
-          "#{url.protocol}://#{url.address}:#{url.port}#{url.path}"
-        elsif url.type == 'bridge'
-          address = @service_discovery.bridge_address_for ENV['DOCKER_NETWORK'], url.address, url.port
-          "#{url.protocol}://#{address}#{url.path}"
-        elsif url.type == 'public'
-          address = @service_discovery.public_address_for url.address, url.port
-          "#{url.protocol}://#{address}#{url.path}"
-        end
-      end
+      ##
+      # Pulls the build image for the container from the registry if one is supplied,
+      # if a build file is specified an image is built. 
+      def create_container_image
+        build_image = @generator_settings.build_settings.docker_settings.image
+        build_image = @config.build_image_for(@task) unless @config.build_image_for(@task) == nil
 
-      def log message, level
-        ## implement logger implementation
-        case level
-        when :error
-          @logger.error message
-        when :info
-          @logger.info message
-        when :debug
-          @logger.debug message
+        build_file = @config.build_docker_file_for(@task)
+
+        if build_file != nil
+          build_image = "#{@config.application_name}-buildimage"
+          @docker_runner.build_image @build_file, @build_image
+        else
+          @docker_runner.pull_image @build_image unless @docker_runner.find_image build_image
         end
+
+        build_image
       end
 
     end
