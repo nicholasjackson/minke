@@ -1,9 +1,10 @@
 module Minke
   module Docker
     class DockerComposeFactory
-      def initialize system_runner, project_name
+      def initialize system_runner, project_name, docker_network = nil
         @project_name = project_name
         @system_runner = system_runner
+        @docker_network = docker_network
       end
 
       def create compose_file
@@ -14,10 +15,11 @@ module Minke
     class DockerCompose
       @compose_file = nil
 
-      def initialize compose_file, system_runner, project_name
+      def initialize compose_file, system_runner, project_name, docker_network = nil
         @project_name = project_name
         @compose_file = compose_file
         @system_runner = system_runner
+        @docker_network = docker_network
       end
 
       ##
@@ -52,7 +54,7 @@ module Minke
       end
 
       def execute_command command
-        unless ENV['DOCKER_NETWORK'].to_s.empty?
+        unless @docker_network == nil
           directory = create_compose_network_file
 
           @system_runner.execute "docker-compose -f #{@compose_file} -f #{directory + '/docker-compose.yml'} -p #{@project_name} #{command}"
@@ -63,7 +65,7 @@ module Minke
       end
 
       def create_compose_network_file
-        content = { 'version' => '2'.to_s, 'networks' => {'default' => { 'external' => { 'name' => ENV['DOCKER_NETWORK'] } } } }
+        content = { 'version' => '2'.to_s, 'networks' => {'default' => { 'external' => { 'name' => @docker_network } } } }
 
         directory = @system_runner.mktmpdir
 

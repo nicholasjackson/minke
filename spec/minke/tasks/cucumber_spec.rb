@@ -1,62 +1,9 @@
 require 'spec_helper'
+require_relative './shared_context.rb'
 
-describe Minke::Tasks::Cucumber do
-  let(:config) do
-    Minke::Config::Config.new.tap do |c|
-      c.application_name = "testapp"
-      c.docker = Minke::Config::DockerSettings.new.tap do |d|
-        d.application_compose_file = 'df'
-      end
-      c.cucumber = Minke::Config::Task.new
-    end
-  end
-
-  let(:docker_runner) { double "docker_runner" }
-  let(:logger) { double "logger" }
-  let(:generator_settings) do
-    Minke::Generators::Config.new.tap do |c|
-      #c.command = Minke::Generators::BuildCommands.new
-      c.build_settings = Minke::Generators::BuildSettings.new.tap do |bs|
-        bs.docker_settings = Minke::Generators::DockerSettings.new
-      end
-    end
-  end
-
-  let(:docker_compose) do
-    dc = double "docker_compose"
-    allow(dc).to receive(:down)
-    allow(dc).to receive(:up)
-    allow(dc).to receive(:rm)
-    return dc
-  end
-
-  let(:docker_compose_factory) do
-     dc = double("docker_compose_factory")
-     allow(dc).to receive(:create).and_return(docker_compose)
-     return dc
-   end
-
-  let(:service_discovery) { double "service_discovery" }
-
-  let(:helper) do
-    helper = double "helper"
-    allow(helper).to receive(:invoke_task)
-    allow(helper).to receive(:load_consul_data)
-    allow(helper).to receive(:wait_for_HTTPOK)
-    allow(helper).to receive(:copy_assets)
-    allow(helper).to receive(:execute_shell_command)
-    allow(helper).to receive(:fatal_error)
-    return helper
-  end
-
-  let(:system_runner) do
-    runner = double 'system_runner'
-    allow(runner).to receive(:execute)
-    return runner
-  end
-
+describe Minke::Tasks::Cucumber, :a => :b do
   let(:task) do
-    Minke::Tasks::Cucumber.new config, :cucumber, generator_settings, docker_runner, docker_compose_factory, service_discovery, logger, helper, system_runner
+    Minke::Tasks::Cucumber.new args  
   end
 
   it 'calls create on the compose factory' do
@@ -72,7 +19,7 @@ describe Minke::Tasks::Cucumber do
   end
 
   it 'executes the cucumber shell' do
-    expect(helper).to receive(:execute_shell_command)
+    expect(shell_helper).to receive(:execute)
 
     task.run
   end
@@ -84,14 +31,14 @@ describe Minke::Tasks::Cucumber do
   end
 
   it 'throws a fatal error when status from the executed command is 1' do
-    expect(helper).to receive(:fatal_error)
+    expect(error_helper).to receive(:fatal_error)
 
     task.run
   end
 
   it 'does not throw a fatal error when status from the executed command is 0' do
-    allow(helper).to receive(:execute_shell_command).and_return(0)
-    expect(helper).to_not receive(:fatal_error)
+    allow(shell_helper).to receive(:execute).and_return(0)
+    expect(error_helper).to_not receive(:fatal_error)
 
     task.run
   end

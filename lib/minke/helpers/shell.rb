@@ -4,7 +4,7 @@ module Minke
     class Shell
       ##
       # Executes a shell command and returns the return status
-      def execute_shell_command command
+      def execute command
         puts `#{command}`
         $?.exitstatus
       end

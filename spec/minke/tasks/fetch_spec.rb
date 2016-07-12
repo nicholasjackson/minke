@@ -1,63 +1,21 @@
 require 'spec_helper'
+require_relative './shared_context.rb'
 
-describe Minke::Tasks::Fetch do
-  let(:config) do
-    Minke::Config::Config.new.tap do |c|
-      c.application_name = "testapp"
-      c.docker = Minke::Config::DockerSettings.new
-      c.fetch = Minke::Config::Task.new
-    end
-  end
-
-  let(:docker_runner) { double "docker_runner" }
-  let(:logger) { double "logger" }
-  let(:generator_config) do
-    Minke::Generators::Config.new.tap do |c|
-      c.build_settings = Minke::Generators::BuildSettings.new.tap do |bs|
-        bs.docker_settings = Minke::Generators::DockerSettings.new
-        bs.build_commands = Minke::Generators::BuildCommands.new.tap do |b|
-          b.fetch = ['command1', 'command2']
-        end
-      end
-
-    end
-  end
-  let(:docker_compose_factory) { double "docker_compose_factory" }
-
-  let(:service_discovery) { double "service_discovery" }
-
-  let(:system_runner) do
-    runner = double 'system_runner'
-    allow(runner).to receive(:execute)
-    return runner
-  end
-
-  let(:helper) do
-    helper = double "helper"
-    allow(helper).to receive(:invoke_task)
-    allow(helper).to receive(:load_consul_data)
-    allow(helper).to receive(:wait_for_HTTPOK)
-    allow(helper).to receive(:copy_assets)
-    allow(helper).to receive(:fatal_error)
-    return helper
-  end
-
+describe Minke::Tasks::Fetch, :a => :b do
   let(:task) do
-    Minke::Tasks::Fetch.new config, :fetch, generator_config, docker_runner, docker_compose_factory, service_discovery, logger, helper, system_runner
+    Minke::Tasks::Fetch.new args  
   end
 
   it 'executes the given commands in a container' do
-    expect(docker_runner).to receive(:find_image).twice
-    expect(docker_runner).to receive(:pull_image).twice
-    expect(docker_runner).to receive(:create_and_run_container).twice
-    expect(docker_runner).to receive(:delete_container).twice
+    generator_config.build_settings.build_commands.fetch = ['dfdf', 'dfdf']
+    expect(args[:docker_runner]).to receive(:create_and_run_container).twice
 
     task.run
   end
 
   it 'calls bundle' do
     generator_config.build_settings.build_commands.fetch = nil
-    expect(system_runner).to receive(:execute).with('bundle install -j3 && bundle update')
+    expect(shell_helper).to receive(:execute).with('bundle install -j3 && bundle update')
 
     task.run
   end

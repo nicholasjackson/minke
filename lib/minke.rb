@@ -17,7 +17,11 @@ require 'sshkey'
 
 require 'minke/version'
 
-require 'minke/helpers/helper'
+require 'minke/helpers/copy'
+require 'minke/helpers/error'
+require 'minke/helpers/logger'
+require 'minke/helpers/rake'
+require 'minke/helpers/shell'
 
 require 'minke/docker/docker_compose'
 require 'minke/docker/docker_runner'
@@ -28,6 +32,7 @@ require 'minke/docker/health_check'
 require 'minke/config/config'
 require 'minke/config/reader'
 
+require 'minke/tasks/task_runner'
 require 'minke/tasks/task'
 require 'minke/tasks/build'
 require 'minke/tasks/cucumber'

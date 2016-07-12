@@ -13,8 +13,6 @@ describe Minke::Docker::DockerCompose do
     end
   end
 
-  let(:dockercompose) { Minke::Docker::DockerCompose.new composepath, system_runner, project_name }
-
   let(:composepath) { File.expand_path("../../../data/docker-compose.yml", __FILE__) }
 
   let(:composefile) do
@@ -29,8 +27,7 @@ networks:
   end
 
   describe 'when the docker network environment variable is specified' do
-
-    ENV['DOCKER_NETWORK'] = 'tester'
+   let(:dockercompose) { Minke::Docker::DockerCompose.new composepath, system_runner, project_name, 'tester' }
 
     describe 'starting a stack' do
 

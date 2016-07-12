@@ -5,7 +5,7 @@ module Minke
       def run args = nil
       	puts "## Running cucumber with tags #{args}"
 
-        compose_file = @config.compose_file_for(@task)
+        compose_file = @config.compose_file_for(@task_name)
         compose = @docker_compose_factory.create compose_file unless compose_file == nil
 
       	begin
@@ -13,7 +13,7 @@ module Minke
       	  compose.up
 
           run_with_block do
-            status = @helper.execute_shell_command "cucumber --color -f pretty #{get_features args}"
+            status = @shell_helper.execute "cucumber --color -f pretty #{get_features args}"
           end
 
       	ensure
