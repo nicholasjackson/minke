@@ -3,9 +3,10 @@ module Minke
     ##
     # ServiceDiscovery allows you to look up the publicly accessible address and port for a server
     class ServiceDiscovery
-      def initialize project_name, docker_runner
+      def initialize project_name, docker_runner, docker_network = nil
         @project_name = project_name
         @docker_runner = docker_runner
+        @docker_network = docker_network
       end
 
       ##
@@ -45,6 +46,20 @@ module Minke
           raise "Unable to find bridge address for network: #{network}, container: #{service_name}, port: #{private_port}"
         end
         return "#{ip}:#{private_port}"
+      end
+
+      ##
+      # builds an address for the given url
+      def build_address url
+        if url.type == 'external'
+          "#{url.protocol}://#{url.address}:#{url.port}#{url.path}"
+        elsif url.type == 'bridge'
+          address = bridge_address_for @docker_network, url.address, url.port
+          "#{url.protocol}://#{address}#{url.path}"
+        elsif url.type == 'public'
+          address = public_address_for url.address, url.port
+          "#{url.protocol}://#{address}#{url.path}"
+        end
       end
 
       :private

@@ -32,6 +32,12 @@ fetch:
 test:
   include: true
 build:
+  consul_loader:
+    config_file: ./config.yml
+    url:
+      address: consul
+      port: 8500
+      type: private
   pre:
     tasks:
       - task1
@@ -43,12 +49,6 @@ build:
       -
         from: ./swagger_spec/swagger.yml
         to: ./dockerfile/event-sauce/swagger_spec/swagger.yml
-    consul_loader:
-      config_file: ./config.yml
-      url:
-        address: consul
-        port: 8500
-        type: private
     health_check:
       address: test2
       port: 8001
@@ -68,12 +68,11 @@ build:
         from: <%= "#{ENV['GOPATH']}/src/github.com/nicholasjackson/event-sauce/event-sauce" %>
         to: ./docker/event-sauce
 run:
-  pre:
-    consul_loader:
-      config_file: ./config.yml
-      url:
-        address: http://consul:8500
-        type: private
+  consul_loader:
+    config_file: ./config.yml
+    url:
+      address: http://consul:8500
+      type: private
   docker:
     application_compose_file: ./dockercompose/event-sauce/docker-compose-alternate.yml
   post:
@@ -81,13 +80,13 @@ run:
       - wait_for_elastic_search
       - wait_for_db
 cucumber:
+  consul_loader:
+    config_file: ./config.yml
+    url:
+      address: consul
+      port: 8500
+      type: private
   pre:
-    consul_loader:
-      config_file: ./config.yml
-      url:
-        address: consul
-        port: 8500
-        type: private
     health_check:
       address: test2
       port: 8001

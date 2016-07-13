@@ -14,6 +14,7 @@ module Minke
         @logger_helper          = args[:logger_helper]
         @generator_config       = args[:generator_config]
         @docker_compose_factory = args[:docker_compose_factory]
+        @consul                 = args[:consul]
 
         @task_settings = @config.send(@task_name)
       end
@@ -22,11 +23,13 @@ module Minke
       # run_with_config executes the task steps for the given
       # - block containing custom actions
       def run_with_block
+        @consul.start_and_load_data @task_settings.consul_loader unless @task_settings.consul_loader == nil
         @task_runner.run_steps(@task_settings.pre) unless @task_settings == nil || @task_settings.pre == nil
 
         yield if block_given?
 
         @task_runner.run_steps(@task_settings.post) unless @task_settings == nil || @task_settings.post == nil
+        @consul.stop unless @task_settings.consul_loader == nil
       end
 
       ##

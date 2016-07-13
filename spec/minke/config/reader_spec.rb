@@ -90,16 +90,6 @@ describe Minke::Config::Reader do
         end
       end
 
-      describe 'consul_loader' do
-        it 'should read the config_file correctly' do
-          expect(config.build.pre.consul_loader.config_file).to eq('./config.yml')
-        end
-
-        it 'should read the url correctly substituting private for public ports' do
-          expect(config.build.pre.consul_loader.url).to be_an_instance_of(Minke::Config::URL)
-        end
-      end
-
       describe 'health_check' do
         it 'should correctly read the health_check url address' do
           expect(config.build.pre.health_check.address).to eq('test2')
@@ -131,6 +121,16 @@ describe Minke::Config::Reader do
 
         it 'should correctly read the health_check url type' do
           expect(config.build.pre.health_check.type).to eq('private')
+        end
+      end
+
+      describe 'consul_loader' do
+        it 'should read the config_file correctly' do
+          expect(config.build.consul_loader.config_file).to eq('./config.yml')
+        end
+
+        it 'should read the url correctly substituting private for public ports' do
+          expect(config.build.consul_loader.url).to be_an_instance_of(Minke::Config::URL)
         end
       end
     end

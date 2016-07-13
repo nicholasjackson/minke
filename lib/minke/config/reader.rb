@@ -49,18 +49,18 @@ module Minke
 
       def read_task_section section, docker_config
         Task.new.tap do |t|
-          t.docker = read_docker_section section['docker'] unless section['docker'] == nil
-          t.pre    = read_pre_post_section section['pre']  unless section['pre'] == nil
-          t.post   = read_pre_post_section section['post'] unless section['post'] == nil
+          t.consul_loader = read_consul_loader_section section['consul_loader'] unless section['consul_loader'] == nil
+          t.docker        = read_docker_section section['docker'] unless section['docker'] == nil
+          t.pre           = read_pre_post_section section['pre']  unless section['pre'] == nil
+          t.post          = read_pre_post_section section['post'] unless section['post'] == nil
         end
       end
 
       def read_pre_post_section section
         TaskRunSettings.new.tap do |tr|
-          tr.tasks         = section['tasks']                                    unless section['tasks'] == nil
-          tr.copy          = read_copy_section section['copy']                   unless section['copy'] == nil
-          tr.consul_loader = read_consul_loader_section section['consul_loader'] unless section['consul_loader'] == nil
-          tr.health_check  = read_url section['health_check']                    unless section['health_check'] == nil
+          tr.tasks         = section['tasks']                  unless section['tasks'] == nil
+          tr.copy          = read_copy_section section['copy'] unless section['copy'] == nil
+          tr.health_check  = read_url section['health_check']  unless section['health_check'] == nil
         end
       end
 

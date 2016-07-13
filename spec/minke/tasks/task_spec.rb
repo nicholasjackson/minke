@@ -56,6 +56,11 @@ describe Minke::Tasks::Task, :a => :b do
   end
 
   describe 'run_with_block' do
+    it 'starts consul and loads data' do
+      expect(consul).to receive(:start_and_load_data).with(config.fetch.consul_loader)
+      task.run_with_block
+    end
+
     it 'executes the pre steps' do
       expect(task_runner).to receive(:run_steps).with(config.fetch.pre)
       
@@ -65,6 +70,11 @@ describe Minke::Tasks::Task, :a => :b do
     it 'executes the post steps' do
       expect(task_runner).to receive(:run_steps).with(config.fetch.post)
 
+      task.run_with_block
+    end
+
+    it 'stops consul' do
+      expect(consul).to receive(:stop)
       task.run_with_block
     end
   end

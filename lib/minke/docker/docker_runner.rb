@@ -58,20 +58,22 @@ module Minke
       # Returns:
       # - Docker::Container
       # - sucess (true if command succeded without error)
-      def create_and_run_container image, volumes, environment, working_directory, cmd
+      def create_and_run_container args
       	# update the timeout for the Excon Http Client
       	# set the chunk size to enable streaming of log files
         #puts working_directory
-        puts volumes
+        #puts volumes
         #puts environment
 
         ::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
         container = ::Docker::Container.create(
-      		'Image' => image,
-      		'Cmd' => cmd,
-      		"Binds" => volumes,
-      		"Env" => environment,
-      		'WorkingDir' => working_directory)
+      		'Image'           => args[:image],
+      		'Cmd'             => args[:cmd],
+      		"Binds"           => args[:volumes],
+      		"Env"             => args[:environment],
+      		'WorkingDir'      => args[:working_directory],
+          'NetworkMode'     => args[:network],
+          'PublishAllPorts' => true)
 
         success = true
 
@@ -114,12 +116,16 @@ module Minke
         end
       end
 
+      def stop_container container 
+        container.stop()
+      end
+
       def delete_container container
         if container != nil
           begin
             container.delete()
           rescue => e
-            puts "Error: Unable to delete container"
+            puts "Error: Unable to delete container: #{e}"
           end
         end
       end

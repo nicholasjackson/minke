@@ -201,6 +201,13 @@ module Minke
     # Task encapsulates the configuration for the various rake tasks like build, run, etc.
     class Task
       ##
+      # consul_loader will specify that the given config file is loaded into Consul.
+      # instance of Minke::Config::ConsulLoader
+      #
+      # [Optional]
+      attr_accessor :consul_loader
+
+      ##
       # pre tasks will run before the main task executes.
       # instance of Minke::Config::TaskRunSettings
       #
@@ -238,13 +245,6 @@ module Minke
       #
       # [Optional]
       attr_accessor :tasks
-
-      ##
-      # consul_loader will specify that the given config file is loaded into Consul.
-      # instance of Minke::Config::ConsulLoader
-      #
-      # [Optional]
-      attr_accessor :consul_loader
 
       ##
       # health_check is the string representation of a url to check before continuing with the rest of the

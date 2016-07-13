@@ -14,6 +14,15 @@ RSpec.shared_context 'shared context', :a => :b do
           dr.namespace = 'mynamespace'
         end
         c.fetch = Minke::Config::Task.new.tap do |f|
+          f.consul_loader = Minke::Config::ConsulLoader.new.tap do |cl|
+            cl.url = Minke::Config::URL.new.tap do |u|
+              u.address = 'myfile'
+              u.port = '8080'
+              u.protocol = 'http'
+              u.type = 'public'
+            end
+            cl.config_file = 'myfile'
+          end
           f.docker = Minke::Config::DockerSettings.new.tap do |d|
             d.application_compose_file = './compose_file'
             d.build_image = 'buildimage'
@@ -21,15 +30,6 @@ RSpec.shared_context 'shared context', :a => :b do
           end
           f.pre = Minke::Config::TaskRunSettings.new.tap do |p|
             p.tasks = ['task1', 'task2']
-            p.consul_loader = Minke::Config::ConsulLoader.new.tap do |cl|
-              cl.url = Minke::Config::URL.new.tap do |u|
-                u.address = 'myfile'
-                u.port = '8080'
-                u.protocol = 'http'
-                u.type = 'public'
-              end
-              cl.config_file = 'myfile'
-            end
             p.health_check = Minke::Config::URL.new.tap do |u|
               u.address = 'myhealth'
               u.port = '8081'
@@ -82,14 +82,30 @@ RSpec.shared_context 'shared context', :a => :b do
     return helper
   end
 
-  let(:consul) {  double('consul') }
-  let(:health_check) { double('health_check') }
+  let(:consul) do
+    c = double('consul')
+    allow(c).to receive(:start_and_load_data)
+    allow(c).to receive(:stop)
+    return c
+  end
+
+  let(:health_check) do
+    health = double('health_check')
+    allow(health).to receive(:wait_for_HTTPOK)
+    return health 
+  end
+  
   let(:rake_helper) do
      helper = double('rake_helper')
      allow(helper).to receive(:invoke_task)
      return helper 
   end
-  let(:copy_helper) { double('copy_helper') }
+  
+  let(:copy_helper) do 
+    copy = double('copy_helper')
+    allow(copy).to receive(:copy_assets)
+    return copy
+  end
 
   let(:docker_compose) do
     compose = double('compose')
@@ -121,6 +137,7 @@ RSpec.shared_context 'shared context', :a => :b do
     sd = double('service_discovery')
     allow(sd).to receive(:public_address_for).and_return('0.0.0.0:8080')
     allow(sd).to receive(:bridge_address_for).and_return('172.156.23.1:8080')
+    allow(sd).to receive(:build_address)
     return sd
   end
 
@@ -134,7 +151,8 @@ RSpec.shared_context 'shared context', :a => :b do
       :shell_helper => shell_helper,
       :logger_helper => logger_helper,
       :docker_compose_factory => docker_compose_factory,
-      :docker_runner => docker_runner
+      :docker_runner => docker_runner,
+      :consul => consul
     }
   end
 end
