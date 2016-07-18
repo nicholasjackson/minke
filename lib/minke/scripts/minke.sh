@@ -30,5 +30,4 @@ if [[ $1 != \ -g* ]]; then
 
   eval "docker network create minke_${NEW_UUID}"
   eval "${DOCKER_RUN}"
-  eval "docker network rm minke_${NEW_UUID}"
 fi
