@@ -32,7 +32,8 @@ module Minke
       # Docker::Image
       def find_image image_name
       	found = nil
-      	::Docker::Image.all.each do | image |
+      	
+        ::Docker::Image.all.each do | image |
       		found = image if image.info["RepoTags"].include? image_name
       	end
 

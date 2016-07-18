@@ -4,6 +4,7 @@ module Minke
       ##
       # Executes a shell command and returns the return status
       def execute command
+        puts command
         system("#{command}")
       end
 

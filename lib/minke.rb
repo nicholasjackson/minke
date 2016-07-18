@@ -14,6 +14,7 @@ require 'openssl'
 require 'base64'
 require 'securerandom'
 require 'sshkey'
+require 'mkmf'
 
 require 'minke/version'
 

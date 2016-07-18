@@ -6,8 +6,9 @@ module Minke
         puts "## Update dependencies"
 
         puts '### Install gems'
-        rvm_installed = @shell_helper.execute('which rvm')
-        rvm_command = 'source /usr/local/rvm/scripts/rvm && ' if rvm_installed 
+        rvm = "#{ENV['HOME']}/.rvm/scripts/rvm"
+        rvm_installed = File.exist?(rvm)
+        rvm_command = "source #{rvm} && " if rvm_installed 
 
         @shell_helper.execute("#{rvm_command}bundle install -j3 && bundle update")
 
