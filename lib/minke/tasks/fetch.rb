@@ -7,8 +7,14 @@ module Minke
 
         puts '### Install gems'
         rvm = "#{ENV['HOME']}/.rvm/scripts/rvm"
+        rvm_root = '/usr/local/rvm/scripts/rvm'
+
+
         rvm_installed = File.exist?(rvm)
-        rvm_command = "source #{rvm} && " if rvm_installed 
+        rvm_root_installed = File.exist?(rvm_root)
+
+        rvm_command = "source #{rvm} && " if rvm_installed
+        rvm_command = "source #{rvm_root} && " if rvm_root_installed 
 
         @shell_helper.execute("#{rvm_command}bundle install -j3 && bundle update")
 
