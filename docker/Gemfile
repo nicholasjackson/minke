@@ -7,7 +7,7 @@ gem "cucumber"
 gem "cucumber-rest-api", "= 0.3"
 gem 'cucumber-api', '~> 0.3'
 
-gem 'minke', "= 1.11.4"
+gem 'minke', "= 1.11.5"
 gem 'minke-generator-swift', "= 0.1.8"
 gem 'minke-generator-netmvc'
 gem 'minke-generator-go'
