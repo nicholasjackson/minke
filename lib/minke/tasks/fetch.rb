@@ -16,8 +16,8 @@ module Minke
         
         puts "Using gemset #{gemset}" 
 
-        rvm_command = "source #{rvm} && rvm use #{gemset} && " if rvm_installed
-        rvm_command = "source #{rvm_root} && rvm use #{gemset} && " if rvm_root_installed 
+        rvm_command = "source #{rvm} && rvm gemset use #{gemset} && " if rvm_installed
+        rvm_command = "source #{rvm_root} && rvm gemset use #{gemset} && " if rvm_root_installed 
 
         @shell_helper.execute("/bin/bash -c '#{rvm_command}bundle install -j3 && bundle update'")
 
