@@ -6,7 +6,10 @@ module Minke
         puts "## Update dependencies"
 
         puts '### Install gems'
-        @shell_helper.execute('bundle install -j3 && bundle update')
+        rvm_installed = @shell_helper.execute('which rvm')
+        rvm_command = 'source /usr/local/rvm/scripts/rvm && ' if rvm_installed 
+
+        @shell_helper.execute("#{rvm_command}bundle install -j3 && bundle update")
 
         puts '### Install generator dependencies'
         

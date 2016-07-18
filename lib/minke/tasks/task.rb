@@ -37,6 +37,7 @@ module Minke
         ensure
           puts "Stopping Consul"
           @consul.stop unless @task_settings.consul_loader == nil
+          sleep 3
           @docker_network.remove
         end
       end

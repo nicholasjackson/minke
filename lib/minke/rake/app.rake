@@ -3,9 +3,12 @@ require 'minke'
 reader = Minke::Config::Reader.new
 @config = reader.read './config.yml'
 
+DOCKER_IP = Minke::Docker::DockerRunner.new(nil).get_docker_ip_address
+ENV['DOCKER_IP'] = DOCKER_IP
+
 namespace :app do
   desc "fetch dependent packages"
-  task :fetch => ['config:set_docker_env'] do
+  task :fetch do
     if @config.fetch != nil
       puts 'run fetch'
       runner = Minke::Tasks::Fetch.new create_dependencies :fetch
@@ -38,7 +41,7 @@ namespace :app do
   end
 
   desc "run application with Docker Compose"
-  task :run => ['config:set_docker_env'] do
+  task :run do
     if @config.run != nil
       runner = Minke::Tasks::Run.new create_dependencies :run
       runner.run
@@ -49,7 +52,7 @@ namespace :app do
   task :build_and_run => [:build_image, :run]
 
   desc "run end to end Cucumber tests USAGE: rake app:cucumber[@tag]"
-  task :cucumber, [:feature] => ['config:set_docker_env'] do |t, args|
+  task :cucumber, [:feature] do |t, args|
     if @config.cucumber != nil
       runner = Minke::Tasks::Cucumber.new create_dependencies :cucumber
       runner.run

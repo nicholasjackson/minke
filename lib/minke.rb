@@ -48,7 +48,7 @@ require 'minke/generators/config_processor'
 require 'minke/generators/config_variables'
 require 'minke/generators/processor'
 require 'minke/generators/register'
-require 'minke/generators/shell_script.rb'
+require 'minke/generators/shell_script'
 
 require 'minke/encryption/encryption'
 require 'minke/encryption/key_locator'
