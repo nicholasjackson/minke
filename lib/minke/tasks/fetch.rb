@@ -13,7 +13,8 @@ module Minke
         rvm_root_installed = File.exist?(rvm_root)
 
         gemset = File.open('.ruby-gemset', 'rb') { |file| file.read }
-        
+        gemset = gemset.strip
+
         puts "Using gemset #{gemset}" 
 
         rvm_command = "source #{rvm} && rvm gemset use #{gemset} && " if rvm_installed
