@@ -23,6 +23,13 @@ RSpec.shared_context 'shared context', :a => :b do
             end
             cl.config_file = 'myfile'
           end
+          f.health_check = Minke::Config::URL.new.tap do |u|
+            u.address = 'myhealth'
+            u.port = '8081'
+            u.path = '/v1/health'
+            u.protocol = 'http'
+            u.type = 'public'
+          end
           f.docker = Minke::Config::DockerSettings.new.tap do |d|
             d.application_compose_file = './compose_file'
             d.build_image = 'buildimage'
@@ -30,13 +37,6 @@ RSpec.shared_context 'shared context', :a => :b do
           end
           f.pre = Minke::Config::TaskRunSettings.new.tap do |p|
             p.tasks = ['task1', 'task2']
-            p.health_check = Minke::Config::URL.new.tap do |u|
-              u.address = 'myhealth'
-              u.port = '8081'
-              u.path = '/v1/health'
-              u.protocol = 'http'
-              u.type = 'public'
-            end
             p.copy = [
               Minke::Config::Copy.new.tap { |cp| cp.from = '/from1'; cp.to = './to1'},
               Minke::Config::Copy.new.tap { |cp| cp.from = '/from2'; cp.to = './to2'}
@@ -130,6 +130,8 @@ RSpec.shared_context 'shared context', :a => :b do
     allow(runner).to receive(:login_registry)
     allow(runner).to receive(:tag_image)
     allow(runner).to receive(:push_image)
+    allow(runner).to receive(:find_image)
+    allow(runner).to receive(:pull_image)
     return runner
   end
 
@@ -139,6 +141,13 @@ RSpec.shared_context 'shared context', :a => :b do
     allow(sd).to receive(:bridge_address_for).and_return('172.156.23.1:8080')
     allow(sd).to receive(:build_address)
     return sd
+  end
+
+  let(:docker_network) do
+    dn = double('docker_network')
+    allow(dn).to receive(:create)
+    allow(dn).to receive(:remove)
+    return dn
   end
 
   let(:args) do
@@ -152,7 +161,10 @@ RSpec.shared_context 'shared context', :a => :b do
       :logger_helper => logger_helper,
       :docker_compose_factory => docker_compose_factory,
       :docker_runner => docker_runner,
-      :consul => consul
+      :consul => consul,
+      :docker_network => docker_network,
+      :health_check => health_check,
+      :service_discovery => service_discovery
     }
   end
 end

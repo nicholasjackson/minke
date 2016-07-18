@@ -92,35 +92,35 @@ describe Minke::Config::Reader do
 
       describe 'health_check' do
         it 'should correctly read the health_check url address' do
-          expect(config.build.pre.health_check.address).to eq('test2')
+          expect(config.build.health_check.address).to eq('test2')
         end
 
         it 'should correctly read the health_check url port' do
-          expect(config.build.pre.health_check.port).to eq('8001')
+          expect(config.build.health_check.port).to eq('8001')
         end
 
         it 'should correctly default port to 80 when not present' do
-          expect(config.build.post.health_check.port).to eq('80')
+          expect(config.fetch.health_check.port).to eq('80')
         end
 
         it 'should correctly read the health_check url path' do
-          expect(config.build.pre.health_check.path).to eq('/v1/health')
+          expect(config.build.health_check.path).to eq('/v1/health')
         end
 
         it 'should correctly default path to  when not present' do
-          expect(config.build.post.health_check.path).to eq('')
+          expect(config.fetch.health_check.path).to eq('')
         end
 
         it 'should correctly read the health_check url protocol' do
-          expect(config.build.pre.health_check.protocol).to eq('https')
+          expect(config.build.health_check.protocol).to eq('https')
         end
 
         it 'should correctly default protocol to http when not present' do
-          expect(config.build.post.health_check.protocol).to eq('http')
+          expect(config.fetch.health_check.protocol).to eq('http')
         end
 
         it 'should correctly read the health_check url type' do
-          expect(config.build.pre.health_check.type).to eq('private')
+          expect(config.build.health_check.type).to eq('private')
         end
       end
 

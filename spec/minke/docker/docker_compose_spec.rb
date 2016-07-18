@@ -19,6 +19,27 @@ describe Minke::Docker::DockerCompose do
     <<-EOF
 ---
 version: '2'
+services:
+  test2:
+    image: test2
+    ports:
+    - "::8001"
+    environment:
+    - CONSUL=consul:8500
+    links:
+    - statsd:statsd
+    external_links:
+    - tester_consul_1:consul
+  statsd:
+    image: hopsoft/graphite-statsd:latest
+    ports:
+    - "::80"
+    expose:
+    - 8125/udp
+    environment:
+    - SERVICE_NAME=statsd
+    external_links:
+    - tester_consul_1:consul
 networks:
   default:
     external:
@@ -50,7 +71,7 @@ networks:
       end
 
       it 'calls docker compose with the correct settings' do
-        expect(system_runner).to receive(:execute).with("docker-compose -f #{composepath} -f ./tmp/docker-compose.yml -p #{project_name} up -d")
+        expect(system_runner).to receive(:execute).with("docker-compose -f ./tmp/docker-compose.yml -p #{project_name} up -d")
 
         dockercompose.up
       end
@@ -84,7 +105,7 @@ networks:
       end
 
       it 'calls docker compose with the correct settings' do
-        expect(system_runner).to receive(:execute).with("docker-compose -f #{composepath} -f ./tmp/docker-compose.yml -p #{project_name} down -v")
+        expect(system_runner).to receive(:execute).with("docker-compose -f ./tmp/docker-compose.yml -p #{project_name} down -v")
 
         dockercompose.down
       end
@@ -99,7 +120,7 @@ networks:
 
     describe 'streaming the logs' do
       it 'calls docker compose with the correct settings' do
-        expect(system_runner).to receive(:execute).with("docker-compose -f #{composepath} -f ./tmp/docker-compose.yml -p #{project_name} logs -f")
+        expect(system_runner).to receive(:execute).with("docker-compose -f ./tmp/docker-compose.yml -p #{project_name} logs -f")
 
         dockercompose.logs
       end

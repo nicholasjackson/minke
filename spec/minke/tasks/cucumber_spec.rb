@@ -18,6 +18,12 @@ describe Minke::Tasks::Cucumber, :a => :b do
     task.run
   end
 
+  it 'runs a health check' do
+    expect(health_check).to receive(:wait_for_HTTPOK)
+    
+    task.run
+  end
+
   it 'executes the cucumber shell' do
     expect(shell_helper).to receive(:execute)
 
@@ -30,14 +36,15 @@ describe Minke::Tasks::Cucumber, :a => :b do
     task.run
   end
 
-  it 'throws a fatal error when status from the executed command is 1' do
+  it 'throws a fatal error when status from the executed command is false' do
+    allow(shell_helper).to receive(:execute).and_return(false)
     expect(error_helper).to receive(:fatal_error)
 
     task.run
   end
 
   it 'does not throw a fatal error when status from the executed command is 0' do
-    allow(shell_helper).to receive(:execute).and_return(0)
+    allow(shell_helper).to receive(:execute).and_return(true)
     expect(error_helper).to_not receive(:fatal_error)
 
     task.run

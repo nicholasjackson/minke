@@ -1,6 +1,10 @@
 module Minke
   module Docker
     class DockerRunner
+      def initialize network = nil
+        @network = network ||= 'bridge'
+      end
+
       ##
       # returns the ip address that docker is running on
       def get_docker_ip_address
@@ -39,6 +43,7 @@ module Minke
       # pull_image pulls a new copy of the given image from the registry
       def pull_image image_name
       	puts "Pulling Image: #{image_name}"
+        ::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
         ::Docker::Image.create('fromImage' => image_name)
       end
 
@@ -61,38 +66,39 @@ module Minke
       def create_and_run_container args
       	# update the timeout for the Excon Http Client
       	# set the chunk size to enable streaming of log files
-        #puts working_directory
-        #puts volumes
-        #puts environment
-
         ::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
         container = ::Docker::Container.create(
       		'Image'           => args[:image],
-      		'Cmd'             => args[:cmd],
+      		'Cmd'             => args[:command],
       		"Binds"           => args[:volumes],
       		"Env"             => args[:environment],
       		'WorkingDir'      => args[:working_directory],
-          'NetworkMode'     => args[:network],
-          'PublishAllPorts' => true)
+          'NetworkMode'     => @network,
+          'name'        => args[:name],
+          'PublishAllPorts' => true
+        )
 
         success = true
 
-        thread = Thread.new do
-          container.attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true, :logs => false, :tty => false) do
-             |stream, chunk|
-              stream.to_s == 'stdout' ? color = :green : color  = :red
-              puts "#{chunk.strip}".colorize(color)
+        unless args[:deamon] == true 
+          thread = Thread.new do
+            container.attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true, :logs => false, :tty => false) do
+              |stream, chunk|
+                stream.to_s == 'stdout' ? color = :green : color  = :red
+                puts "#{chunk.strip}".colorize(color)
 
-              if stream.to_s == "stderr"
-                success = false
-              else
-                success = true
-              end
+                if stream.to_s == "stderr"
+                  success = false
+                else
+                  success = true
+                end
+            end
           end
         end
 
         container.start
-        thread.join
+        
+        thread.join unless args[:deamon] == true
 
       	return container, success
       end

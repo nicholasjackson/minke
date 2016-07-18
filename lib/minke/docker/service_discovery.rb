@@ -62,7 +62,7 @@ module Minke
         end
       end
 
-      :private
+      private
       def find_container_by_name name
         containers = @docker_runner.running_containers
         containers.select { |c| c.info['Names'].include?(name) }

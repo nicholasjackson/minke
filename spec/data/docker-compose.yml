@@ -7,15 +7,7 @@ services:
     environment:
       - "CONSUL=consul:8500"
     links:
-      - consul:consul
       - statsd:statsd
-  consul:
-    image: progrium/consul
-    ports:
-      - "::8500"
-      - "9500:8500"
-    hostname: node1
-    command: "-server -bootstrap -ui-dir /ui"
   statsd:
     image: 'hopsoft/graphite-statsd:latest'
     ports:
@@ -24,10 +16,3 @@ services:
       - "8125/udp"
     environment:
       - "SERVICE_NAME=statsd"
-  registrator:
-    image: 'gliderlabs/registrator:latest'
-    links:
-      - consul:consul
-    command: '-internal -tags=dev consul://consul:8500'
-    volumes:
-      - '/var/run/docker.sock:/tmp/docker.sock'

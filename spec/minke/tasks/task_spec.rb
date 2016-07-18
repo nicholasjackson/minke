@@ -56,6 +56,11 @@ describe Minke::Tasks::Task, :a => :b do
   end
 
   describe 'run_with_block' do
+    it 'creates a new network if one does not exist' do
+      expect(docker_network).to receive(:create)
+      task.run_with_block
+    end
+
     it 'starts consul and loads data' do
       expect(consul).to receive(:start_and_load_data).with(config.fetch.consul_loader)
       task.run_with_block
@@ -75,6 +80,11 @@ describe Minke::Tasks::Task, :a => :b do
 
     it 'stops consul' do
       expect(consul).to receive(:stop)
+      task.run_with_block
+    end
+
+    it 'removes a network if exists' do
+      expect(docker_network).to receive(:remove)
       task.run_with_block
     end
   end

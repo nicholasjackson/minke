@@ -1,5 +1,5 @@
 module Minke
-  module Helper
+  module Helpers
     class Logger
       def log message, level
         ## implement logger implementation

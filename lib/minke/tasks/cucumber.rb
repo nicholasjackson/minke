@@ -6,20 +6,21 @@ module Minke
       	puts "## Running cucumber with tags #{args}"
 
         compose_file = @config.compose_file_for(@task_name)
+        compose_file = File.expand_path(compose_file)
         compose = @docker_compose_factory.create compose_file unless compose_file == nil
 
-      	begin
-          status = 0
-      	  compose.up
-
-          run_with_block do
+        run_with_block do
+          status = false
+          begin
+            compose.up
+            server_address = @service_discovery.build_address(@task_settings.health_check) 
+            @health_check.wait_for_HTTPOK(server_address) unless @task_settings.health_check == nil
+            
             status = @shell_helper.execute "cucumber --color -f pretty #{get_features args}"
+          ensure
+            compose.down
+            @error_helper.fatal_error("Cucumber steps failed") unless status == true
           end
-
-      	ensure
-      		compose.down
-
-          @error_helper.fatal_error "Cucumber steps failed" unless status == 0
       	end
       end
 

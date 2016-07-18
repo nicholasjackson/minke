@@ -208,6 +208,13 @@ module Minke
       attr_accessor :consul_loader
 
       ##
+      # health_check is the string representation of a url to check before continuing with the rest of the
+      # task a successfull 200 response from the endpoint is required to contine.
+      #
+      # [Optional]
+      attr_accessor :health_check
+
+      ##
       # pre tasks will run before the main task executes.
       # instance of Minke::Config::TaskRunSettings
       #
@@ -245,13 +252,6 @@ module Minke
       #
       # [Optional]
       attr_accessor :tasks
-
-      ##
-      # health_check is the string representation of a url to check before continuing with the rest of the
-      # task a successfull 200 response from the endpoint is required to contine.
-      #
-      # [Optional]
-      attr_accessor :health_check
 
       ##
       # copy is an array of Copy instances which will be copied before the task continues.

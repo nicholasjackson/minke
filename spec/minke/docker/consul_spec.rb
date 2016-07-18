@@ -8,17 +8,34 @@ describe Minke::Docker::Consul, :a => :b do
     allow(c).to receive(:load_config)
     return c
   end
-  let(:consul) { Minke::Docker::Consul.new health_check, service_discovery, consul_loader, docker_runner, network }
+  let(:consul) { Minke::Docker::Consul.new health_check, service_discovery, consul_loader, docker_runner, network, 'tester' }
   
   describe 'consul' do 
     it 'starts consul' do
       args = {
         :image   => 'progrium/consul',
-        :network => network
+        :network => network,
+        :command => '-server -bootstrap -ui-dir /ui',
+        :name    => '/tester_consul_1',
+        :deamon  => true
       }
       expect(docker_runner).to receive(:create_and_run_container).with(args)
 
       consul.start_and_load_data config.fetch.consul_loader 
+    end
+
+    it 'pulls the image when it does not exist' do
+      allow(docker_runner).to receive(:find_image).and_return(nil)
+      expect(docker_runner).to receive(:pull_image)
+
+      consul.start_and_load_data config.fetch.consul_loader
+    end
+
+    it 'does not pulls the image when it exists' do
+      allow(docker_runner).to receive(:find_image).and_return('dfdfdf')
+      expect(docker_runner).to receive(:pull_image).never
+
+      consul.start_and_load_data config.fetch.consul_loader
     end
 
     it 'waits for consul to start' do

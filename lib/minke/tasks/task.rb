@@ -15,21 +15,30 @@ module Minke
         @generator_config       = args[:generator_config]
         @docker_compose_factory = args[:docker_compose_factory]
         @consul                 = args[:consul]
-
-        @task_settings = @config.send(@task_name)
+        @docker_network         = args[:docker_network]
+        @health_check           = args[:health_check]
+        @service_discovery      = args[:service_discovery]
+        @task_settings          = @config.send(@task_name)
       end
 
       ##
       # run_with_config executes the task steps for the given
       # - block containing custom actions
       def run_with_block
-        @consul.start_and_load_data @task_settings.consul_loader unless @task_settings.consul_loader == nil
-        @task_runner.run_steps(@task_settings.pre) unless @task_settings == nil || @task_settings.pre == nil
+        puts "Starting Consul"
+        begin
+          @docker_network.create
+          @consul.start_and_load_data @task_settings.consul_loader unless @task_settings.consul_loader == nil
+          @task_runner.run_steps(@task_settings.pre) unless @task_settings == nil || @task_settings.pre == nil
 
-        yield if block_given?
+          yield if block_given?
 
-        @task_runner.run_steps(@task_settings.post) unless @task_settings == nil || @task_settings.post == nil
-        @consul.stop unless @task_settings.consul_loader == nil
+          @task_runner.run_steps(@task_settings.post) unless @task_settings == nil || @task_settings.post == nil
+        ensure
+          puts "Stopping Consul"
+          @consul.stop unless @task_settings.consul_loader == nil
+          @docker_network.remove
+        end
       end
 
       ##
@@ -39,7 +48,14 @@ module Minke
           settings = @generator_config.build_settings.docker_settings
           build_image = create_container_image
 
-          container, success = @docker_runner.create_and_run_container build_image, settings.binds, settings.env, settings.working_directory, command
+          args = {
+            :image             => build_image,
+            :command           => command,
+            :volumes           => settings.binds,
+            :environment       => settings.env,
+            :working_directory => settings.working_directory
+          }
+          container, success = @docker_runner.create_and_run_container args
 
           # throw exception if failed
           @error_helper.fatal_error "Unable to run command #{command}" unless success

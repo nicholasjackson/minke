@@ -8,7 +8,7 @@ module Minke
       end
 
       def create compose_file
-        Minke::Docker::DockerCompose.new compose_file, @system_runner, @project_name
+        Minke::Docker::DockerCompose.new compose_file, @system_runner, @project_name, @docker_network 
       end
     end
 
@@ -19,7 +19,7 @@ module Minke
         @project_name = project_name
         @compose_file = compose_file
         @system_runner = system_runner
-        @docker_network = docker_network
+        @docker_network = docker_network ||= 'bridge'
       end
 
       ##
@@ -47,33 +47,44 @@ module Minke
         execute_command 'logs -f'
       end
 
-      ##
-      # return the local address and port of a containers private port
-      def public_address container, private_port
-        @system_runner.execute_and_return "docker-compose -f #{@compose_file} port #{container} #{private_port}"
-      end
-
       def execute_command command
+        hash = create_compose
+
         unless @docker_network == nil
-          directory = create_compose_network_file
-
-          @system_runner.execute "docker-compose -f #{@compose_file} -f #{directory + '/docker-compose.yml'} -p #{@project_name} #{command}"
-          @system_runner.remove_entry_secure directory
-        else
-          @system_runner.execute "docker-compose -f #{@compose_file} -p #{@project_name} #{command}"
+          hash.merge!(create_compose_network)
         end
-      end
-
-      def create_compose_network_file
-        content = { 'version' => '2'.to_s, 'networks' => {'default' => { 'external' => { 'name' => @docker_network } } } }
 
         directory = @system_runner.mktmpdir
 
         temp_file = directory + '/docker-compose.yml'
-        @system_runner.write_file temp_file, YAML.dump(content)
+        puts temp_file
+        @system_runner.write_file temp_file, YAML.dump(hash)
 
-        directory
+        ex = "docker-compose -f #{temp_file} -p #{@project_name} #{command}"
+        puts ex
+
+        @system_runner.execute ex
+        @system_runner.remove_entry_secure directory
       end
+
+      def create_compose_network
+        { 'networks' => {'default' => { 'external' => { 'name' => @docker_network } } } }
+      end
+
+      def create_compose
+        existing = YAML.load(File.read(@compose_file))
+        services = {}
+        
+        existing['services'].keys.each do |key|
+          newservice = existing['services'][key].merge({'external_links' => ["#{@project_name}_consul_1:consul"]})
+          services[key] = newservice
+        end
+
+        compose = { 'version' => 2.to_s, 'services' => services }
+        
+        compose
+      end
+
     end
   end
 end

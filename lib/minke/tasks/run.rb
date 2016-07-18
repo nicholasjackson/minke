@@ -6,18 +6,17 @@ module Minke
         puts "## Run application with docker compose"
 
         compose_file = @config.compose_file_for(@task_name)
+        compose_file = File.expand_path(compose_file)
         compose = @docker_compose_factory.create compose_file unless compose_file == nil
 
-      	begin
-          compose.up
-
-          run_with_block do
+        run_with_block do
+          begin
+            compose.up
             compose.logs
+          ensure
+            compose.down
           end
-
-      	ensure
-      		compose.down
-      	end
+        end
       end
 
     end
