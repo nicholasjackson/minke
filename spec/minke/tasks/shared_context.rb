@@ -73,6 +73,8 @@ RSpec.shared_context 'shared context', :a => :b do
   let(:shell_helper) do
     helper = double('shell_helper')
     allow(helper).to receive(:execute)
+    allow(helper).to receive(:exist?)
+    allow(helper).to receive(:read_file)
     return helper
   end
 

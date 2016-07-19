@@ -33,17 +33,16 @@ module Minke
       # Will attempt to locate the private details for a running container given
       # its name and private port
       # Parameters:
-      # - network: the name of the network the container is running on
       # - service_name: the name of the running service
       # - private_port: the private port which you wish to retrieve an address for
       # Returns:
       # private address for the container e.g. 172.17.0.2:8080
-      def bridge_address_for network, service_name, private_port
+      def bridge_address_for service_name, private_port
         begin
           container_details = find_container_by_name "/#{@project_name}_#{service_name}_1"
-          ip = container_details.first.info['NetworkSettings']['Networks']["#{network}"]['IPAddress']
+          ip = container_details.first.info['NetworkSettings']['Networks']["#{@docker_network}"]['IPAddress']
         rescue
-          raise "Unable to find bridge address for network: #{network}, container: #{service_name}, port: #{private_port}"
+          raise "Unable to find bridge address for network: #{@docker_network}, container: #{service_name}, port: #{private_port}"
         end
         return "#{ip}:#{private_port}"
       end
@@ -54,7 +53,7 @@ module Minke
         if url.type == 'external'
           "#{url.protocol}://#{url.address}:#{url.port}#{url.path}"
         elsif url.type == 'bridge'
-          address = bridge_address_for @docker_network, url.address, url.port
+          address = bridge_address_for url.address, url.port
           "#{url.protocol}://#{address}#{url.path}"
         elsif url.type == 'public'
           address = public_address_for url.address, url.port

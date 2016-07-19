@@ -24,6 +24,14 @@ module Minke
       def write_file filename, data
         File.open(filename, 'w') { |file| file.write(data) }
       end
+
+      def read_file filename
+        File.open(filename, 'rb') { |file| file.read }.strip
+      end
+
+      def exist? filename
+        File.exist? filename
+      end
     end
   end
 end

@@ -9,11 +9,10 @@ module Minke
         rvm = "#{ENV['HOME']}/.rvm/scripts/rvm"
         rvm_root = '/usr/local/rvm/scripts/rvm'
 
-        rvm_installed = File.exist?(rvm)
-        rvm_root_installed = File.exist?(rvm_root)
+        rvm_installed = @shell_helper.exist?(rvm)
+        rvm_root_installed = @shell_helper.exist?(rvm_root)
 
-        gemset = File.open('.ruby-gemset', 'rb') { |file| file.read }
-        gemset = gemset.strip
+        gemset = @shell_helper.read_file '.ruby-gemset'
 
         puts "Using gemset #{gemset}" 
 
