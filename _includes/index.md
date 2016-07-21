@@ -1,6 +1,3 @@
-## Version 1.12.3
-[![](https://images.microbadger.com/badges/version/nicholasjackson/minke.svg)](http://microbadger.com/#/images/nicholasjackson/minke "Get your own version badge on microbadger.com")
-
 # Introduction
 Minke is an opinionated build system for μServices and Docker, it uses generator templates to create working source code, Dockerfiles, and anything else you may need to build and deploy a working microservice.
 
