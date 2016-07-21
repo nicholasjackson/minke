@@ -3,7 +3,7 @@ Following on from the quick start lets have a little deeper look at how Minke ac
 
 ## Run minke
 ```bash
-$ docker run --rm -v $(pwd):$(pwd) -w $(pwd) nicholasjackson/minke /bin/bash -c 'minke'
+$ curl -L -s get.minke.rocks | bash -s 'minke'
 ```
 
 You should see the below output showing the help options and the currently installed generators.
@@ -18,7 +18,7 @@ You should see the below output showing the help options and the currently insta
 888   "   888 888 888  888 888 "88b Y8b.
 888       888 888 888  888 888  888  "Y8888
 
-Version: 1.9.2
+Version: 1.12.3
 
 # Loading installed generators
 registered minke-generator-go
@@ -39,7 +39,7 @@ Usage: minke [options]
 We can now scaffold a new go μService using the following command:
 
 ```bash
-$ docker run --rm -v $(pwd):$(pwd) -w $(pwd) nicholasjackson/minke /bin/bash -c 'minke -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a crapola'
+$ curl -L -s get.minke.rocks | bash -s ' -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'
 ```
 
 If look at the output folder we will see something like the below folder structure, all our source code is in the root and there is a **_build** folder, this is where Minke stores things like the Docker and Docker Compose files and configuration.
@@ -92,6 +92,7 @@ The steps minke performs are:
 4. Execute build command specified by the generator.
 
 The output will look something like below.
+
 ```bash
 # Loading installed generators
 registered minke-generator-go
@@ -128,15 +129,17 @@ The build task has a dependency on the fetch task so before we try to build anyt
 All of the code is run inside the docker container however most generators will use the physical disk of the Docker server to cache the output.  This speeds up the whole process and allows you to utilise any caching behavior of your CI environment if needed.
 
 ### Running the unit tests
+
 ```bash
 $ ./minke.sh rake app:test
 ```
 Running the unit tests is a similar process, before we run the tests we will build the application code and fetch any dependencies.   It all runs inside a container.
+
 ```bash
 ## Test application
 /Users/nicj/Developer/crapola:/go/src/github.com/nicholasjackson/crapola
 /Users/nicj/Developer/crapola/vendor:/packages/src
-?   	github.com/nicholasjackson/crapola	[no test files]
+?   	github.com/nicholasjackson/crapola	        [no test files]
 ?   	github.com/nicholasjackson/crapola/global	[no test files]
 ok  	github.com/nicholasjackson/crapola/handlers	0.013s
 ?   	github.com/nicholasjackson/crapola/logging	[no test files]
@@ -145,6 +148,7 @@ ok  	github.com/nicholasjackson/crapola/handlers	0.013s
 
 ### Build yourself an image
 So we are going to run the cucumber tests against a Docker container and ultimately you want to run this on your server anyway so lets build an image which can be launched.
+
 ```bash
 $ ./minke.sh rake app:build_image
 ```

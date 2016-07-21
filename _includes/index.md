@@ -1,8 +1,17 @@
+## Version 1.12.3
+[![](https://images.microbadger.com/badges/version/nicholasjackson/minke.svg)](http://microbadger.com/#/images/nicholasjackson/minke "Get your own version badge on microbadger.com")
+
 # Introduction
 Minke is an opinionated build system for μServices and Docker, it uses generator templates to create working source code, Dockerfiles, and anything else you may need to build and deploy a working microservice.
 
 The intention is to produce a 0 dependency standardised build and test framework that works equally well on CI as it does on your local machine.
 
+You have two options keep reading and see just how quick you can build a microservice with Minke,  I promise it will be less than 5 minutes.  Or watch my talk from ContainerShed in 2016 where I demonstrate Minke live on stage, this talk also explains my ethos towards continuous delivery.
+
+[https://skillsmatter.com/skillscasts/8097-0-to-microservice-in-5-minutes](https://skillsmatter.com/skillscasts/8097-0-to-microservice-in-5-minutes)
+
+# Minke uses Docker
+If you don't have it ... [https://docs.docker.com/docker-for-mac/](https://docs.docker.com/docker-for-mac/)
 
 # Like make on steroids
 Minke is almost a 0 dependency setup for building your source code you will need three things.
@@ -12,11 +21,15 @@ Minke is almost a 0 dependency setup for building your source code you will need
 
 Minke just deals with the other stuff; Minke and it's generators are built in Ruby however you do not need Ruby installed as the build scripts run in a Docker container.  The commands to build and test the application are built into the generator along with any application specific logic so the interface to the user is one of a few key simple commands.
 
-* rake app:build - compile source code.  
-* rake app:test - test application.  
-* rake app:build_image  - create Docker image, also executes build and test.
-* rake app:run  - start the application stack.
-* rake app:cucumber  - execute functional tests.
+```
+rake app:fetch              # fetch dependent packages
+rake app:test               # run unit tests
+rake app:build              # build application
+rake app:build_image        # build Docker image for application
+rake app:build_and_run      # bonus points for guessing
+rake app:run                # run application with Docker Compose
+rake app:cucumber[feature]  # run end to end Cucumber tests USAGE: rake app:cucumber[@tag]
+```
 
 It is completely extensible, for example you are building a Microservice and would like to automatically setup the database schema or load some initial data.  This can easily be achieved by writing your own Rake tasks.
 
@@ -51,7 +64,7 @@ $ mkdir ~/myservice
 $ cd ~/myservice
 ```
 
-2. Run the generator command in a docker container.
+2. Run the generator command in a docker container. (note the space before -g)
 
 ```bash
 $ curl -L -s get.minke.rocks | bash -s ' -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'

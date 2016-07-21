@@ -1,0 +1,10 @@
+---
+layout: default
+title: {{ site.name }}
+regenerate: true
+---
+
+<div id="home">
+  {% capture my-include %}{% include changelog.md %}{% endcapture %}
+  {{ my-include | markdownify }}
+</div>

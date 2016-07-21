@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+  <meta charset="UTF-8">
+  <title>Minke</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#157878">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="css/cayman.css">
+  <link rel="stylesheet" href="css/highlighting.css">
+  <link rel="stylesheet" href="css/menu.css">
+  <script src="css/menu.js"></script>
+</head>
+
+
+  <body>
+
+    <section class="menu">
+  <ul class="topnav">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="tutorial.html">Tutorial</a></li>
+    <!--
+    <li><a href="#news">Config Files</a></li>
+    <li><a href="#contact">Functional Tests</a></li>
+    <li><a href="#contact">Extending Minke</a></li>
+    <li><a href="#contact">Using Custom Generators</a></li>
+    -->
+    <li><a href="changelog.html">Change Log</a></li>
+    <li><a href="about.html">About</a></li>
+    <li class="icon">
+      <a href="javascript:void(0);" onclick="showHideMenu()">&#9776;</a>
+    </li>
+  </ul>
+</section>
+
+
+    
+
+    <section class="main-content">
+
+      <div id="home">
+  
+  <h1 id="version-1123">Version 1.12.3</h1>
+<p>It is a bit of a beast of a release.</p>
+
+<h2 id="consul">Consul</h2>
+<p>This version removes the requirement for adding Consul to the services in your docker-compose files, If you specify a consul section inside of the config file then Minke will automatically start an instance of Consul and load the data in the consul_keys.yml.</p>
+
+<p>Any service which is listed in the docker-compose file will automatically have a link added to the consul service with the service name <em>consul</em>.</p>
+
+<p>The benefit of this movement is one step towards a pluggable service discovery layer to support things like Etcd.</p>
+
+<p>Config files which were written like the below…</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="s">run</span><span class="pi">:</span>
+  <span class="s">pre</span><span class="pi">:</span>
+    <span class="s">consul_loader</span><span class="pi">:</span>
+      <span class="s">config_file</span><span class="pi">:</span> <span class="s1">'</span><span class="s">./consul_keys.yml'</span>
+      <span class="s">url</span><span class="pi">:</span>
+        <span class="s">address</span><span class="pi">:</span> <span class="s">consul</span>
+        <span class="s">port</span><span class="pi">:</span> <span class="s">8500</span>
+        <span class="s">type</span><span class="pi">:</span> <span class="s">bridge</span>
+<span class="s">cucumber</span><span class="pi">:</span>
+  <span class="s">pre</span><span class="pi">:</span>
+    <span class="s">consul_loader</span><span class="pi">:</span>
+      <span class="s">config_file</span><span class="pi">:</span> <span class="s1">'</span><span class="s">./consul_keys.yml'</span>
+      <span class="s">url</span><span class="pi">:</span>
+        <span class="s">address</span><span class="pi">:</span> <span class="s">consul</span>
+        <span class="s">port</span><span class="pi">:</span> <span class="s">8500</span>
+        <span class="s">type</span><span class="pi">:</span> <span class="s">bridge</span>
+    <span class="s">health_check</span><span class="pi">:</span>
+      <span class="s">address</span><span class="pi">:</span> <span class="s">&lt;%= application_name %&gt;</span>
+      <span class="s">port</span><span class="pi">:</span> <span class="s">8001</span>
+      <span class="s">path</span><span class="pi">:</span> <span class="s">/v1/health</span>
+      <span class="s">type</span><span class="pi">:</span> <span class="s">bridge</span>
+</code></pre>
+</div>
+
+<p>need to change removing the consul_loader and health_check sections from the pre section…</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="s">run</span><span class="pi">:</span>
+  <span class="s">consul_loader</span><span class="pi">:</span>
+    <span class="s">config_file</span><span class="pi">:</span> <span class="s1">'</span><span class="s">./consul_keys.yml'</span>
+    <span class="s">url</span><span class="pi">:</span>
+      <span class="s">address</span><span class="pi">:</span> <span class="s">consul</span>
+      <span class="s">port</span><span class="pi">:</span> <span class="s">8500</span>
+      <span class="s">type</span><span class="pi">:</span> <span class="s">bridge</span>
+<span class="s">cucumber</span><span class="pi">:</span>
+  <span class="s">consul_loader</span><span class="pi">:</span>
+    <span class="s">config_file</span><span class="pi">:</span> <span class="s1">'</span><span class="s">./consul_keys.yml'</span>
+    <span class="s">url</span><span class="pi">:</span>
+      <span class="s">address</span><span class="pi">:</span> <span class="s">consul</span>
+      <span class="s">port</span><span class="pi">:</span> <span class="s">8500</span>
+      <span class="s">type</span><span class="pi">:</span> <span class="s">bridge</span>
+  <span class="s">health_check</span><span class="pi">:</span>
+    <span class="s">address</span><span class="pi">:</span> <span class="s">&lt;%= application_name %&gt;</span>
+    <span class="s">port</span><span class="pi">:</span> <span class="s">8001</span>
+    <span class="s">path</span><span class="pi">:</span> <span class="s">/v1/health</span>
+    <span class="s">type</span><span class="pi">:</span> <span class="s">bridge</span>
+</code></pre>
+</div>
+
+<h2 id="networking">Networking</h2>
+<p>This version also introduces the use of separate Docker networks for running minke instances, that means that no longer are you going to get any nasty port clashes when running parallel jobs on CI.</p>
+
+<p>When you run a task with Minke, Minke will create a randomly named Docker Bridge network and bind all containers to this network.  The added bonus is that you no longer need Ruby installed on your local computer all tasks can be run with the ./minke.sh script which starts a docker container with Ruby to run the tasks.  No more waiting for Nokogiri to install!!!</p>
+
+</div>
+
+
+      <footer class="site-footer">
+  <span class="site-footer-owner"><a href="">Minke</a> is maintained by <a href="http://github.com/nicholasjackson">Nic Jackson</a>.</span>
+  <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/pietromenna/jekyll-cayman-theme">Cayman theme</a> by <a href="http://github.com/jasonlong">Jason Long</a>.</span>
+</footer>
+
+
+    </section>
+
+  </body>
+</html>

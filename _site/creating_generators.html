@@ -20,11 +20,13 @@
   <ul class="topnav">
     <li><a href="index.html">Home</a></li>
     <li><a href="tutorial.html">Tutorial</a></li>
+    <!--
     <li><a href="#news">Config Files</a></li>
     <li><a href="#contact">Functional Tests</a></li>
     <li><a href="#contact">Extending Minke</a></li>
     <li><a href="#contact">Using Custom Generators</a></li>
-    <li><a href="#change_log.html">Change Log</a></li>
+    -->
+    <li><a href="changelog.html">Change Log</a></li>
     <li><a href="about.html">About</a></li>
     <li class="icon">
       <a href="javascript:void(0);" onclick="showHideMenu()">&#9776;</a>
@@ -39,10 +41,20 @@
 
       <div id="home">
   
-  <h1 id="introduction">Introduction</h1>
+  <h2 id="version-1123">Version 1.12.3</h2>
+<p><a href="http://microbadger.com/#/images/nicholasjackson/minke" title="Get your own version badge on microbadger.com"><img src="https://images.microbadger.com/badges/version/nicholasjackson/minke.svg" alt="" /></a></p>
+
+<h1 id="introduction">Introduction</h1>
 <p>Minke is an opinionated build system for μServices and Docker, it uses generator templates to create working source code, Dockerfiles, and anything else you may need to build and deploy a working microservice.</p>
 
 <p>The intention is to produce a 0 dependency standardised build and test framework that works equally well on CI as it does on your local machine.</p>
+
+<p>You have two options keep reading and see just how quick you can build a microservice with Minke,  I promise it will be less than 5 minutes.  Or watch my talk from ContainerShed in 2016 where I demonstrate Minke live on stage, this talk also explains my ethos towards continuous delivery.</p>
+
+<p><a href="https://skillsmatter.com/skillscasts/8097-0-to-microservice-in-5-minutes">https://skillsmatter.com/skillscasts/8097-0-to-microservice-in-5-minutes</a></p>
+
+<h1 id="minke-uses-docker">Minke uses Docker</h1>
+<p>If you don’t have it … <a href="https://docs.docker.com/docker-for-mac/">https://docs.docker.com/docker-for-mac/</a></p>
 
 <h1 id="like-make-on-steroids">Like make on steroids</h1>
 <p>Minke is almost a 0 dependency setup for building your source code you will need three things.
@@ -52,13 +64,15 @@
 
 <p>Minke just deals with the other stuff; Minke and it’s generators are built in Ruby however you do not need Ruby installed as the build scripts run in a Docker container.  The commands to build and test the application are built into the generator along with any application specific logic so the interface to the user is one of a few key simple commands.</p>
 
-<ul>
-  <li>rake app:build - compile source code.</li>
-  <li>rake app:test - test application.</li>
-  <li>rake app:build_image  - create Docker image, also executes build and test.</li>
-  <li>rake app:run  - start the application stack.</li>
-  <li>rake app:cucumber  - execute functional tests.</li>
-</ul>
+<div class="highlighter-rouge"><pre class="highlight"><code>rake app:fetch              # fetch dependent packages
+rake app:test               # run unit tests
+rake app:build              # build application
+rake app:build_image        # build Docker image for application
+rake app:build_and_run      # bonus points for guessing
+rake app:run                # run application with Docker Compose
+rake app:cucumber[feature]  # run end to end Cucumber tests USAGE: rake app:cucumber[@tag]
+</code></pre>
+</div>
 
 <p>It is completely extensible, for example you are building a Microservice and would like to automatically setup the database schema or load some initial data.  This can easily be achieved by writing your own Rake tasks.</p>
 
@@ -126,7 +140,7 @@
 </div>
 
 <ol>
-  <li>Run the generator command in a docker container.</li>
+  <li>Run the generator command in a docker container. (note the space before -g)</li>
 </ol>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>curl -L -s get.minke.rocks | bash -s <span class="s1">' -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'</span>
