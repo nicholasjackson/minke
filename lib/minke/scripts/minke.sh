@@ -1,12 +1,11 @@
 #!/bin/bash
 DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
-RVM_COMMAND="source /usr/local/rvm/scripts/rvm"
 ERROR="Please specify a command e.g. ./minke.sh rake app:test"
-COMMAND=""
 NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')
-NETWORK
 GEMSET='minkegems'
 GEMSETFOLDER="/usr/local/rvm/gems/ruby-2.3.1@${GEMSET}"
+RVM_COMMAND="source /usr/local/rvm/scripts/rvm && rvm gemset use ${GEMSET} --create"
+COMMAND=""
 
 if [ "$1" == '' ]; then
   echo $ERROR;
