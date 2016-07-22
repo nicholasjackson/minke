@@ -13,6 +13,9 @@ module Minke
           begin
             compose.up
             compose.logs
+          rescue SystemExit, Interrupt
+            puts "Stopping...."
+            raise
           ensure
             compose.down
           end

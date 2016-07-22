@@ -2,187 +2,42 @@
 
 [![Join the chat at https://gitter.im/nicholasjackson/minke](https://badges.gitter.im/nicholasjackson/minke.svg)](https://gitter.im/nicholasjackson/minke?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-## NOTE:
-Version 1 is pretty much a complete rewrite which supports new generator plugins to scaffold applications and greater compatibility for running docker compose on CI environments.  Documentation is coming soon (as in hopefully tomorrow), but for the moment I apologize but the documentation below is a little out of date.
+# Documentation and Tutorial 
+[http://minke.rocks/index.html](http://minke.rocks/index.html)
 
-Version 1.0 is not compatible with previous versions of minke however upgrading is not so painful, full instructions will be updated shortly.   In the mean time please continue to use the previous stable 0.1.5 [https://github.com/nicholasjackson/minke/tree/0.1.5](https://github.com/nicholasjackson/minke/tree/0.1.5).
+# Quick Start
+Minke is an opinionated build system for μServices and Docker, it uses generator templates to create working source code, Dockerfiles, and anything else you may need to build and deploy a working microservice.
 
-**Version 1.0.1**  
-[![Build Status](https://travis-ci.org/nicholasjackson/minke.svg?branch=master)](https://travis-ci.org/nicholasjackson/minke)  
+The intention is to produce a 0 dependency standardised build and test framework that works equally well on CI as it does on your local machine.
 
-[![Code Climate](https://codeclimate.com/github/nicholasjackson/minke/badges/gpa.svg)](https://codeclimate.com/github/nicholasjackson/minke)  
+## Scaffold a new service
+1. Create the folder where you would like the new service and change into that directory.  Whilst we are building a Go microservice in this example you do not need to create this folder in your GOPATH if you are only going to build with Minke as the generator uses the new vendoring capability introduced in Go 1.5.
 
-[![Test Coverage](https://codeclimate.com/github/nicholasjackson/minke/badges/coverage.svg)](https://codeclimate.com/github/nicholasjackson/minke/coverage)  
-
-[![Issue Count](https://codeclimate.com/github/nicholasjackson/minke/badges/issue_count.svg)](https://codeclimate.com/github/nicholasjackson/minke)
-
-Minke is an opinionated build system for Microservices and Docker, like a little envelope of quality it scaffolds the build, run and test (unit test and functional tests) phases of your microservice project allowing you to simply run and test your images using Docker Compose.  Currently supporting Google's Go, and experimental support for Swift, extensions are planned for Node.js or HTML / Javascript sites with Grunt or Gulp based builds.
-
-## Generators
-- Go - [Go Microservice Template](https://github.com/nicholasjackson/minke-generator-go)
-- .NET Core - [.NET MVC Microservice Template](https://github.com/nicholasjackson/minke-generator-netmvc)
-- Java - Spring Boot
-- Swift - Kitura (Coming Soon)
-- Node - ExpressJS (Coming Soon)
-- Ruby - Rails (Coming Soon)
-
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'minke'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install minke
-
-## Dependencies
-
-### Docker
-You need to have docker, docker-machine, and docker-compose installed on your build machine and the docker environment variables must be set.  If using the docker-toolkit on a mac you can set these by running...
 ```bash
-eval "$(docker-machine env default)"
+$ mkdir ~/myservice
+$ cd ~/myservice
 ```
 
-## Not for Docker for Mac Beta users
-If you use docker for mac please set the environment variable, this will auto resolve once Docker for mac exits beta.
-```
-DOCKER_IP=[your docker vm ip]
-```
+2. Run the generator command in a docker container. (note the space before -g)
 
-## Usage
-Include the rake tasks in your Rakefile
-```ruby
-require 'minke'
-
-spec = Gem::Specification.find_by_name 'minke'
-Rake.add_rakelib "#{spec.gem_dir}/lib/minke/rake"
+```bash
+$ curl -L -s get.minke.rocks | bash -s ' -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'
 ```
 
-By default Go builder looks for a config file (config.yml) in the same folder as your Rakefile
+3. Build a Docker image
 
-Go builder provides the following tasks...
-
-### rake app:test
-Gets your packages dependencies then executes go test against the package.
-
-### rake app:build
-Creates a linux binary for your application, runs app:test before execution.
-
-### rake app:build_server
-Creates a docker image for your application, runs app:build before execution.
-
-### rake app:build_and_run
-Creates a docker image for your application then starts the application using docker-compose, runs app:build_server before execution.
-
-### rake app:cucumber[optional feature tag]
-Starts the application and then runs cucumber to execute your features, you can optionally pass a feature tag to this command to configure which part of your test suite you would like to run.  Does not build the server before running, this needs to be done when you change your source code with app:build_server.
-
-### rake app:push
-Pushes the built image to the configured registry, does not build the image before execution, this can be done manually with app:build_server.
-
-## Config File
-The config file config.yml is where you set the various configuration for the build process.
-
-### Example Config File
-```yaml
-namespace: 'github.com/nicholasjackson'
-application_name: 'event-sauce'
-language: go
-docker_registry:
-  url: <%= ENV['DOCKER_REGISTRY_URL'] %>
-  user: <%= ENV['DOCKER_REGISTRY_USER'] %>
-  password: <%= ENV['DOCKER_REGISTRY_PASS'] %>
-  email: <%= ENV['DOCKER_REGISTRY_EMAIL'] %>
-  namespace: <%= ENV['DOCKER_NAMESPACE'] %>
-docker:
-  docker_file: './dockerfiles/event-sauce/Dockerfile'
-  compose_file: './dockercompose/event-sauce/docker-compose.yml'
-  build:
-    image: [optional]
-    docker_file: [optional]
-after_build:
-  copy_assets:
-    -
-      from: <%= "#{ENV['GOPATH']}/src/github.com/nicholasjackson/event-sauce/event-sauce" %>
-      to: './docker/event-sauce'
-    -
-      from: './swagger_spec/swagger.yml'
-      to: './dockerfile/event-sauce/swagger_spec/swagger.yml'
-run:
-  consul_loader:
-    enabled: true
-    config_file: './config.yml'
-    url: <%= "http://#{ENV['DOCKER_IP']}:9500" %>
-  docker:
-    compose_file: './dockercompose/event-sauce/docker-compose-alternate.yml'
-cucumber:
-  consul_loader:
-    enabled: true
-    config_file: './config.yml'
-    url: <%= "http://#{ENV['DOCKER_IP']}:9500" %>
-  health_check:
-    enabled: true
-    url: <%= "http://#{ENV['DOCKER_IP']}:8001/v1/health" %>
-  after_start:
-    - 'wait_for_elastic_search'
+```bash
+$ cd _build
+$ ./minke.sh rake app:build_image
 ```
 
-#### head:
-This section contains the configuration for the build process.  
-**namespace:** namespace for your application code within your GOPATH, this is generally the same as your repository.  
-**application_name:** name of the built binary.  
-**language** (go|swift) language type of the build swift is currently experimental and uses the v3 dev branch which is compatible with Kitura
+4. Execute the functional tests
 
-#### docker_registry:
-This section contains the configuration for the docker registry to push the image to.  Images are pushed to the registry prefixed with the namespace and application_name, e.g. nicholasjackson/event-sauce:latest.   
-**url:** url for the docker registry.  
-**user:** username to use when logging into the registry.  
-**password:** password to use when logging into the registry.  
-**email:** email address to use when logging into the registry.  
-**namespace:** namespace of your image to use when pushing the image to the registry.  
+```bash
+$ ./minke.sh rake app:cucumber
+```
 
-#### after_build:
-This section allows you to copy assets such as binaries or files which you would like to include into your Docker image.
-##### copy_assets:  
-An array of elements with the following parameters:  
-**from:** the source file or directory  
-**to:** the destination file or directory
-
-#### docker:
-This section contains configuration for the Docker build and run process.  
-**docker_file:** path to the folder containing your Dockerfile used by the build_server task.  
-**compose_file:** path to your docker-compose file for run and cucumber tasks.
-**build:** This section allows you to override the language default used for building your application code.
-- **image [optional]:** specify a different image from your registry or local machine to use for building the application.
-- **docker_file [optional]:** specify a dockerfile which will be built into an image and then used for building the application.
-
-#### run:
-The run section defines config for running your microservice with Docker Compose.
-##### consul_loader:
-When the application is run using docker-compose you can load some default config into your consul server.  Told you this was opinionated, if you are building microservices you are using consul right?  
-**enabled:** boolean determining if this feature is enabled.  
-**config_file:** path to a yaml file containing the key values you would like to load into consul. consul_loader flattens the structure of your yaml file and converts this into key values. For more information please see []()
-##### docker:
-This section allows you to override the docker compose file specified in the main section incase you would like a different config for testing.  
-**compose_file:** path to your docker-compose file for run and cucumber tasks.
-##### after_start:
-This section is an array of rake tasks which will be run after docker compose has started, you can define these rake tasks in your main Rakefile.  e.g.  
-  - 'wait_for_elastic_search'
-  - 'es:create_indexes'
-
-#### cucumber:
-The cucumber section defines config for running and testing your microservice with Docker Compose and cucumber, the config options are the same as in **run:** with the addition of health_check.
-##### health_check:
-After the Docker Compose startup the application can wait until the main application has started before running the cucumber tests, to enable this specify true for the enabled: section then specify your health check url.  
-**enabled** (true|false) enable or disable the health check.  
-**url** url to use for health checks.  
+You now have a working microservice ready to be pushed to a Docker registry and deployed to a server.  For more detailed information please see the [tutorial](tutorial.html).
 
 ## Development
 
