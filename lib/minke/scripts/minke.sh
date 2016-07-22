@@ -6,7 +6,7 @@ NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:low
 GEMSET='minkegems'
 GEMSETFOLDER="/usr/local/rvm/gems/ruby-2.3.1@${GEMSET}"
 RVM_COMMAND="source /usr/local/rvm/scripts/rvm && rvm gemset use ${GEMSET} --create"
-DOCKER_IMAGE="nicholasjackson/minke:1.12.4"
+DOCKER_IMAGE="nicholasjackson/minke:1.12.5"
 COMMAND=""
 
 
