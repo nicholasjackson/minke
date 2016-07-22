@@ -12,7 +12,7 @@ env:
   - secure: GTrZszTC3TVWypczOOmU7Zo8as1y0YwoBU6DXwX/w4jF3n8aKTf4FtCNx1jBGAcPqPZahRudotR7sPX7ZHnSB4iFK+EVtUoKNt8aC/CyEfdc06hTtalIB9dhNOZEAStkD2PP94ipxab71tUQU1PLPvhRtfbfRwTsQWxQL4gQXMhjTIr9AqQKLTMFj9o4ibVMhN9+Wx35M7C0Wc/psRo28w9emAhyX0gMMzoQGVLP/Y0sloT/NpGAKJ7yiZXYbEJiYjWkjuRA/mIJGXU7GcfcVCJRglQvPq9Tb5CciW2UGp0qc/xfDPObTFaGFDokor3phefXPN4x80Q454pp+YDUIAnLY/0PUZ3i/mnOn6zbdNkdrI+Gc6xglxbwLvFvOUW8vuBTh9SnJjMBHgzTI89cuLp2a9e0HncsCUUCCRr/zifRvW15koU03QQEx9blf3s6Qmqeludvh89/jjteMca7mLQsFFBSMuKTXVq38CgqnvK2pt1jhw4bT2aRrsa0RszutvacWSKljdUlH6RTB9JRVwbGuWapD6TXt7tmOpc0kqKLweFmYxySzITp8EhCbVdmSgexB3tZLlR4y4UqStqsmT1JHRz5yTgPtnxmXDdW5eHdqmxP0I0z5E5eX3qdKVt8NYAP4/hjVj2JyDGXIk7fuK8pYA4d3t7o1n263/b/41M=
 before_install:  
   - sudo apt-get update
-  - sudo apt-get install docker-engine -y
+  - sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install docker-engine
 install: bundle
 script:
 - rake test
