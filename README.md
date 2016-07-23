@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/nicholasjackson/minke.png?label=ready&title=Ready)](https://waffle.io/nicholasjackson/minke)
 # Minke
 
 [![Join the chat at https://gitter.im/nicholasjackson/minke](https://badges.gitter.im/nicholasjackson/minke.svg)](https://gitter.im/nicholasjackson/minke?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
