@@ -3,7 +3,7 @@ Following on from the quick start lets have a little deeper look at how Minke ac
 
 ## Run minke
 ```bash
-$ curl -L -s get.minke.rocks | bash -s 'minke'
+$ curl -Ls https://get.minke.rocks | bash -s 'minke'
 ```
 
 You should see the below output showing the help options and the currently installed generators.
@@ -39,7 +39,7 @@ Usage: minke [options]
 We can now scaffold a new go μService using the following command:
 
 ```bash
-$ curl -L -s get.minke.rocks | bash -s ' -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'
+$ curl -Ls https://get.minke.rocks | bash -s ' -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'
 ```
 
 If look at the output folder we will see something like the below folder structure, all our source code is in the root and there is a **_build** folder, this is where Minke stores things like the Docker and Docker Compose files and configuration.
