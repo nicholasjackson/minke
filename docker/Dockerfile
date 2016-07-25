@@ -34,5 +34,6 @@ RUN curl -o /usr/local/bin/docker-compose -L \
 COPY .bashrc /root/.bashrc
 
 COPY Gemfile Gemfile
+COPY minke.gem /root/minke.gem
 
-RUN /bin/bash -c "source /usr/local/rvm/scripts/rvm && rvm @global do bundle install"
+RUN /bin/bash -c "source /usr/local/rvm/scripts/rvm && rvm @global do gem install /root/minke.gem && bundle install"
