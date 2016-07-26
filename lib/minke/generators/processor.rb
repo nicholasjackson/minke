@@ -118,8 +118,7 @@ module Minke
       def get_generator generator
         config = Minke::Generators.get_registrations.select { |c| c.name == generator}.first
         if config == nil
-          puts "Generator not installed please select from the above list of installed generators or install the required gem"
-          exit 1
+          throw "Generator not installed please select from the above list of installed generators or install the required gem"
         end
         processor = Minke::Generators::ConfigProcessor.new @variables
         return processor.process config

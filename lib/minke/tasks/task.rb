@@ -66,7 +66,7 @@ module Minke
 
       ##
       # Pulls the build image for the container from the registry if one is supplied,
-      # if a build file is specified an image is built. 
+      # if a build file is specified an image is built.
       def create_container_image
         build_image = @generator_config.build_settings.docker_settings.image
         build_image = @config.build_image_for(@task_name) unless @config.build_image_for(@task_name) == nil
@@ -77,6 +77,7 @@ module Minke
           build_image = "#{@config.application_name}-buildimage"
           @docker_runner.build_image build_file, build_image
         else
+          puts build_image
           @docker_runner.pull_image build_image unless @docker_runner.find_image build_image
         end
 

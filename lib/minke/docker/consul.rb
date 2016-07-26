@@ -37,10 +37,8 @@ module Minke
             :deamon  => true
           }
         )
-
-        puts @container
       end
-      
+
       def wait_for_startup url
         server = @service_discovery.build_address(url)
         @health_check.wait_for_HTTPOK "#{server}/v1/status/leader"

@@ -11,6 +11,9 @@ namespace :app do
   task :fetch do
     if @config.fetch != nil
       puts 'run fetch'
+      runner = Minke::Tasks::Bundle.new({:shell_helper => Minke::Helpers::Shell.new})
+      runner.run
+
       runner = Minke::Tasks::Fetch.new create_dependencies :fetch
       runner.run
     end
@@ -85,10 +88,10 @@ namespace :app do
     task_runner = Minke::Tasks::TaskRunner.new ({
       :rake_helper       => Minke::Helpers::Rake.new,
       :copy_helper       => Minke::Helpers::Copy.new,
-      :service_discovery => Minke::Docker::ServiceDiscovery.new(project_name, Minke::Docker::DockerRunner.new, network_name) 
+      :service_discovery => Minke::Docker::ServiceDiscovery.new(project_name, Minke::Docker::DockerRunner.new, network_name)
     })
 
-    consul = Minke::Docker::Consul.new( 
+    consul = Minke::Docker::Consul.new(
       Minke::Docker::HealthCheck.new,
       Minke::Docker::ServiceDiscovery.new( project_name, Minke::Docker::DockerRunner.new(network_name), network_name),
       ConsulLoader::Loader.new(ConsulLoader::ConfigParser.new),
