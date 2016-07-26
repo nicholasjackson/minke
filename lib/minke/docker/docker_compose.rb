@@ -8,7 +8,7 @@ module Minke
       end
 
       def create compose_file
-        Minke::Docker::DockerCompose.new compose_file, @system_runner, @project_name, @docker_network 
+        Minke::Docker::DockerCompose.new compose_file, @system_runner, @project_name, @docker_network
       end
     end
 
@@ -55,13 +55,10 @@ module Minke
         end
 
         directory = @system_runner.mktmpdir
-
         temp_file = directory + '/docker-compose.yml'
-        puts temp_file
         @system_runner.write_file temp_file, YAML.dump(hash)
 
         ex = "docker-compose -f #{temp_file} -p #{@project_name} #{command}"
-        puts ex
 
         @system_runner.execute ex
         @system_runner.remove_entry_secure directory
@@ -74,14 +71,14 @@ module Minke
       def create_compose
         existing = YAML.load(File.read(@compose_file))
         services = {}
-        
+
         existing['services'].keys.each do |key|
           newservice = existing['services'][key].merge({'external_links' => ["#{@project_name}_consul_1:consul"]})
           services[key] = newservice
         end
 
         compose = { 'version' => 2.to_s, 'services' => services }
-        
+
         compose
       end
 

@@ -32,9 +32,9 @@ module Minke
       # Docker::Image
       def find_image image_name
       	found = nil
-      	
+
         ::Docker::Image.all.each do | image |
-      		found = image if image.info["RepoTags"].include? image_name
+      		found = image if image.info["RepoTags"] != nil && image.info["RepoTags"].include?(image_name)
       	end
 
       	return found
@@ -81,7 +81,7 @@ module Minke
 
         success = true
 
-        unless args[:deamon] == true 
+        unless args[:deamon] == true
           thread = Thread.new do
             container.attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true, :logs => false, :tty => false) do
               |stream, chunk|
@@ -98,7 +98,7 @@ module Minke
         end
 
         container.start
-        
+
         thread.join unless args[:deamon] == true
 
       	return container, success
@@ -123,7 +123,7 @@ module Minke
         end
       end
 
-      def stop_container container 
+      def stop_container container
         container.stop()
       end
 

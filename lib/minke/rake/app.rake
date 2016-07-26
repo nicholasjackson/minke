@@ -11,7 +11,7 @@ namespace :app do
   task :fetch do
     if @config.fetch != nil
       puts 'run fetch'
-      runner = Minke::Tasks::Bundle.new {:shell_helper => Minke::Helpers::Shell.new}
+      runner = Minke::Tasks::Bundle.new({:shell_helper => Minke::Helpers::Shell.new})
       runner.run
 
       runner = Minke::Tasks::Fetch.new create_dependencies :fetch

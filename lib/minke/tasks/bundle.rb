@@ -1,6 +1,10 @@
 module Minke
   module Tasks
-    class Bundle < Task
+    class Bundle
+
+      def initialize args
+        @shell_helper = args[:shell_helper]
+      end
 
       def run args = nil
         puts '### Install gems'
@@ -16,8 +20,6 @@ module Minke
 
         rvm_command = "source #{rvm} && rvm gemset use #{gemset} --create && " if rvm_installed
         rvm_command = "source #{rvm_root} && rvm gemset use #{gemset} --create && " if rvm_root_installed
-
-        puts "/bin/bash -c '#{rvm_command}bundle install -j3 && bundle update"
 
         @shell_helper.execute("/bin/bash -c '#{rvm_command}bundle install -j3 && bundle update'")
       end

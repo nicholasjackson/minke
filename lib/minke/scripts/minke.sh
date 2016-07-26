@@ -1,12 +1,18 @@
 #!/bin/bash
+MINKE_VERSION="1.12.6"
 ERROR="Please specify a command e.g. ./minke.sh rake app:test"
 
 DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
 NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')
-GEMSET='minkegems'
+
+GEMSET=$(<.ruby-gemset)
+if [!"$GEMSET"]; then
+  GEMSET='minkegems'
+fi
+
 GEMSETFOLDER="/usr/local/rvm/gems/ruby-2.3.1@${GEMSET}"
 RVM_COMMAND="source /usr/local/rvm/scripts/rvm && rvm gemset use ${GEMSET} --create"
-DOCKER_IMAGE="nicholasjackson/minke:1.12.5"
+DOCKER_IMAGE="nicholasjackson/minke:${MINKE_VERSION}"
 COMMAND=""
 
 
