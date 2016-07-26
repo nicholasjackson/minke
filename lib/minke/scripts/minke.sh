@@ -1,12 +1,14 @@
 #!/bin/bash
-MINKE_VERSION="1.12.6"
+MINKE_VERSION="1.12.7"
 ERROR="Please specify a command e.g. ./minke.sh rake app:test"
 
 DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
 NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')
 
 GEMSET=$(<.ruby-gemset)
-if [!"$GEMSET"]; then
+LEN=$(echo ${#GEMSET})
+
+if [ $LEN -lt 1 ]; then
   GEMSET='minkegems'
 fi
 
@@ -32,7 +34,7 @@ fi
 
 if [[ $1 != \ -g* ]]; then
   DIR=$(dirname `pwd`)
-  DOCKER_RUN="docker run --rm --net=minke_${NEW_UUID} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor/gems:${GEMSETFOLDER} -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_build ${DOCKER_IMAGE} /bin/bash -c '${RVM_COMMAND} && ${COMMAND}'"
+  DOCKER_RUN="docker run --rm -it --net=minke_${NEW_UUID} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor/gems:${GEMSETFOLDER} -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_build ${DOCKER_IMAGE} /bin/bash -c '${RVM_COMMAND} && ${COMMAND}'"
 
   echo "Running command: ${COMMAND}"
 
