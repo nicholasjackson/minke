@@ -8,7 +8,15 @@ You have two options keep reading and see just how quick you can build a microse
 [https://skillsmatter.com/skillscasts/8097-0-to-microservice-in-5-minutes](https://skillsmatter.com/skillscasts/8097-0-to-microservice-in-5-minutes)
 
 # Minke uses Docker
-If you don't have it ... [https://docs.docker.com/docker-for-mac/](https://docs.docker.com/docker-for-mac/)
+If you don't have it ...
+Mac: [https://docs.docker.com/docker-for-mac/](https://docs.docker.com/docker-for-mac/)  
+Linux: [https://docs.docker.com/engine/installation/linux/ubuntulinux/](https://docs.docker.com/engine/installation/linux/ubuntulinux/)  
+
+If you are using Docker Toolbox for Mac you will need to set your DOCKER_HOST environment variable, this is quite simple just execute the below command.  The Linux install and Docker for Mac should not require this.
+
+```bash
+$ eval $(docker-machine env default)
+```
 
 # Like make on steroids
 Minke is almost a 0 dependency setup for building your source code you will need three things.
