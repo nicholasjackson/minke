@@ -5,11 +5,15 @@ ERROR="Please specify a command e.g. ./minke.sh rake app:test"
 DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
 NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')
 
-GEMSET=$(<.ruby-gemset)
-LEN=$(echo ${#GEMSET})
+GEMSET='minkegems'
 
-if [ $LEN -lt 1 ]; then
-  GEMSET='minkegems'
+if [ -f ".ruby-gemset" ]
+  GEMSET=$(<.ruby-gemset)
+  LEN=$(echo ${#GEMSET})
+  
+  if [ $LEN -lt 1 ]; then
+    GEMSET='minkegems'
+  fi
 fi
 
 GEMSETFOLDER="/usr/local/rvm/gems/ruby-2.3.1@${GEMSET}"
