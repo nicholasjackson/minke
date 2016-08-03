@@ -7,7 +7,7 @@ NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:low
 
 GEMSET='minkegems'
 
-if [ -f ".ruby-gemset" ]
+if [ -f ".ruby-gemset" ]; then
   GEMSET=$(<.ruby-gemset)
   LEN=$(echo ${#GEMSET})
   
