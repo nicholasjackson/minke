@@ -23,7 +23,7 @@ RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 581
 RUN echo "deb https://apt.dockerproject.org/repo debian-jessie main" > /etc/apt/sources.list.d/docker.list
 
 RUN apt-get update
-RUN apt-get -y install docker-engine
+RUN apt-get -y install docker-engine=1.10.3-0~jessie
 
 RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 && curl -L get.rvm.io | bash -s stable --ruby=2.3.1 --with-gems="bundle"
 

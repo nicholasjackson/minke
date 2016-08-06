@@ -54,14 +54,15 @@ module Minke
           hash.merge!(create_compose_network)
         end
 
-        directory = @system_runner.mktmpdir
-        temp_file = directory + '/docker-compose.yml'
+        directory = File.dirname(@compose_file)
+
+        temp_file = directory + '/tmp_docker-compose.yml'
         @system_runner.write_file temp_file, YAML.dump(hash)
 
         ex = "docker-compose -f #{temp_file} -p #{@project_name} #{command}"
 
         @system_runner.execute ex
-        @system_runner.remove_entry_secure directory
+        @system_runner.remove_entry_secure temp_file
       end
 
       def create_compose_network
