@@ -1,3 +1,7 @@
+# Version 1.12.9
+* Downgraded Docker version for CircleCI compatibility;
+* Changed location of temporary docker-compose file to allow easier volume setting to relative path.
+
 # Version 1.12.3
 It is a bit of a beast of a release.
 
