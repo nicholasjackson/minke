@@ -15,6 +15,8 @@ describe Minke::Docker::DockerCompose do
 
   let(:composepath) { File.expand_path("../../../data/docker-compose.yml", __FILE__) }
 
+  let(:composedir) { File.dirname(composepath) }
+
   let(:composefile) do
     <<-EOF
 ---
@@ -52,32 +54,20 @@ networks:
 
     describe 'starting a stack' do
 
-      it 'creates a temporary directory' do
-        expect(system_runner).to receive(:mktmpdir)
-
-        dockercompose.up
-      end
-
-      it 'writes a temporary file to the temp folder' do
-        expect(system_runner).to receive(:write_file).with('./tmp/docker-compose.yml', anything)
-
-        dockercompose.up
-      end
-
       it 'writes the correct settings to the file' do
-        expect(system_runner).to receive(:write_file).with('./tmp/docker-compose.yml', composefile)
+        expect(system_runner).to receive(:write_file).with("#{composedir}/tmp_docker-compose.yml", composefile)
 
         dockercompose.up
       end
 
       it 'calls docker compose with the correct settings' do
-        expect(system_runner).to receive(:execute).with("docker-compose -f ./tmp/docker-compose.yml -p #{project_name} up -d")
+        expect(system_runner).to receive(:execute).with("docker-compose -f #{composedir}/tmp_docker-compose.yml -p #{project_name} up -d")
 
         dockercompose.up
       end
 
-      it 'deletes the temporary folder' do
-        expect(system_runner).to receive(:remove_entry_secure).with('./tmp')
+      it 'deletes the temporary file' do
+        expect(system_runner).to receive(:remove_entry_secure).with("#{composedir}/tmp_docker-compose.yml")
 
         dockercompose.up
       end
@@ -86,32 +76,26 @@ networks:
 
     describe 'stopping a stack' do
 
-      it 'creates a temporary directory' do
-        expect(system_runner).to receive(:mktmpdir)
-
-        dockercompose.down
-      end
-
       it 'writes a temporary file to the temp folder' do
-        expect(system_runner).to receive(:write_file).with('./tmp/docker-compose.yml', anything)
+        expect(system_runner).to receive(:write_file).with("#{composedir}/tmp_docker-compose.yml", anything)
 
         dockercompose.down
       end
 
       it 'writes the correct settings to the file' do
-        expect(system_runner).to receive(:write_file).with('./tmp/docker-compose.yml', composefile)
+        expect(system_runner).to receive(:write_file).with("#{composedir}/tmp_docker-compose.yml", composefile)
 
         dockercompose.down
       end
 
       it 'calls docker compose with the correct settings' do
-        expect(system_runner).to receive(:execute).with("docker-compose -f ./tmp/docker-compose.yml -p #{project_name} down -v")
+        expect(system_runner).to receive(:execute).with("docker-compose -f #{composedir}/tmp_docker-compose.yml -p #{project_name} down -v")
 
         dockercompose.down
       end
 
-      it 'deletes the temporary folder' do
-        expect(system_runner).to receive(:remove_entry_secure).with('./tmp')
+      it 'deletes the temporary file' do
+        expect(system_runner).to receive(:remove_entry_secure).with("#{composedir}/tmp_docker-compose.yml")
 
         dockercompose.down
       end
@@ -120,7 +104,7 @@ networks:
 
     describe 'streaming the logs' do
       it 'calls docker compose with the correct settings' do
-        expect(system_runner).to receive(:execute).with("docker-compose -f ./tmp/docker-compose.yml -p #{project_name} logs -f")
+        expect(system_runner).to receive(:execute).with("docker-compose -f #{composedir}/tmp_docker-compose.yml -p #{project_name} logs -f")
 
         dockercompose.logs
       end
