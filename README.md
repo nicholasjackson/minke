@@ -8,7 +8,7 @@
 | Chat: | [![Join the chat at https://gitter.im/nicholasjackson/minke](https://badges.gitter.im/nicholasjackson/minke.svg)](https://gitter.im/nicholasjackson/minke?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) |
 
 # Documentation and Tutorial 
-[http://minke.rocks/index.html](http://minke.rocks/index.html)
+[https://minke.rocks/index.html](http://minke.rocks/index.html)
 
 # Quick Start
 Minke is an opinionated build system for μServices and Docker, it uses generator templates to create working source code, Dockerfiles, and anything else you may need to build and deploy a working microservice.
