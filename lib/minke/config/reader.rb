@@ -3,6 +3,12 @@ module Minke
     ##
     # Reader reads a yaml based configuration and processes it into a Minke::Config::Config instance
     class Reader
+
+      def initialize logger
+        @logger = logger 
+      end
+
+
       ##
       # read yaml config file and return Minke::Config::Config instance
       def read config_file
@@ -93,7 +99,7 @@ module Minke
       def read_secure hash
         key_path = ENV['SSL_KEY_PATH'].to_s == '' ? "#{ENV['HOME']}/.ssh" : ENV['SSL_KEY_PATH']
         unless Dir.exists? key_path
-          puts "Unable to find SSH keys to decrypt secrets, please set environment variable SSL_KEY_PATH or place the keys in ~/.ssh"
+          @logger.error "Unable to find SSH keys to decrypt secrets, please set environment variable SSL_KEY_PATH or place the keys in ~/.ssh"
           return
         end
 
@@ -103,9 +109,10 @@ module Minke
         locator = Minke::Encryption::KeyLocator.new key_path
         key_path = locator.locate_key fingerprint
 
-        puts key_path
+        @logger.debug key_path
+
         if key_path.to_s.empty?
-          puts "Unable to find SSL key matching fingerprint if your SSL keys are not in ~/.ssh you can set the environment variable SSL_KEY_PATH to point to the correct directory."
+          @logger.error "Unable to find SSL key matching fingerprint if your SSL keys are not in ~/.ssh you can set the environment variable SSL_KEY_PATH to point to the correct directory.", :error
           return
         end
 

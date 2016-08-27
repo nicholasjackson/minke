@@ -1,5 +1,5 @@
 require 'spec_helper'
-require_relative './shared_context.rb'
+require_relative '../shared_context.rb'
 
 describe Minke::Tasks::TaskRunner, :a => :b do
   let(:runnerargs) do

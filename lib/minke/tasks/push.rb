@@ -3,7 +3,7 @@ module Minke
     class Push < Task
 
       def run args = nil
-        puts "## Push image to registry"
+        @logger.info "## Push image to registry"
 
         url = @config.docker_registry.url
         user = @config.docker_registry.user

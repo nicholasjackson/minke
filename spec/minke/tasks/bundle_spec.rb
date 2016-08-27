@@ -1,8 +1,8 @@
 require 'spec_helper'
-require_relative './shared_context.rb'
+require_relative '../shared_context.rb'
 
 describe Minke::Tasks::Bundle, :a => :b do
-  let(:task) { Minke::Tasks::Bundle.new args }
+  let(:task) { Minke::Tasks::Bundle.new args}
 
   it 'reads the gemset and sets the name' do
     generator_config.build_settings.build_commands.fetch = nil

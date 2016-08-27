@@ -3,7 +3,7 @@ module Minke
     class Run < Task
 
       def run args = nil
-        puts "## Run application with docker compose"
+        @logger.info "## Run application with docker compose"
 
         compose_file = @config.compose_file_for(@task_name)
         compose_file = File.expand_path(compose_file)
@@ -14,7 +14,7 @@ module Minke
             compose.up
             compose.logs
           rescue SystemExit, Interrupt
-            puts "Stopping...."
+            @logger.info "Stopping...."
             raise SystemExit
           ensure
             compose.down

@@ -1,6 +1,7 @@
 require 'spec_helper'
+require_relative '../shared_context.rb'
 
-describe Minke::Config::Reader do
+describe Minke::Config::Reader, :a => :b do  
 
   let(:config) do
     ENV['DOCKER_REGISTRY_URL'] = 'http://myURL'
@@ -12,7 +13,7 @@ describe Minke::Config::Reader do
     ENV['DOCKER_IP'] = 'docker.local'
     ENV['SSL_KEY_PATH'] = File.expand_path("../../../data", __FILE__)
 
-    reader = Minke::Config::Reader.new
+    reader = Minke::Config::Reader.new logger_helper
     reader.read File.expand_path "../../../data/config_go.yml", __FILE__
   end
 

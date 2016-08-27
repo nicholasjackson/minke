@@ -24,7 +24,112 @@ Minke::Generators::Processor.load_generators
 puts ""
 puts ""
 
-options = {}
+options = {
+  :config => './config.yml'
+}
+
+subtext = <<HELP
+Commonly used command are:
+   generate    :     generate a new template
+   fetch       :     fetch dependent packages
+   build       :     build template
+   test        :     run unit tests
+   cucumber    :     run cucumber tests
+   run         :     start the application
+   build_image :     build a docker image
+   push        :     push built image to the registry
+See 'minke COMMAND --help' for more information on a specific command.
+HELP
+
+global = OptionParser.new do |opts|
+  opts.banner = "Usage: minke [options] [subcommand [options]]"
+  opts.on("-v", "--[no-]verbose", "Run verbosely") { |v| options[:verbose] = true }
+  opts.separator ""
+  opts.separator subtext
+end
+
+subcommands = { 
+  'generate' => OptionParser.new do |opts|
+     # ...
+   end,
+
+   'build' => OptionParser.new do |opts|
+     # ...
+   end,
+
+   'test' => OptionParser.new do |opts|
+     opts.banner = "Usage: minke test [options]"
+
+     opts.on("-c", "--config", "Load config file at given path") { |c| options[:config] = c }
+   end
+ }
+
+global.order!
+command = ARGV.shift
+subcommands[command].order!
+
+def load_config options
+  reader = Minke::Config::Reader.new Minke::Logging.create_logger(options[:verbose])
+  config = reader.read options[:config]
+  variables = Minke::Generators::ConfigVariables.new.tap do |v|
+      v.application_name = config.application_name
+      v.namespace = config.namespace
+      v.src_root = File.expand_path('../')
+  end
+  processor = Minke::Generators::Processor.new variables, nil, Minke::Logging.create_logger(options[:verbose])
+  generator_config = processor.get_generator config.generator_name
+  return config, generator_config
+end
+
+config, generator_config = load_config options
+
+case command
+when "test"
+  Minke::Command.new(
+    config, 
+    generator_config, 
+    options[:verbose]
+  ).test
+when "build"
+  Minke::Command.new(
+    config, 
+    generator_config, 
+    options[:verbose]
+  ).build
+when "fetch"
+  Minke::Command.new(
+    config, 
+    generator_config, 
+    options[:verbose]
+  ).fetch
+when "cucumber"
+  Minke::Command.new(
+    config, 
+    generator_config, 
+    options[:verbose]
+  ).cucumber
+when "build_image"
+  Minke::Command.new(
+    config, 
+    generator_config, 
+    options[:verbose]
+  ).build_image
+when "run"
+  Minke::Command.new(
+    config, 
+    generator_config, 
+    options[:verbose]
+  ).run
+when "push"
+  Minke::Command.new(
+    config, 
+    generator_config, 
+    options[:verbose]
+  ).run
+end
+
+exit 0
+
 OptionParser.new do |opts|
   opts.banner = "Usage: minke [options]"
 

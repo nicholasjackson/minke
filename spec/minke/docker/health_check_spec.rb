@@ -1,9 +1,11 @@
 require 'spec_helper'
+require_relative '../shared_context.rb'
 
-describe Minke::Docker::HealthCheck do
+describe Minke::Docker::HealthCheck, :a => :b do  
 
   let(:url) { 'http://something/v1' }
-  let(:healthcheck) { Minke::Docker::HealthCheck.new 10, 0 }
+  
+  let(:healthcheck) { Minke::Docker::HealthCheck.new logger_helper, 10, 0 }
 
   it 'calls the given url and returns when url is accessible' do
     stub_request(:any, url)

@@ -1,6 +1,6 @@
 #!/bin/bash
-MINKE_VERSION="1.12.9"
-ERROR="Please specify a command e.g. ./minke.sh rake app:test"
+MINKE_VERSION="1.13.0"
+ERROR="Please specify a command e.g. ./minke test"
 
 DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
 NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')

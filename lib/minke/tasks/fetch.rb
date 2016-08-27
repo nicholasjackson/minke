@@ -3,7 +3,7 @@ module Minke
     class Fetch < Task
 
       def run args = nil
-        puts '### Install generator dependencies'
+        @logger.info '### Fetching dependencies'
 
         if @generator_config.build_settings.build_commands.fetch != nil
           run_with_block do

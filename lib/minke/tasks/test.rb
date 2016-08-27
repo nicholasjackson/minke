@@ -3,7 +3,7 @@ module Minke
     class Test < Task
 
       def run args = nil
-        puts "## Test application"
+      @logger.info "## Test application"
 
         run_with_block do
           @generator_config.build_settings.build_commands.test.each do |command|

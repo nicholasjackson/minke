@@ -1,7 +1,7 @@
 module Minke
   module Generators
     def write_bash_script path
-      FileUtils.cp(File.expand_path('../../scripts/minke.sh', __FILE__), path)
+      FileUtils.cp(File.expand_path('../../scripts/minke', __FILE__), path)
       File.chmod(0755, path)
     end
 

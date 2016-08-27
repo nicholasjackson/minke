@@ -1,18 +1,20 @@
 module Minke
   module Docker
     class Consul
-      def initialize health_check, service_discovery, consul_loader, docker_runner, network, project_name
-        @health_check = health_check
-        @service_discovery = service_discovery
-        @consul_loader = consul_loader
-        @docker_runner = docker_runner
-        @network = network
-        @project_name = project_name
+      def initialize args
+        @health_check = args[:health_check]
+        @service_discovery = args[:service_discovery]
+        @consul_loader = args[:consul_loader]
+        @docker_runner = args[:docker_runner]
+        @network = args[:network]
+        @project_name = args[:project_name]
+        @logger = args[:logger_helper]
       end
 
       ##
       # start_and_load_data config
       def start_and_load_data consul_config
+        @logger.info "Starting Consul"
         start
         wait_for_startup consul_config.url
         load_data consul_config.url, consul_config.config_file
@@ -21,6 +23,7 @@ module Minke
       ##
       # stop consul
       def stop
+        @logger.info "Stopping Consul"
         @docker_runner.stop_container @container
         @docker_runner.delete_container @container
       end
