@@ -80,7 +80,7 @@ module Minke
           'PublishAllPorts' => true
         )
 
-        output = ""
+        output = ''
 
         unless args[:deamon] == true
           thread = Thread.new do
@@ -89,7 +89,8 @@ module Minke
                 if chunk.index('[ERROR]') != nil # deal with hidden characters
                   @logger.error chunk.gsub!(/\[.*\]/,'')
                 else
-                  output += chunk.gsub!(/\[.*\]/,'')
+                  output += chunk.gsub!(/\[.*\]/,'') if output == ''
+                  output += chunk.gsub!(/\[.*\]/,'').prepend("       ") unless output == ''
                   @logger.debug chunk.gsub!(/\[.*\]/,'')
                 end
             end
