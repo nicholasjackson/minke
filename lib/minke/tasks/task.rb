@@ -25,7 +25,6 @@ module Minke
       # run_with_config executes the task steps for the given
       # - block containing custom actions
       def run_with_block
-        @logger.info "Starting Consul"
         begin
           @docker_network.create
           @consul.start_and_load_data @task_settings.consul_loader unless @task_settings.consul_loader == nil
@@ -35,7 +34,6 @@ module Minke
 
           @task_runner.run_steps(@task_settings.post) unless @task_settings == nil || @task_settings.post == nil
         ensure
-          @logger.info "Stopping Consul"
           @consul.stop unless @task_settings.consul_loader == nil
           @docker_network.remove
         end
@@ -45,6 +43,8 @@ module Minke
       # runs the given command in a docker container
       def run_command_in_container command
         begin
+          @logger.info "Running command: #{command}"
+
           settings = @generator_config.build_settings.docker_settings
           build_image = create_container_image
 

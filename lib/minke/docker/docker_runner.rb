@@ -80,6 +80,8 @@ module Minke
           'PublishAllPorts' => true
         )
 
+        output = ""
+
         unless args[:deamon] == true
           thread = Thread.new do
             container.attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true, :logs => false, :tty => false) do
@@ -87,6 +89,7 @@ module Minke
                 if chunk.index('[ERROR]') != nil # deal with hidden characters
                   @logger.error chunk.gsub!(/\[.*\]/,'')
                 else
+                  output += chunk.gsub!(/\[.*\]/,'')
                   @logger.debug chunk.gsub!(/\[.*\]/,'')
                 end
             end
@@ -97,6 +100,9 @@ module Minke
 
         thread.join unless args[:deamon] == true
         success = (container.json['State']['ExitCode'] == 0) ? true: false 
+
+        @logger.error(output) unless success 
+
       	return container, success
       end
 

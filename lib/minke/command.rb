@@ -1,12 +1,11 @@
 module Minke
   class Command
-    attr_accessor :config, :generator_config
+    attr_accessor :config, :generator_config, :verbose
 
-    def load_generators
-      Minke::Generators::Processor.load_generators()
-      processor = Minke::Generators::Processor.new variables, @docker_runner, logger
-
-      self.generator_config = processor.get_generator @config.generator_name
+    def initialize(config, generator_config, verbose)
+      self.config = config
+      self.generator_config = generator_config
+      self.verbose = verbose
     end
 
     # Creates dependencies for minke
@@ -16,7 +15,7 @@ module Minke
       ENV['DOCKER_PROJECT'] = project_name
       ENV['DOCKER_NETWORK'] = network_name
 
-      logger = Minke::Logging.create_logger
+      logger = Minke::Logging.create_logger(self.verbose)
       shell = Minke::Helpers::Shell.new(logger)
 
       variables = Minke::Generators::ConfigVariables.new.tap do |v|
@@ -32,12 +31,15 @@ module Minke
       })
 
       consul = Minke::Docker::Consul.new(
-        Minke::Docker::HealthCheck.new(logger),
-        Minke::Docker::ServiceDiscovery.new( project_name, Minke::Docker::DockerRunner.new(logger, network_name), network_name),
-        ConsulLoader::Loader.new(ConsulLoader::ConfigParser.new),
-        Minke::Docker::DockerRunner.new(logger, network_name),
-        network_name,
-        project_name
+        {
+          :health_check => Minke::Docker::HealthCheck.new(logger),
+          :service_discovery => Minke::Docker::ServiceDiscovery.new( project_name, Minke::Docker::DockerRunner.new(logger, network_name), network_name),
+          :consul_loader => ConsulLoader::Loader.new(ConsulLoader::ConfigParser.new),
+          :docker_runner => Minke::Docker::DockerRunner.new(logger, network_name),
+          :network => network_name,
+          :project_name => project_name,
+          :logger_helper => logger
+        }
       )
 
       network = Minke::Docker::Network.new(

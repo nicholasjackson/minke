@@ -8,7 +8,17 @@ describe Minke::Docker::Consul, :a => :b do
     allow(c).to receive(:load_config)
     return c
   end
-  let(:consul) { Minke::Docker::Consul.new health_check, service_discovery, consul_loader, docker_runner, network, 'tester' }
+  let(:consul) { 
+    Minke::Docker::Consul.new({
+        :health_check => health_check, 
+        :service_discovery => service_discovery, 
+        :consul_loader => consul_loader, 
+        :docker_runner => docker_runner, 
+        :network => network, 
+        :project_name => 'tester',
+        :logger_helper => logger_helper
+      }) 
+    }
   
   describe 'consul' do 
     it 'starts consul' do

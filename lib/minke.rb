@@ -57,17 +57,29 @@ require 'minke/encryption/key_locator'
 
 module Minke
   class Logging
-    def self.create_logger 
+    @@debug = false
+    @@ret = "\n"
+    
+    def self.create_logger verbose = false
       Logger.new(STDOUT).tap do |l|
         l.datetime_format = ''
         l.formatter = proc do |severity, datetime, progname, msg|
           case severity
           when 'ERROR'
-            "#{'ERROR'.colorize(:red)}: #{msg}\n"
+            s = "#{@@ret if @@debug}#{'ERROR'.colorize(:red)}: #{msg.chomp('')}\n"
+            @@debug = false
+            s
           when 'INFO'
-            "#{'INFO'.colorize(:green)}: #{msg}\n"
+            s = "#{@@ret if @@debug}#{'INFO'.colorize(:green)}: #{msg.chomp('')}\n"
+            @@debug = false
+            s
           when 'DEBUG'
-            "#{'DEBUG'.colorize(:yellow)}: #{msg}\n"
+            if verbose == true
+              "#{'DEBUG'.colorize(:yellow)}: #{msg.chomp('')}\n"
+            else
+              @@debug = true
+              "#{'.'.colorize(:yellow)}"
+            end
           end
         end
       end
