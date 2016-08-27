@@ -5,7 +5,6 @@ module Minke
     class Processor
 
       def self.load_generators
-        puts '# Loading installed generators'
         Gem::Specification.find_all.each do |spec|
           if spec.metadata != nil && spec.metadata['entrypoint'] != nil
             require spec.metadata['entrypoint']
@@ -13,7 +12,8 @@ module Minke
         end
       end
 
-      def initialize variables, docker_runner
+      def initialize variables, docker_runner, logger
+        @logger = logger
         @variables = variables
         @docker_runner = docker_runner
       end
@@ -22,8 +22,8 @@ module Minke
         generator = get_generator generator_name
 
         # process the files
-        puts '# Modifiying templates'
-        puts "#{generator.template_location}"
+        @logger.info '# Modifiying templates'
+        @logger.debug "#{generator.template_location}"
 
         process_directory generator.template_location, '**/*', output_folder, @variables.application_name
         process_directory generator.template_location, '**/.*', output_folder, @variables.application_name
@@ -42,10 +42,10 @@ module Minke
       end
 
       def build_image docker_file
-        puts "## Building custom docker image"
+        @logger.info "## Building custom docker image"
 
         image_name = @variables.application_name + "-buildimage"
-        puts @docker_runner.build_image docker_file, image_name
+        @docker_runner.build_image docker_file, image_name
       end
 
       def fetch_image docker_image
@@ -54,12 +54,12 @@ module Minke
       end
 
       def run_command_in_container build_image, command
-        puts command
+        @logger.debug command
         begin
           container, success = @docker_runner.create_and_run_container build_image, ["#{File.expand_path(@variables.src_root)}:/src"], nil, '/src', command
 
           # throw exception if failed
-          @helper.fatal_error "Unable to run command #{command}" unless success
+          @helper.fatal_error " #{command}" unless success
           #command = Minke::Helpers.replace_vars_in_section generator.generate_command, '##SERVICE_NAME##', APPLICATION_NAME
           #container, ret = Minke::Docker.create_and_run_container config, command
         ensure
@@ -69,7 +69,7 @@ module Minke
 
       def process_directory template_location, folder, output_folder, service_name
         Dir.glob("#{template_location}/#{folder}").each do |file_name|
-          puts "## Processing #{file_name}"
+          @logger.debug "## Processing #{file_name}"
           process_file template_location, file_name, output_folder, service_name
         end
       end

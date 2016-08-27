@@ -11,7 +11,7 @@ module Minke
         @task_runner            = args[:task_runner]
         @error_helper           = args[:error_helper]
         @shell_helper           = args[:shell_helper]
-        @logger_helper          = args[:logger_helper]
+        @logger                 = args[:logger_helper]
         @generator_config       = args[:generator_config]
         @docker_compose_factory = args[:docker_compose_factory]
         @consul                 = args[:consul]
@@ -25,7 +25,7 @@ module Minke
       # run_with_config executes the task steps for the given
       # - block containing custom actions
       def run_with_block
-        puts "Starting Consul"
+        @logger.info "Starting Consul"
         begin
           @docker_network.create
           @consul.start_and_load_data @task_settings.consul_loader unless @task_settings.consul_loader == nil
@@ -35,7 +35,7 @@ module Minke
 
           @task_runner.run_steps(@task_settings.post) unless @task_settings == nil || @task_settings.post == nil
         ensure
-          puts "Stopping Consul"
+          @logger.info "Stopping Consul"
           @consul.stop unless @task_settings.consul_loader == nil
           @docker_network.remove
         end
@@ -77,7 +77,6 @@ module Minke
           build_image = "#{@config.application_name}-buildimage"
           @docker_runner.build_image build_file, build_image
         else
-          puts build_image
           @docker_runner.pull_image build_image unless @docker_runner.find_image build_image
         end
 

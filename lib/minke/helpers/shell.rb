@@ -1,11 +1,27 @@
 module Minke
   module Helpers
     class Shell
+      def initialize logger
+        @logger = logger
+      end
+
       ##
       # Executes a shell command and returns the return status
       def execute command
-        puts command
-        system("#{command}")
+        @logger.debug command
+        
+        require 'open3'
+        cmd = 'ping www.google.com'
+        Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
+          while line = stdout.gets
+            @logger.debug line
+          end
+          
+          exit_status = wait_thr.value
+          unless exit_status.success?
+            abort "FAILED !!! #{cmd}"
+          end
+        end
       end
 
       def execute_and_return command

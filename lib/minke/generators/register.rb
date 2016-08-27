@@ -4,9 +4,8 @@ module Minke
 
     def register config
       puts "registered #{config.name}"
-
+      
       @@registrations.push(config)
-      #puts "registered #{config.template_location}"
     end
 
     def get_registrations

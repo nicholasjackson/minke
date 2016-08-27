@@ -1,5 +1,5 @@
 require 'spec_helper'
-require_relative '../tasks/shared_context.rb'
+require_relative '../shared_context.rb'
 
 describe Minke::Docker::Consul, :a => :b do
   let(:network) { 'tester' }

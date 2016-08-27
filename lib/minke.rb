@@ -17,10 +17,10 @@ require 'sshkey'
 require 'mkmf'
 
 require 'minke/version'
+require 'minke/command'
 
 require 'minke/helpers/copy'
 require 'minke/helpers/error'
-require 'minke/helpers/logger'
 require 'minke/helpers/rake'
 require 'minke/helpers/shell'
 
@@ -54,3 +54,23 @@ require 'minke/generators/shell_script'
 
 require 'minke/encryption/encryption'
 require 'minke/encryption/key_locator'
+
+module Minke
+  class Logging
+    def self.create_logger 
+      Logger.new(STDOUT).tap do |l|
+        l.datetime_format = ''
+        l.formatter = proc do |severity, datetime, progname, msg|
+          case severity
+          when 'ERROR'
+            "#{'ERROR'.colorize(:red)}: #{msg}\n"
+          when 'INFO'
+            "#{'INFO'.colorize(:green)}: #{msg}\n"
+          when 'DEBUG'
+            "#{'DEBUG'.colorize(:yellow)}: #{msg}\n"
+          end
+        end
+      end
+    end
+  end
+end

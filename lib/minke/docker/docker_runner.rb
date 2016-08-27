@@ -1,8 +1,9 @@
 module Minke
   module Docker
     class DockerRunner
-      def initialize network = nil
+      def initialize logger, network = nil
         @network = network ||= 'bridge'
+        @logger = logger
       end
 
       ##
@@ -43,7 +44,7 @@ module Minke
       ##
       # pull_image pulls a new copy of the given image from the registry
       def pull_image image_name
-      	puts "Pulling Image: #{image_name}"
+      	@logger.debug "Pulling Image: #{image_name}"
         ::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
         ::Docker::Image.create('fromImage' => image_name)
       end
@@ -79,19 +80,14 @@ module Minke
           'PublishAllPorts' => true
         )
 
-        success = true
-
         unless args[:deamon] == true
           thread = Thread.new do
             container.attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true, :logs => false, :tty => false) do
               |stream, chunk|
-                stream.to_s == 'stdout' ? color = :green : color  = :red
-                puts "#{chunk.strip}".colorize(color)
-
-                if stream.to_s == "stderr"
-                  success = false
+                if chunk.index('[ERROR]') != nil # deal with hidden characters
+                  @logger.error chunk.gsub!(/\[.*\]/,'')
                 else
-                  success = true
+                  @logger.debug chunk.gsub!(/\[.*\]/,'')
                 end
             end
           end
@@ -100,15 +96,13 @@ module Minke
         container.start
 
         thread.join unless args[:deamon] == true
-
+        success = (container.json['State']['ExitCode'] == 0) ? true: false 
       	return container, success
       end
 
       ##
       # build_image creates a new image from the given Dockerfile and name
       def build_image dockerfile_dir, name
-        puts dockerfile_dir
-        puts name
         ::Docker.options = {:read_timeout => 6200}
         begin
           ::Docker::Image.build_from_dir(dockerfile_dir, {:t => name}) do |v|
@@ -117,9 +111,9 @@ module Minke
             $stdout.puts data unless data == nil
           end
         rescue => e
-          puts e
+          @logger.error e
           message = /.*{"message":"(.*?)"}/.match(e.to_s)
-          puts "Error: #{message[1]}" unless message == nil || message.length < 1
+          @logger.error "Error: #{message[1]}" unless message == nil || message.length < 1
         end
       end
 
@@ -132,7 +126,7 @@ module Minke
           begin
             container.delete()
           rescue => e
-            puts "Error: Unable to delete container: #{e}"
+            @logger.error "Error: Unable to delete container: #{e}"
           end
         end
       end

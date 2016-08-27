@@ -4,7 +4,7 @@ module Minke
       ##
       # fatal_error aborts the current execute with the given message
       def fatal_error message
-        abort message
+        abort message.colorize(:red)
       end
 
     end

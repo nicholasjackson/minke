@@ -25,6 +25,62 @@ puts ""
 puts ""
 
 options = {}
+
+subtext = <<HELP
+Commonly used command are:
+   generate :     generate a new template
+   build    :     build template
+   test     :     run unit tests
+   cucumber :     run cucumber tests
+   run      :     start the application
+   fetch    :     fetch dependent packages
+   push     :     push built image to the registry
+See 'opt.rb COMMAND --help' for more information on a specific command.
+HELP
+
+global = OptionParser.new do |opts|
+  opts.banner = "Usage: minke [options] [subcommand [options]]"
+  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+    options[:verbose] = v
+  end
+  opts.separator ""
+  opts.separator subtext
+end
+
+subcommands = { 
+  'generate' => OptionParser.new do |opts|
+     # ...
+   end,
+
+   'build' => OptionParser.new do |opts|
+     # ...
+   end,
+
+   'test' => OptionParser.new do |opts|
+     opts.banner = "Usage: minke test [options]"
+
+     opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+      options[:verbose] = v
+    end
+   end
+ }
+
+global.order!
+command = ARGV.shift
+subcommands[command].order!
+
+puts "Command: #{command} "
+p options
+puts "ARGV:"
+p ARGV
+
+case command
+when "test"
+  doTest
+end
+
+exit 0
+
 OptionParser.new do |opts|
   opts.banner = "Usage: minke [options]"
 

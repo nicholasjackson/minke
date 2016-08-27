@@ -4,21 +4,22 @@ module Minke
     # HealthCheck checks health of a running container
     class HealthCheck
 
-      def initialize count=nil, pause=nil
+      def initialize logger, count=nil, pause=nil
         @count = count ||= 180
         @pause = pause ||= 1
         @successes = 2
+        @logger = logger
       end
 
       ##
       # waits until a 200 response is received from the given url
       def wait_for_HTTPOK url
-        puts "Waiting for server #{url} to start #{@count} attempts left"
+        @logger.debug "Waiting for server #{url} to start #{@count} attempts left"
 
         begin
           response = RestClient.send('get', url)
         rescue
-          puts 'Invalid response from server'
+          @logger.error 'Invalid response from server'
         end
 
         check_response response, url
@@ -46,13 +47,13 @@ module Minke
 
       def check_success url
         if @successes > 0 
-          puts "Server: #{url} passed health check, #{@successes} checks to go..."
+          @logger.debug "Server: #{url} passed health check, #{@successes} checks to go..."
 
           @successes -= 1
           sleep @pause
           wait_for_HTTPOK url
         else
-          puts "Server: #{url} healthy"
+          @logger.debug "Server: #{url} healthy"
         end
       end
 

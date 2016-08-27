@@ -3,7 +3,7 @@ module Minke
     class Cucumber < Task
 
       def run args = nil
-      	puts "## Running cucumber with tags #{args}"
+      	@logger.info "## Running cucumber with tags #{args}"
 
         compose_file = @config.compose_file_for(@task_name)
         compose_file = File.expand_path(compose_file)
