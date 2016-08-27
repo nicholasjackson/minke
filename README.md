@@ -1,14 +1,14 @@
-[![Stories in Ready](https://badge.waffle.io/nicholasjackson/minke.png?label=ready&title=Ready)](https://waffle.io/nicholasjackson/minke)  
-[![Test Coverage](https://codeclimate.com/github/nicholasjackson/minke/badges/coverage.svg)](https://codeclimate.com/github/nicholasjackson/minke/coverage)  
-[![Build Status](https://travis-ci.org/nicholasjackson/minke.svg?branch=master)](https://travis-ci.org/nicholasjackson/minke)  
-
-
 # Minke
 
-[![Join the chat at https://gitter.im/nicholasjackson/minke](https://badges.gitter.im/nicholasjackson/minke.svg)](https://gitter.im/nicholasjackson/minke?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+|     |     |
+|-----|-----|
+| Stories Ready: | [![Stories in Ready](https://badge.waffle.io/nicholasjackson/minke.png?label=ready&title=Ready)](https://waffle.io/nicholasjackson/minke) |
+| Test Coverage: | [![Test Coverage](https://codeclimate.com/github/nicholasjackson/minke/badges/coverage.svg)](https://codeclimate.com/github/nicholasjackson/minke/coverage) |
+| Build Status: | [![Build Status](https://travis-ci.org/nicholasjackson/minke.svg?branch=master)](https://travis-ci.org/nicholasjackson/minke) |
+| Chat: | [![Join the chat at https://gitter.im/nicholasjackson/minke](https://badges.gitter.im/nicholasjackson/minke.svg)](https://gitter.im/nicholasjackson/minke?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) |
 
 # Documentation and Tutorial 
-[http://minke.rocks/index.html](http://minke.rocks/index.html)
+[https://minke.rocks/index.html](http://minke.rocks/index.html)
 
 # Quick Start
 Minke is an opinionated build system for μServices and Docker, it uses generator templates to create working source code, Dockerfiles, and anything else you may need to build and deploy a working microservice.
@@ -58,3 +58,6 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+
+
+
