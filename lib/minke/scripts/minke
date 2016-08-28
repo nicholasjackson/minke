@@ -31,6 +31,9 @@ COMMAND=$*
 # Test if interactive terminal and set the flag
 [[ -t 1 ]] && IT="-it" || IT=""
 
+echo $1
+echo $2
+
 if [[ $1 == "generate" ]] || [[ $2 == "generate" ]]; then
   echo "Generating new template"
   DIR=${PWD}
