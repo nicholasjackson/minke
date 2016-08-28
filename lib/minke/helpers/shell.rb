@@ -10,8 +10,6 @@ module Minke
       def execute command
         @logger.debug command
         
-        require 'open3'
-        cmd = 'ping www.google.com'
         Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
           while line = stdout.gets
             @logger.debug line
@@ -19,7 +17,8 @@ module Minke
           
           exit_status = wait_thr.value
           unless exit_status.success?
-            abort "FAILED !!! #{cmd}"
+            @logger.error "Error executing command: #{command}"
+            abort
           end
         end
       end

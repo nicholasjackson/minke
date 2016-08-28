@@ -96,14 +96,11 @@ end
 
 def doCommand(command, verbose, config_file = nil)
   config, generator_config = load_config(config_file, verbose) unless config_file == nil
-  c = Minke::Command.new(
+  Minke::Command.new(
     config, 
     generator_config,
     verbose
-  )
-
-  puts c
-  c.public_send(command)
+  ).public_send(command)
 end
 
 def doGenerate(options)

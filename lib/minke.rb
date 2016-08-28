@@ -15,6 +15,7 @@ require 'base64'
 require 'securerandom'
 require 'sshkey'
 require 'mkmf'
+require 'open3'
 
 require 'minke/version'
 require 'minke/command'
