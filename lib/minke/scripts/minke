@@ -31,21 +31,19 @@ COMMAND=$*
 # Test if interactive terminal and set the flag
 [[ -t 1 ]] && IT="-it" || IT=""
 
-echo $1
-echo $2
-
-if [[ $1 == "generate" ]] || [[ $2 == "generate" ]]; then
+if [[ $1 == \generate* ]]; then
   echo "Generating new template"
   DIR=${PWD}
   DOCKER_RUN="docker run --rm -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor/gems:${GEMSETFOLDER} -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR} ${DOCKER_IMAGE} /bin/bash -c '${RVM_COMMAND} && bundle install && minke ${COMMAND}'"
+  
   eval "${DOCKER_RUN}"
 fi
 
-if [[ $1 != "generate" ]] && [[ $2 != "generate" ]]; then
+if [[ $1 != \generate* ]]; then
   DIR=$(dirname `pwd`)
   DOCKER_RUN="docker run --rm ${IT} --net=minke_${NEW_UUID} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor/gems:${GEMSETFOLDER} -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_build ${DOCKER_IMAGE} /bin/bash -c '${RVM_COMMAND} && minke ${COMMAND}'"
 
-  echo "Running command: minke ${COMMAND}"
+  echo "Running command: ${COMMAND}"
 
   eval "docker network create minke_${NEW_UUID}"
   eval "${DOCKER_RUN}"
