@@ -38,6 +38,7 @@ Commonly used command are:
    run         :     start the application
    build_image :     build a docker image
    push        :     push built image to the registry
+   encrypt     :     encrypt secrets with a private key
 See 'minke COMMAND --help' for more information on a specific command.
 HELP
 
@@ -50,7 +51,12 @@ end
 
 subcommands = { 
   'generate' => OptionParser.new do |opts|
-     # ...
+    opts.banner = "Usage: minke [options] generate [options]"
+
+    opts.on('-g', '--generator GENERATOR', 'Generator plugin to use') { |v| options[:generator] = v }
+    opts.on('-o', '--output OUTPUT', 'Output folder') { |v| options[:output] = v }
+    opts.on('-a', '--application_name NAME', 'Application name') { |v| options[:name] = v }
+    opts.on('-n', '--namespace NAMESPACE', 'Application namespace') { |v| options[:namespace] = v }
    end,
 
    'build' => OptionParser.new do |opts|
@@ -58,100 +64,70 @@ subcommands = {
    end,
 
    'test' => OptionParser.new do |opts|
-     opts.banner = "Usage: minke test [options]"
+     opts.banner = "Usage: minke [options] test [options]"
 
      opts.on("-c", "--config", "Load config file at given path") { |c| options[:config] = c }
-   end
+   end,
+
+   'encrypt' => OptionParser.new do |opts|
+      opts.banner = "Usage: minke [options] encrypt [options]"
+
+      opts.on('-e', '--encrypt STRING', 'Encrypt a string') { |v| options[:encrypt] = v }
+      opts.on('-k', '--key STRING', 'Private key to use for encryption') { |v| options[:key] = v }
+    end
  }
 
 global.order!
 command = ARGV.shift
-subcommands[command].order!
+subcommands[command].order! unless command == ''
 
-def load_config options
-  reader = Minke::Config::Reader.new Minke::Logging.create_logger(options[:verbose])
-  config = reader.read options[:config]
+def load_config config_file, verbose
+  reader = Minke::Config::Reader.new Minke::Logging.create_logger(verbose)
+  config = reader.read config_file
   variables = Minke::Generators::ConfigVariables.new.tap do |v|
       v.application_name = config.application_name
       v.namespace = config.namespace
       v.src_root = File.expand_path('../')
   end
-  processor = Minke::Generators::Processor.new variables, nil, Minke::Logging.create_logger(options[:verbose])
+  processor = Minke::Generators::Processor.new variables, nil, Minke::Logging.create_logger(verbose)
   generator_config = processor.get_generator config.generator_name
   return config, generator_config
 end
 
-config, generator_config = load_config options
+def doCommand(command, verbose, config_file = nil)
+  config, generator_config = load_config(config_file, verbose) unless config_file == nil
+  c = Minke::Command.new(
+    config, 
+    generator_config,
+    verbose
+  )
 
-case command
-when "test"
-  Minke::Command.new(
-    config, 
-    generator_config, 
-    options[:verbose]
-  ).test
-when "build"
-  Minke::Command.new(
-    config, 
-    generator_config, 
-    options[:verbose]
-  ).build
-when "fetch"
-  Minke::Command.new(
-    config, 
-    generator_config, 
-    options[:verbose]
-  ).fetch
-when "cucumber"
-  Minke::Command.new(
-    config, 
-    generator_config, 
-    options[:verbose]
-  ).cucumber
-when "build_image"
-  Minke::Command.new(
-    config, 
-    generator_config, 
-    options[:verbose]
-  ).build_image
-when "run"
-  Minke::Command.new(
-    config, 
-    generator_config, 
-    options[:verbose]
-  ).run
-when "push"
-  Minke::Command.new(
-    config, 
-    generator_config, 
-    options[:verbose]
-  ).run
+  puts c
+  c.public_send(command)
 end
 
-exit 0
+def doGenerate(options)
+  # load the installed generators
+  variables = Minke::Generators::ConfigVariables.new.tap do |v|
+    v.application_name = options[:name]
+    v.namespace = options[:namespace]
+    v.src_root = File.expand_path(options[:output]) unless options[:output] == nil
+  end
+  logger = Minke::Logging.create_logger(options[:verbose])
+  processor = Minke::Generators::Processor.new(
+    variables, 
+    Minke::Docker::DockerRunner.new(logger),
+    logger
+    )
 
-OptionParser.new do |opts|
-  opts.banner = "Usage: minke [options]"
-
-  opts.on('-e', '--encrypt STRING', 'Encrypt a string') { |v| options[:encrypt] = v }
-  opts.on('-k', '--key STRING', 'Private key to use for encryption') { |v| options[:key] = v }
-  opts.on('-g', '--generator GENERATOR', 'Generator plugin to use') { |v| options[:generator] = v }
-  opts.on('-o', '--output OUTPUT', 'Output folder') { |v| options[:output] = v }
-  opts.on('-a', '--application_name NAME', 'Application name') { |v| options[:name] = v }
-  opts.on('-n', '--namespace NAMESPACE', 'Application namespace') { |v| options[:namespace] = v }
-
-end.parse!
-
-# load the installed generators
-variables = Minke::Generators::ConfigVariables.new.tap do |v|
-  v.application_name = options[:name]
-  v.namespace = options[:namespace]
-  v.src_root = File.expand_path(options[:output]) unless options[:output] == nil
+  processor.process options[:generator], options[:output]
 end
-processor = Minke::Generators::Processor.new variables, Minke::Docker::DockerRunner.new
 
-if options[:encrypt] != nil
-  puts "Please specify a key to use for encryption using -k [path to file]" if options[:key] == nil
+def doEncrypt(options)
+  if options[:key] == nil
+    puts "Please specify a key to use for encryption using -k [path to file]"
+    exit 1 
+  end
 
   encrypt = Minke::Encryption::Encryption.new options[:key]
 
@@ -161,13 +137,30 @@ if options[:encrypt] != nil
   puts "  fingerprint: #{encrypt.fingerprint}"
   puts '  value: >'
   encrypt.encrypt_string(options[:encrypt]).split("\n").each { |l| puts "    #{l}"}
-
-  exit 0
 end
 
-if options[:generator] == nil || options[:output] == nil || options[:name] == nil || options[:namespace] == nil
-  puts "Please specify options use: minke --help for help on command line options"
-  exit 0
-end
+case command
+when "test"
+  doCommand(:test, options[:verbose], options[:config])
+when "build"
+  doCommand(:build, options[:verbose], options[:config])
+when "fetch"
+  doCommand(:fetch, options[:verbose], options[:config])
+when "cucumber"
+  doCommand(:cucumber, options[:verbose], options[:config])
+when "build_image"
+  doCommand(:build_image, options[:verbose], options[:config])
+when "run"
+  doCommand(:run, options[:verbose], options[:config])
+when "push"
+  doCommand(:push, options[:verbose], options[:config])
+when "generate"
+  if options[:generator] == nil || options[:output] == nil || options[:name] == nil || options[:namespace] == nil
+    puts "Please specify options use: minke generate --help for help on command line options"
+    exit 0
+  end
 
-processor.process options[:generator], options[:output]
+  doGenerate(options)
+when "encrypt"
+  doEncrypt(options)
+end

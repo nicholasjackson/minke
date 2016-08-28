@@ -1,5 +1,5 @@
 #!/bin/bash
-MINKE_VERSION="1.13.0"
+MINKE_VERSION="1.13.1"
 ERROR="Please specify a command e.g. ./minke test"
 
 DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
