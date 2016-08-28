@@ -87,21 +87,24 @@ module Minke
             container.attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true, :logs => false, :tty => false) do
               |stream, chunk|
                 if chunk.index('[ERROR]') != nil # deal with hidden characters
-                  @logger.error chunk.gsub!(/\[.*\]/,'')
+                  @logger.error chunk.gsub(/\[.*\]/,'')
                 else
-                  output += chunk.gsub!(/\[.*\]/,'') if output == ''
-                  output += chunk.gsub!(/\[.*\]/,'').prepend("       ") unless output == ''
-                  @logger.debug chunk.gsub!(/\[.*\]/,'')
+                  output += chunk.gsub(/\[.*\]/,'') if output == ''
+                  output += chunk.gsub(/\[.*\]/,'').prepend("       ") unless output == ''
+                  @logger.debug chunk.gsub(/\[.*\]/,'')
                 end
             end
           end
         end
 
+        
+
         container.start
-
+        
         thread.join unless args[:deamon] == true
-        success = (container.json['State']['ExitCode'] == 0) ? true: false 
 
+        success = (container.json['State']['ExitCode'] == 0) ? true: false 
+        
         @logger.error(output) unless success 
 
       	return container, success
