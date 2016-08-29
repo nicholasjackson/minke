@@ -1,5 +1,3 @@
-require 'pry'
-
 module Minke
   module Docker
     ##
