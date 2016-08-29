@@ -14,12 +14,12 @@ module Minke
       ##
       # waits until a 200 response is received from the given url
       def wait_for_HTTPOK url
-        @logger.debug "Waiting for server #{url} to start #{@count} attempts left"
+        @logger.debug "Waiting for server #{url} to start #{@count} attempts remaining"
 
         begin
           response = RestClient.send('get', url)
         rescue
-          @logger.error 'Invalid response from server'
+          @logger.debug 'Invalid response from server'
         end
 
         check_response response, url
@@ -41,6 +41,7 @@ module Minke
         if @count > 0
           wait_for_HTTPOK url
         else
+          @logger.error "Server: #{url} failed health check"
           raise 'Server failed to start'
         end
       end

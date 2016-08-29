@@ -79,12 +79,32 @@ describe Minke::Docker::Consul, :a => :b do
 
     it 'stops the consul container' do
       expect(docker_runner).to receive(:stop_container)
+
+      consul.start_and_load_data config.fetch.consul_loader
       consul.stop
     end
 
     it 'deletes container' do
-      allow(docker_runner).to receive(:stop_container)
+      
       expect(docker_runner).to receive(:delete_container)
+
+      consul.start_and_load_data config.fetch.consul_loader
+      consul.stop
+    end
+
+    it 'does not stop the consul container if the container is not running' do
+      allow(docker_runner).to receive(:create_and_run_container).and_return([nil, false])
+      expect(docker_runner).to receive(:stop_container).never()
+
+      consul.start_and_load_data config.fetch.consul_loader
+      consul.stop
+    end
+
+    it 'does not delete the consul container if the container is not running' do
+      allow(docker_runner).to receive(:create_and_run_container).and_return([nil, false])
+      expect(docker_runner).to receive(:delete_container).never()
+
+      consul.start_and_load_data config.fetch.consul_loader
       consul.stop
     end
   end

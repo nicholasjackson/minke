@@ -59,7 +59,7 @@ module Minke
           container, success = @docker_runner.create_and_run_container build_image, ["#{File.expand_path(@variables.src_root)}:/src"], nil, '/src', command
 
           # throw exception if failed
-          @helper.fatal_error " #{command}" unless success
+          raise " #{command}" unless success
           #command = Minke::Helpers.replace_vars_in_section generator.generate_command, '##SERVICE_NAME##', APPLICATION_NAME
           #container, ret = Minke::Docker.create_and_run_container config, command
         ensure

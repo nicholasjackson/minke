@@ -52,7 +52,6 @@ module Minke
         :task_name              => task,
         :docker_runner          => Minke::Docker::DockerRunner.new(logger, network_name),
         :task_runner            => task_runner,
-        :error_helper           => Minke::Helpers::Error.new,
         :shell_helper           => shell,
         :logger_helper          => logger,
         :generator_config       => generator_config,
@@ -65,14 +64,15 @@ module Minke
     end
 
     def create_tasks task
+      dependencies = create_dependencies(task)
       return {
-        :bundler     => Minke::Tasks::Bundle.new(create_dependencies(task)),
-        :fetch       => Minke::Tasks::Fetch.new(create_dependencies(task)),
-        :build       => Minke::Tasks::Build.new(create_dependencies(task)),
-        :test        => Minke::Tasks::Test.new(create_dependencies(task)),
-        :build_image => Minke::Tasks::BuildImage.new(create_dependencies(task)),
-        :cucumber => Minke::Tasks::Cucumber.new(create_dependencies(task)),
-        :push => Minke::Tasks::Push.new(create_dependencies(task))
+        :bundler     => Minke::Tasks::Bundle.new(dependencies),
+        :fetch       => Minke::Tasks::Fetch.new(dependencies),
+        :build       => Minke::Tasks::Build.new(dependencies),
+        :test        => Minke::Tasks::Test.new(dependencies),
+        :build_image => Minke::Tasks::BuildImage.new(dependencies),
+        :cucumber => Minke::Tasks::Cucumber.new(dependencies),
+        :push => Minke::Tasks::Push.new(dependencies)
       }
     end
 

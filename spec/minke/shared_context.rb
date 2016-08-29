@@ -67,12 +67,6 @@ RSpec.shared_context 'shared context', :a => :b do
     return runner
   end
 
-  let(:error_helper) do
-    helper = double('error_helper')
-    allow(helper).to receive(:fatal_error)
-    return helper
-  end
-
   let(:shell_helper) do
     helper = double('shell_helper')
     allow(helper).to receive(:execute)
@@ -130,7 +124,7 @@ RSpec.shared_context 'shared context', :a => :b do
 
   let(:docker_runner) do
     runner = double('docker_runner')
-    allow(runner).to receive(:create_and_run_container).and_return(nil, true)
+    allow(runner).to receive(:create_and_run_container).and_return([true, true])
     allow(runner).to receive(:delete_container)
     allow(runner).to receive(:get_docker_ip_address)
     allow(runner).to receive(:build_image)
@@ -139,6 +133,7 @@ RSpec.shared_context 'shared context', :a => :b do
     allow(runner).to receive(:push_image)
     allow(runner).to receive(:find_image)
     allow(runner).to receive(:pull_image)
+    allow(runner).to receive(:stop_container)
     return runner
   end
 
@@ -163,7 +158,6 @@ RSpec.shared_context 'shared context', :a => :b do
       :generator_config => generator_config,
       :task_name => :fetch,
       :task_runner => task_runner,
-      :error_helper => error_helper,
       :shell_helper => shell_helper,
       :logger_helper => logger_helper,
       :docker_compose_factory => docker_compose_factory,

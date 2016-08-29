@@ -16,10 +16,11 @@ module Minke
             server_address = @service_discovery.build_address(@task_settings.health_check) 
             @health_check.wait_for_HTTPOK(server_address) unless @task_settings.health_check == nil
             
-            status = @shell_helper.execute "cucumber --color -f pretty #{get_features args}"
+            @shell_helper.execute "cucumber --color -f pretty #{get_features args}"
+          rescue Exception => e
+            raise ("Cucumber steps failed: #{e.message}") unless status == true
           ensure
             compose.down
-            @error_helper.fatal_error("Cucumber steps failed") unless status == true
           end
       	end
       end

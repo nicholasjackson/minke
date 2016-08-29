@@ -10,15 +10,14 @@ module Minke
       def execute command
         @logger.debug command
         
-        Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
-          while line = stdout.gets
+        Open3.popen2e(command) do |stdin, stdout_err, wait_thr|
+          while line = stdout_err.gets
             @logger.debug line
           end
           
           exit_status = wait_thr.value
           unless exit_status.success?
-            @logger.error "Error executing command: #{command}"
-            abort
+            raise "Error executing command: #{command}"
           end
         end
       end

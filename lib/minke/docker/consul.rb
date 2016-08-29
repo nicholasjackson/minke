@@ -24,8 +24,8 @@ module Minke
       # stop consul
       def stop
         @logger.info "Stopping Consul"
-        @docker_runner.stop_container @container
-        @docker_runner.delete_container @container
+        @docker_runner.stop_container @container unless @container == nil
+        @docker_runner.delete_container @container unless @container == nil
       end
 
       private

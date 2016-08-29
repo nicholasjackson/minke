@@ -46,12 +46,17 @@ describe Minke::Tasks::Task, :a => :b do
       task.run_command_in_container 'go build'
     end
 
-    it 'does not the docker image when it exists' do
+    it 'does not pull the docker image when it exists' do
       config.fetch.docker.build_docker_file = nil
       expect(docker_runner).to receive(:find_image).with('buildimage').and_return(true)
       expect(docker_runner).to receive(:pull_image).with('buildimage').never
 
       task.run_command_in_container 'go build'
+    end
+
+    it 'raises an error when the command fails' do
+      allow(docker_runner).to receive(:create_and_run_container).and_return([nil, false])
+      expect { task.run_command_in_container 'go build' }.to raise_error("Unable to run command go build")
     end
   end
 

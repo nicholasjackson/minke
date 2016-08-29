@@ -21,7 +21,6 @@ require 'minke/version'
 require 'minke/command'
 
 require 'minke/helpers/copy'
-require 'minke/helpers/error'
 require 'minke/helpers/rake'
 require 'minke/helpers/shell'
 

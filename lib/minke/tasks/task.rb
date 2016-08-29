@@ -9,7 +9,6 @@ module Minke
         @task_name              = args[:task_name]
         @docker_runner          = args[:docker_runner]
         @task_runner            = args[:task_runner]
-        @error_helper           = args[:error_helper]
         @shell_helper           = args[:shell_helper]
         @logger                 = args[:logger_helper]
         @generator_config       = args[:generator_config]
@@ -25,6 +24,8 @@ module Minke
       # run_with_config executes the task steps for the given
       # - block containing custom actions
       def run_with_block
+        success = true
+
         begin
           @docker_network.create
           @consul.start_and_load_data @task_settings.consul_loader unless @task_settings.consul_loader == nil
@@ -33,10 +34,21 @@ module Minke
           yield if block_given?
 
           @task_runner.run_steps(@task_settings.post) unless @task_settings == nil || @task_settings.post == nil
+        rescue Exception => e
+          @logger.error e.message
+          success = false
         ensure
           @consul.stop unless @task_settings.consul_loader == nil
-          @docker_network.remove
+          begin
+            @docker_network.remove
+          rescue Exception => e
+            # Trap removing a network as minke may have been called with an existing network and containers
+            # may still be attached.
+            @logger.error e.message
+          end
         end
+
+        abort unless success
       end
 
       ##
@@ -58,7 +70,7 @@ module Minke
           container, success = @docker_runner.create_and_run_container args
 
           # throw exception if failed
-          @error_helper.fatal_error "Unable to run command #{command}" unless success
+          raise "Unable to run command #{command}" unless success
         ensure
           @docker_runner.delete_container container
         end
@@ -75,8 +87,11 @@ module Minke
 
         if build_file != nil
           build_image = "#{@config.application_name}-buildimage"
+          
+          @logger.debug "Building image: #{build_image} from file #{build_file}"
           @docker_runner.build_image build_file, build_image
         else
+          @logger.debug "Pulling image: #{build_image}"
           @docker_runner.pull_image build_image unless @docker_runner.find_image build_image
         end
 

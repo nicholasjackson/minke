@@ -1,3 +1,5 @@
+require 'pry'
+
 module Minke
   module Docker
     ##
@@ -21,9 +23,10 @@ module Minke
         begin
           ip = @docker_runner.get_docker_ip_address
           container_details = find_container_by_name "/#{@project_name}_#{service_name}_1"
+          #puts container_details
           ports = container_details.first.info['Ports'].select { |p| p['PrivatePort'] == private_port.to_i }.first
-        rescue
-          raise "Unable to find public address for '#{service_name}' on port #{private_port}"
+        rescue Exception => e
+          raise e#"Unable to find public address for '#{service_name}' on port #{private_port}"
         end
 
         return "#{ip}:#{ports['PublicPort']}"
