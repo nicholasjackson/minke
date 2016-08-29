@@ -37,15 +37,12 @@ describe Minke::Tasks::Cucumber, :a => :b do
   end
 
   it 'throws a fatal error when status from the executed command is false' do
-    allow(shell_helper).to receive(:execute).and_return(false)
-    expect(error_helper).to receive(:fatal_error)
-
-    task.run
+    allow(shell_helper).to receive(:execute).and_raise("nuts")
+    expect { task.run }.to raise_error(SystemExit)
   end
 
   it 'does not throw a fatal error when status from the executed command is 0' do
     allow(shell_helper).to receive(:execute).and_return(true)
-    expect(error_helper).to_not receive(:fatal_error)
 
     task.run
   end

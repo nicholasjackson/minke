@@ -26,7 +26,7 @@ module Minke
           #puts container_details
           ports = container_details.first.info['Ports'].select { |p| p['PrivatePort'] == private_port.to_i }.first
         rescue Exception => e
-          raise e#"Unable to find public address for '#{service_name}' on port #{private_port}"
+          raise "Unable to find public address for '#{service_name}' on port #{private_port}"
         end
 
         return "#{ip}:#{ports['PublicPort']}"
