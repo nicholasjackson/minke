@@ -16,6 +16,7 @@ module Minke
           end
           
           exit_status = wait_thr.value
+          puts exit_status
           unless exit_status.success?
             raise "Error executing command: #{command}"
           end

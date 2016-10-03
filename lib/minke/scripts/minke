@@ -1,51 +1,28 @@
 #!/bin/bash
-MINKE_VERSION="1.13.7"
-ERROR="Please specify a command e.g. ./minke build"
-
+MINKE_VERSION="1.13.8"
+    
 DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
 NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')
-
-if [ -f .ruby-gemset ];then
-  GEMSET=$(<.ruby-gemset)
-fi
-
-LEN=$(echo ${#GEMSET})
-
-if [ $LEN -lt 1 ]; then
-  GEMSET='minkegems'
-fi
-
-GEMSETFOLDER="/usr/local/rvm/gems/ruby-2.3.1@${GEMSET}"
-RVM_COMMAND="source /usr/local/rvm/scripts/rvm && rvm gemset use ${GEMSET} --create"
-DOCKER_IMAGE="nicholasjackson/minke:${MINKE_VERSION}"
-COMMAND=""
-
-
-if [ "$1" == '' ]; then
-  echo $ERROR;
-  exit 1;
-fi
-
+          
+DOCKER_IMAGE="minketester"
+              
 COMMAND=$*
-
-# Test if interactive terminal and set the flag
-[[ -t 1 ]] && IT="-it" || IT=""
-
-if [[ $1 == \generate* ]]; then
-  echo "Generating new template"
-  DIR=${PWD}
-  DOCKER_RUN="docker run --rm -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor/gems:${GEMSETFOLDER} -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR} ${DOCKER_IMAGE} /bin/bash -c '${RVM_COMMAND} && bundle install && minke ${COMMAND}'"
-  
-  eval "${DOCKER_RUN}"
-fi
-
-if [[ $1 != \generate* ]]; then
-  DIR=$(dirname `pwd`)
-  DOCKER_RUN="docker run --rm ${IT} --net=minke_${NEW_UUID} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor/gems:${GEMSETFOLDER} -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_build ${DOCKER_IMAGE} /bin/bash -c '${RVM_COMMAND} && minke ${COMMAND}'"
-
-  echo "Running command: ${COMMAND}"
-
-  eval "docker network create minke_${NEW_UUID}"
-  eval "${DOCKER_RUN}"
-  eval "docker network rm minke_${NEW_UUID}"
-fi
+                 
+GEM_VOLUMES=""
+                   
+# Test if we need to mount any special volumes for paths specified in the Gemfile
+while read -r line; do
+  l=$(echo $line | sed "s/.*:path *=> *//" | sed "s/['|\"]\(.*\)['|\"]/\1/")
+  GEM_VOLUMES="${GEM_VOLUMES} -v $l:$l"
+  done < <(grep :path Gemfile)
+                       
+  if [[ $1 != \generate* ]]; then
+    DIR=$(dirname `pwd`)
+    DOCKER_RUN="docker run --rm ${IT} -it --net=minke_${NEW_UUID} ${GEM_VOLUMES} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor    :/usr/local/bundle -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_build ${DOCKER_IMAGE} ${COMMAND}"
+                             
+    echo "Running command: minke ${COMMAND}"
+                               
+    eval "docker network create minke_${NEW_UUID}"
+    eval "${DOCKER_RUN}"
+    eval "docker network rm minke_${NEW_UUID}"
+  fi

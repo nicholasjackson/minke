@@ -9,20 +9,9 @@ module Minke
 
       def run args = nil
         @logger.info '### Install gems'
-        rvm = "#{ENV['HOME']}/.rvm/scripts/rvm"
-        rvm_root = '/usr/local/rvm/scripts/rvm'
 
-        rvm_installed = @shell_helper.exist?(rvm)
-        rvm_root_installed = @shell_helper.exist?(rvm_root)
-
-        gemset = @shell_helper.read_file '.ruby-gemset'
-
-        @logger.info "Using gemset #{gemset}"
-
-        rvm_command = "source #{rvm} && rvm gemset use #{gemset} --create && " if rvm_installed
-        rvm_command = "source #{rvm_root} && rvm gemset use #{gemset} --create && " if rvm_root_installed
-
-        @shell_helper.execute("/bin/bash -c '#{rvm_command}bundle install -j3 && bundle update'")
+        @shell_helper.execute('bundle install -j3')
+        @shell_helper.execute('bundle update')
       end
 
     end

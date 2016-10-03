@@ -37,9 +37,9 @@ RUN bundle install
 
 RUN ls -las /usr/local/bundle/gems
 
-RUN mkdir /usr/local/bundle/backup
+RUN mkdir /usr/local/backup
 
-RUN cp -R /usr/local/bundle/gems/* /usr/local/bundle/backup
+RUN cp -R /usr/local/bundle/* /usr/local/backup
 
 ENTRYPOINT ["/entrypoint.sh"]
 
