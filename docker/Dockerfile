@@ -1,4 +1,4 @@
-FROM debian:stable
+FROM ruby:latest
 
 ENV COMPOSE_VERSION 1.7.1
 ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -25,14 +25,22 @@ RUN echo "deb https://apt.dockerproject.org/repo debian-jessie main" > /etc/apt/
 RUN apt-get update
 RUN apt-get -y install docker-engine=1.10.3-0~jessie
 
-RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 && curl -L get.rvm.io | bash -s stable --ruby=2.3.1 --with-gems="bundle"
-
 RUN curl -o /usr/local/bin/docker-compose -L \
 		"https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-Linux-x86_64" \
 	&& chmod +x /usr/local/bin/docker-compose
 
-COPY .bashrc /root/.bashrc
-
 COPY Gemfile Gemfile
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
 
-RUN /bin/bash -c "source /usr/local/rvm/scripts/rvm && rvm @global do bundle install"
+RUN bundle install
+
+RUN ls -las /usr/local/bundle/gems
+
+RUN mkdir /usr/local/bundle/backup
+
+RUN cp -R /usr/local/bundle/gems/* /usr/local/bundle/backup
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["--help"]
