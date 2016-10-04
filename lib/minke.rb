@@ -19,6 +19,7 @@ require 'open3'
 
 require 'minke/version'
 require 'minke/command'
+require 'minke/logger'
 
 require 'minke/helpers/copy'
 require 'minke/helpers/rake'
@@ -54,35 +55,3 @@ require 'minke/generators/shell_script'
 
 require 'minke/encryption/encryption'
 require 'minke/encryption/key_locator'
-
-module Minke
-  class Logging
-    @@debug = false
-    @@ret = "\n"
-    
-    def self.create_logger verbose = false
-      Logger.new(STDOUT).tap do |l|
-        l.datetime_format = ''
-        l.formatter = proc do |severity, datetime, progname, msg|
-          case severity
-          when 'ERROR'
-            s = "#{@@ret if @@debug}#{'ERROR'.colorize(:red)}: #{msg.chomp('')}\n"
-            @@debug = false
-            s
-          when 'INFO'
-            s = "#{@@ret if @@debug}#{'INFO'.colorize(:green)}: #{msg.chomp('')}\n"
-            @@debug = false
-            s
-          when 'DEBUG'
-            if verbose == true
-              "#{'DEBUG'.colorize(:yellow)}: #{msg.chomp('')}\n"
-            else
-              @@debug = true
-              "#{'.'.colorize(:yellow)}"
-            end
-          end
-        end
-      end
-    end
-  end
-end

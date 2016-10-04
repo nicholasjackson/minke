@@ -11,7 +11,7 @@ module Minke
       end
 
       def remove
-        @shell_runner.execute("docker network rm #{@network_name}") unless find_network.to_s == ''
+        @shell_runner.execute("docker network rm #{@network_name}", true) unless find_network.to_s == ''
       end
 
       private 
