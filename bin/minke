@@ -79,8 +79,10 @@ subcommands = {
 
 global.order!
 command = ARGV.shift
-subcommands[command].order!
 
+if !subcommands[command].nil?
+  subcommands[command].order!
+end
 
 def load_config config_file, verbose
   reader = Minke::Config::Reader.new Minke::Logging.create_logger(verbose)
