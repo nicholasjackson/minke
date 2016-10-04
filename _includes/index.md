@@ -20,20 +20,20 @@ $ eval $(docker-machine env default)
 
 # Like make on steroids
 Minke is almost a 0 dependency setup for building your source code you will need three things.
-1. A computer, Mac or Linux (Windows too if someone would like to write a bat script).
+1. A computer, Mac or Linux (Windows too if someone would like to write a .bat script).
 2. Internet.
 3. Docker.
 
 Minke just deals with the other stuff; Minke and it's generators are built in Ruby however you do not need Ruby installed as the build scripts run in a Docker container.  The commands to build and test the application are built into the generator along with any application specific logic so the interface to the user is one of a few key simple commands.
 
 ```
-rake app:fetch              # fetch dependent packages
-rake app:test               # run unit tests
-rake app:build              # build application
-rake app:build_image        # build Docker image for application
-rake app:build_and_run      # bonus points for guessing
-rake app:run                # run application with Docker Compose
-rake app:cucumber[feature]  # run end to end Cucumber tests USAGE: rake app:cucumber[@tag]
+fetch              # fetch dependent packages
+test               # run unit tests
+build              # build application
+build_image        # build Docker image for application
+build_and_run      # bonus points for guessing
+run                # run application with Docker Compose
+cucumber[feature]  # run end to end Cucumber tests USAGE: rake app:cucumber[@tag]
 ```
 
 It is completely extensible, for example you are building a Microservice and would like to automatically setup the database schema or load some initial data.  This can easily be achieved by writing your own Rake tasks.
@@ -72,20 +72,20 @@ $ cd ~/myservice
 2. Run the generator command in a docker container. (note the space before -g)
 
 ```bash
-$ curl -Ls https://get.minke.rocks | bash -s ' -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'
+$ curl -Ls https://get.minke.rocks | bash -s 'generate -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'
 ```
 
 3. Build a Docker image
 
 ```bash
 $ cd _build
-$ ./minke.sh rake app:build_image
+$ ./minke build_image
 ```
 
 4. Execute the functional tests
 
 ```bash
-$ ./minke.sh rake app:cucumber
+$ ./minke cucumber
 ```
 
 You now have a working microservice ready to be pushed to a Docker registry and deployed to a server.  For more detailed information please see the [tutorial](tutorial.html).
