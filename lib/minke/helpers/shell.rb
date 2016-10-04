@@ -7,7 +7,7 @@ module Minke
 
       ##
       # Executes a shell command and returns the return status
-      def execute command
+      def execute command, ignore_error=false
         @logger.debug command
         
         Open3.popen2e(command) do |stdin, stdout_err, wait_thr|
@@ -16,8 +16,7 @@ module Minke
           end
           
           exit_status = wait_thr.value
-          puts exit_status
-          unless exit_status.success?
+          unless exit_status.success? || ignore_error == true
             raise "Error executing command: #{command}"
           end
         end
