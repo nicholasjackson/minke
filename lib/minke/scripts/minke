@@ -36,7 +36,7 @@ fi
 
 if [[ $1 = \generate* ]]; then
   DIR=$(pwd)
-  DOCKER_RUN="docker run --rm -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -w ${DIR}/${DIR} ${DOCKER_IMAGE} ${COMMAND}"
+  DOCKER_RUN="docker run --rm -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -w ${DIR}:${DIR} ${DOCKER_IMAGE} ${COMMAND}"
   echo $DOCKER_RUN 
   eval "$DOCKER_RUN"
 fi
