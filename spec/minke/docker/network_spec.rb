@@ -23,12 +23,12 @@ describe Minke::Docker::Network do
 
   it 'removes a network when an existing network exists' do
     allow(shell).to receive(:execute_and_return).and_return('something something')
-    expect(shell).to receive(:execute).with('docker network rm tester')
+    expect(shell).to receive(:execute).with('docker network rm tester', true)
     network.remove
   end
 
   it 'does not remove a network when a network does notexist' do
-    expect(shell).to receive(:execute).with('docker network rm tester').never
+    expect(shell).to receive(:execute).with('docker network rm tester', true).never
     network.remove
   end
 
