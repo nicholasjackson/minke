@@ -1,10 +1,10 @@
 #!/bin/bash
-MINKE_VERSION="1.13.7"
+MINKE_VERSION="1.13.8"
 
 DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
 NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')
 
-DOCKER_IMAGE="minketester"
+DOCKER_IMAGE="nicholasjackson/minke"
 
 COMMAND=$*
 
