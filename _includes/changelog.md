@@ -1,3 +1,8 @@
+# Version 1.13.9
+* New bash script with cleaner parameters
+* Updated logging for output
+* Ability to use paths and git repos in your gemfiles
+
 # Version 1.12.9
 * Downgraded Docker version for CircleCI compatibility;
 * Changed location of temporary docker-compose file to allow easier volume setting to relative path.

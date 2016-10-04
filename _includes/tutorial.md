@@ -39,7 +39,7 @@ Usage: minke [options]
 We can now scaffold a new go μService using the following command:
 
 ```bash
-$ curl -Ls https://get.minke.rocks | bash -s ' -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'
+$ curl -Ls https://get.minke.rocks | bash -s 'generate -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'
 ```
 
 If look at the output folder we will see something like the below folder structure, all our source code is in the root and there is a **_build** folder, this is where Minke stores things like the Docker and Docker Compose files and configuration.
@@ -64,26 +64,26 @@ $ cd _build
 ```
 To avoid the pain of having to craft a ridiculously long docker run cmd every time you want to run a command there is a bash script `minke.sh` in the build folder.  This simply runs the commands specified as arguments inside the Minke Docker container.  The parent folder to _build (source root) is mapped as a volume inside the container with the same path as your local folder and the working directory is set to _build folder.
 
-Since Minke is primarily uses Rake you can run `$ ./minke.sh rake -T` to see the various options available to you.
+To see the various options available to you, you can run `$ ./minke --help` 
 
 ```
-rake app:build              # build application
-rake app:build_and_run      # build and run application with Docker Compose
-rake app:build_image        # build Docker image for application
-rake app:cucumber[feature]  # run end to end Cucumber tests USAGE: rake app:cucumber[@tag]
-rake app:fetch              # fetch dependent packages
-rake app:push               # push built image to Docker registry
-rake app:run                # run application with Docker Compose
-rake app:test               # run unit tests
-rake docker:fetch_images    # pull images for golang from Docker registry if not already downloaded
-rake docker:update_images   # updates build images for swagger and golang will overwrite existing images
+build              # build application
+build_and_run      # build and run application with Docker Compose
+build_image        # build Docker image for application
+cucumber[feature]  # run end to end Cucumber tests USAGE: rake app:cucumber[@tag]
+fetch              # fetch dependent packages
+push               # push built image to Docker registry
+run                # run application with Docker Compose
+test               # run unit tests
+fetch_images    # pull images for golang from Docker registry if not already downloaded
+update_images   # updates build images for swagger and golang will overwrite existing images
 ```
 
 ### Building the application
 To build the application simply execute:
 
 ```bash
-$ ./minke.sh rake app:build
+$ ./minke build
 ```
 The steps minke performs are:
 1. Download Docker image or build image specified by the generator.
@@ -131,7 +131,7 @@ All of the code is run inside the docker container however most generators will 
 ### Running the unit tests
 
 ```bash
-$ ./minke.sh rake app:test
+$ ./minke rake test
 ```
 Running the unit tests is a similar process, before we run the tests we will build the application code and fetch any dependencies.   It all runs inside a container.
 
@@ -150,7 +150,7 @@ ok  	github.com/nicholasjackson/crapola/handlers	0.013s
 So we are going to run the cucumber tests against a Docker container and ultimately you want to run this on your server anyway so lets build an image which can be launched.
 
 ```bash
-$ ./minke.sh rake app:build_image
+$ ./minke build_image
 ```
 
 That's all you need this will build and test your application code then copy the assets into the right location to be packaged up into a Docker image, all of the steps is configurable checkout the section on Config for more information.
@@ -161,7 +161,7 @@ Minke uses Cucumber and Docker to facilitate this, it spins up a stack using Doc
 Running the functional tests is as easy as...
 
 ```bash
-$ ./minke rake app:cucumber
+$ ./minke cucumber
 ```
 
 This will start the stack with Docker Compose using a standard format compose file which can be found in the **_build** folder, it loads any config that we may require for the service into Consul and then waits for the service to start before executing the Cucumber tests.  

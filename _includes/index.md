@@ -79,13 +79,15 @@ $ curl -Ls https://get.minke.rocks | bash -s 'generate -g minke-generator-go -o 
 
 ```bash
 $ cd _build
-$ ./minke build_image
+$ ./minke -v build_image
 ```
+
+The *-v* flag tells minke to output the verbose logs, if you omit this then you will see a much cleaner output.
 
 4. Execute the functional tests
 
 ```bash
-$ ./minke cucumber
+$ ./minke -v cucumber
 ```
 
 You now have a working microservice ready to be pushed to a Docker registry and deployed to a server.  For more detailed information please see the [tutorial](tutorial.html).
