@@ -6,6 +6,7 @@ module Minke
         @rake_helper       = args[:rake_helper]
         @copy_helper       = args[:copy_helper]
         @service_discovery = args[:service_discovery]
+        @logger            = args[:logger_helper]
       end
 
       ##
@@ -25,7 +26,10 @@ module Minke
       ##
       # copys the assets defined in the step
       def copy_assets assets
-        assets.each { |a| @copy_helper.copy_assets a.from, a.to }
+        assets.each do |a| 
+          @logger.debug "Copy #{a.from} To #{a.to}"
+          @copy_helper.copy_assets a.from, a.to
+        end
       end
 
     end

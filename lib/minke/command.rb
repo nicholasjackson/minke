@@ -27,7 +27,8 @@ module Minke
       task_runner = Minke::Tasks::TaskRunner.new ({
         :rake_helper       => Minke::Helpers::Rake.new,
         :copy_helper       => Minke::Helpers::Copy.new,
-        :service_discovery => Minke::Docker::ServiceDiscovery.new(project_name, Minke::Docker::DockerRunner.new(logger), network_name)
+        :service_discovery => Minke::Docker::ServiceDiscovery.new(project_name, Minke::Docker::DockerRunner.new(logger), network_name),
+        :logger_helper     => logger
       })
 
       consul = Minke::Docker::Consul.new(
@@ -70,9 +71,10 @@ module Minke
         :fetch       => Minke::Tasks::Fetch.new(dependencies),
         :build       => Minke::Tasks::Build.new(dependencies),
         :test        => Minke::Tasks::Test.new(dependencies),
+        :run         => Minke::Tasks::Run.new(dependencies),
         :build_image => Minke::Tasks::BuildImage.new(dependencies),
-        :cucumber => Minke::Tasks::Cucumber.new(dependencies),
-        :push => Minke::Tasks::Push.new(dependencies)
+        :cucumber    => Minke::Tasks::Cucumber.new(dependencies),
+        :push        => Minke::Tasks::Push.new(dependencies)
       }
     end
 
@@ -100,6 +102,13 @@ module Minke
       end
     end
 
+    def run
+      if config.run != nil
+        tasks = create_tasks :run
+        tasks[:run].run
+      end
+    end
+    
     def build_image
       if config.test != nil
         test

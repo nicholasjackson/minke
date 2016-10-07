@@ -7,7 +7,8 @@ describe Minke::Tasks::TaskRunner, :a => :b do
       :health_check => health_check,
       :rake_helper => rake_helper,
       :copy_helper => copy_helper,
-      :service_discovery => service_discovery
+      :service_discovery => service_discovery,
+      :logger_helper => logger_helper
     }
   end
 
