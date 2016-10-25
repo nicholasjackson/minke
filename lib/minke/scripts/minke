@@ -1,5 +1,5 @@
 #!/bin/bash
-MINKE_VERSION="1.13.11"
+MINKE_VERSION="1.13.12"
 
 DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
 NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')
