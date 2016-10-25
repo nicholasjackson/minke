@@ -11,12 +11,4 @@ describe Minke::Tasks::Bundle, :a => :b do
 
     task.run
   end
-  
-  it 'calls bundle update' do
-    generator_config.build_settings.build_commands.fetch = nil
-
-    expect(shell_helper).to receive(:execute).with('bundle update')
-
-    task.run
-  end
 end
