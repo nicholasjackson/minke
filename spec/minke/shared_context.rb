@@ -96,8 +96,8 @@ RSpec.shared_context 'shared context', :a => :b do
     return health 
   end
   
-  let(:rake_helper) do
-     helper = double('rake_helper')
+  let(:ruby_helper) do
+     helper = double('ruby_helper')
      allow(helper).to receive(:invoke_task)
      return helper 
   end

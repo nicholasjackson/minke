@@ -3,7 +3,7 @@ module Minke
     class TaskRunner
 
       def initialize args
-        @rake_helper       = args[:rake_helper]
+        @ruby_helper       = args[:ruby_helper]
         @copy_helper       = args[:copy_helper]
         @service_discovery = args[:service_discovery]
         @logger            = args[:logger_helper]
@@ -12,15 +12,18 @@ module Minke
       ##
       # execute the defined steps in the given Minke::Config::TaskRunSettings
       def run_steps steps
-        execute_rake_tasks steps.tasks unless steps.tasks == nil
+        execute_ruby_tasks steps.tasks unless steps.tasks == nil
         copy_assets steps.copy unless steps.copy == nil
       end
 
       private
       ##
       # execute an array of rake tasks
-      def execute_rake_tasks tasks
-        tasks.each { |t| @rake_helper.invoke_task t }
+      def execute_ruby_tasks tasks
+        tasks.each { |t| 
+          @logger.debug "Executing task: #{t}"
+          @ruby_helper.invoke_task(t, @logger)
+        }
       end
 
       ##
