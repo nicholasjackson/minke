@@ -22,7 +22,7 @@ require 'minke/command'
 require 'minke/logger'
 
 require 'minke/helpers/copy'
-require 'minke/helpers/rake'
+require 'minke/helpers/ruby'
 require 'minke/helpers/shell'
 
 require 'minke/docker/docker_compose'

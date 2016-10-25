@@ -1,5 +1,5 @@
 #!/bin/bash
-MINKE_VERSION="1.13.10"
+MINKE_VERSION="1.13.11"
 
 DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
 NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')
@@ -16,8 +16,10 @@ GEM_VOLUMES=""
 if [[ $1 != \generate* ]]; then
   # Test if we need to mount any special volumes for paths specified in the Gemfile
   while read -r line; do
-    l=$(echo $line | sed "s/.*:path *=> *//" | sed "s/['|\"]\(.*\)['|\"]/\1/")
-    GEM_VOLUMES="${GEM_VOLUMES} -v $l:$l"
+    if [[ $line != \#* ]]; then
+      l=$(echo $line | sed "s/.*:path *=> *//" | sed "s/['|\"]\(.*\)['|\"]/\1/")
+      GEM_VOLUMES="${GEM_VOLUMES} -v $l:$l"
+    fi
   done < <(grep :path Gemfile)
 
   DIR=$(dirname `pwd`)

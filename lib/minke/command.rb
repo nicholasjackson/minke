@@ -25,7 +25,7 @@ module Minke
       end
 
       task_runner = Minke::Tasks::TaskRunner.new ({
-        :rake_helper       => Minke::Helpers::Rake.new,
+        :ruby_helper       => Minke::Helpers::Ruby.new,
         :copy_helper       => Minke::Helpers::Copy.new,
         :service_discovery => Minke::Docker::ServiceDiscovery.new(project_name, Minke::Docker::DockerRunner.new(logger), network_name),
         :logger_helper     => logger

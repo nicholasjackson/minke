@@ -18,12 +18,23 @@ module Minke
       # Returns:
       # public address for the container e.g. 0.0.0.0:8080
       def public_address_for service_name, private_port
-        begin
-          ip = @docker_runner.get_docker_ip_address
-          container_details = find_container_by_name "/#{@project_name}_#{service_name}_1"
-          #puts container_details
-          ports = container_details.first.info['Ports'].select { |p| p['PrivatePort'] == private_port.to_i }.first
-        rescue Exception => e
+        ip = ""
+        ports = nil
+
+        10.times do
+          begin
+            ip = @docker_runner.get_docker_ip_address
+            container_details = find_container_by_name "/#{@project_name}_#{service_name}_1"
+            #puts container_details
+            ports = container_details.first.info['Ports'].select { |p| 
+              p['PrivatePort'] == private_port.to_i
+            }.first
+          rescue Exception
+            sleep(1)
+          end
+        end
+        
+        if ports == nil || ports['PublicPort'] == nil 
           raise "Unable to find public address for '#{service_name}' on port #{private_port}"
         end
 
@@ -39,12 +50,24 @@ module Minke
       # Returns:
       # private address for the container e.g. 172.17.0.2:8080
       def bridge_address_for service_name, private_port
-        begin
-          container_details = find_container_by_name "/#{@project_name}_#{service_name}_1"
-          ip = container_details.first.info['NetworkSettings']['Networks']["#{@docker_network}"]['IPAddress']
-        rescue
+        ip = ""
+
+        10.times do
+          begin
+            container_details = find_container_by_name "/#{@project_name}_#{service_name}_1"
+            ip = container_details
+              .first
+              .info['NetworkSettings']['Networks']["#{@docker_network}"]['IPAddress']
+            break
+          rescue
+            sleep(1)
+          end
+        end
+         
+        if ip.length < 1  
           raise "Unable to find bridge address for network: #{@docker_network}, container: #{service_name}, port: #{private_port}"
         end
+          
         return "#{ip}:#{private_port}"
       end
 

@@ -29,11 +29,21 @@ module Minke
         begin
           @docker_network.create
           @consul.start_and_load_data @task_settings.consul_loader unless @task_settings.consul_loader == nil
-          @task_runner.run_steps(@task_settings.pre) unless @task_settings == nil || @task_settings.pre == nil
+          
+          pre_func = -> {
+            @task_runner.run_steps(@task_settings.pre) unless @task_settings == nil || @task_settings.pre == nil
+          }
 
-          yield if block_given?
-
-          @task_runner.run_steps(@task_settings.post) unless @task_settings == nil || @task_settings.post == nil
+          post_func = -> {
+            @task_runner.run_steps(@task_settings.post) unless @task_settings == nil || @task_settings.post == nil
+          } 
+          
+          if block_given?
+            yield(pre_func, post_func)
+          else
+            pre_func.call
+            post_func.call
+          end
         rescue Exception => e
           @logger.error e.message
           success = false

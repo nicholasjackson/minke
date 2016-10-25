@@ -5,7 +5,7 @@ describe Minke::Tasks::TaskRunner, :a => :b do
   let(:runnerargs) do
     {
       :health_check => health_check,
-      :rake_helper => rake_helper,
+      :ruby_helper => ruby_helper,
       :copy_helper => copy_helper,
       :service_discovery => service_discovery,
       :logger_helper => logger_helper
@@ -16,15 +16,15 @@ describe Minke::Tasks::TaskRunner, :a => :b do
 
   describe 'run_steps' do
 
-    describe 'rake tasks' do
-      it 'executes the defined rake tasks' do 
-        expect(rake_helper).to receive(:invoke_task).with('task1')
+    describe 'ruby tasks' do
+      it 'executes the defined ruby tasks' do 
+        expect(ruby_helper).to receive(:invoke_task).with('task1', logger_helper)
 
         task_runner.run_steps config.fetch.pre
       end 
 
       it 'executes both defined rake tasks' do
-        expect(rake_helper).to receive(:invoke_task).twice
+        expect(ruby_helper).to receive(:invoke_task).twice
 
         task_runner.run_steps config.fetch.pre
       end
