@@ -35,11 +35,10 @@ RUN chmod +x /entrypoint.sh
 
 RUN bundle install
 
-RUN ls -las /usr/local/bundle/gems
-
 RUN mkdir /usr/local/backup
 
 RUN cp -R /usr/local/bundle/* /usr/local/backup
+RUN rm -rf /usr/local/backup/cache
 
 ENTRYPOINT ["/entrypoint.sh"]
 
