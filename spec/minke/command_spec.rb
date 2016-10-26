@@ -28,11 +28,6 @@ describe Minke::Command, :a => :b do
   end
 
   describe 'fetch' do
-    it 'runs the bundle task' do
-      expect(tasks[:bundler]).to receive(:run).once
-      command.fetch
-    end
-
     it 'runs the fetch task' do
       expect(tasks[:fetch]).to receive(:run).once
       command.fetch
