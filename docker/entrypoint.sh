@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
-INSTALL="echo \"#Copying cache\" && gem install bundler && bundle install"
-COMMAND="bundle exec minke $@"
+bundle_install=true
 
-if [[ $1 != \generate* ]]; then
-  if [ -d "./vendor" ]; then
-    eval $COMMAND 
-  else  
-    eval "$INSTALL && $COMMAND"
+if [[ -e "Gemfile.sha" ]]; then
+  sha=`cat Gemfile.sha`
+  current_sha=`sha1sum Gemfile`
+
+  if [[ "$sha" == "$current_sha" ]]; then
+    bundle_install=false
   fi
 fi
 
-if [[ $1 = \generate* ]]; then
-  eval $COMMAND
+if $bundle_install; then
+  bundle install
+  sha1sum Gemfile > Gemfile.sha
 fi
+
+COMMAND="bundle exec minke $@"
+eval $COMMAND

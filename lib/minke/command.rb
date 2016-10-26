@@ -81,7 +81,6 @@ module Minke
     def fetch
       if config.fetch != nil
         tasks = create_tasks :fetch
-        tasks[:bundler].run
         tasks[:fetch].run
       end
     end
