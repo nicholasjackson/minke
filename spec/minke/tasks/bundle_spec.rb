@@ -7,7 +7,7 @@ describe Minke::Tasks::Bundle, :a => :b do
   it 'calls bundle' do
     generator_config.build_settings.build_commands.fetch = nil
 
-    expect(shell_helper).to receive(:execute).with('bundle install -j3')
+    expect(shell_helper).to receive(:execute).with('bundle install')
 
     task.run
   end

@@ -1,5 +1,5 @@
 #!/bin/bash
-MINKE_VERSION="1.13.13"
+MINKE_VERSION="1.13.14"
 
 DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
 NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')
@@ -23,7 +23,7 @@ if [[ $1 != \generate* ]]; then
   done < <(grep :path Gemfile)
 
   DIR=$(dirname `pwd`)
-  DOCKER_RUN="docker run ${IT} --rm --net=minke_${NEW_UUID} ${GEM_VOLUMES} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -v ${DIR}/_build/vendor:/usr/local/bundle -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_build ${DOCKER_IMAGE} ${COMMAND}"
+  DOCKER_RUN="docker run ${IT} --rm --net=minke_${NEW_UUID} ${GEM_VOLUMES} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -e BUNDLE_PATH=${PWD}/vendor -e BUNDLE_JOBS=2 -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_build ${DOCKER_IMAGE} ${COMMAND}"
 
   echo "Running command: minke ${COMMAND}"
 
