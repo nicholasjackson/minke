@@ -10,7 +10,7 @@ module Minke
       def run args = nil
         @logger.info '### Install gems'
 
-        @shell_helper.execute('bundle install -j3')
+        @shell_helper.execute('bundle install')
       end
 
     end

@@ -33,12 +33,13 @@ COPY Gemfile Gemfile
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
+RUN gem update --system
+RUN gem install bundler -v 1.13.6
 RUN bundle install
 
 RUN mkdir /usr/local/backup
 
 RUN cp -R /usr/local/bundle/* /usr/local/backup
-RUN rm -rf /usr/local/backup/cache
 
 ENTRYPOINT ["/entrypoint.sh"]
 

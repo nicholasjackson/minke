@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-
-INSTALL="echo \"#Copying cache\" && cp -r /usr/local/backup/* /usr/local/bundle/ && gem install bundler && bundle install"
+INSTALL="echo \"#Copying cache\" && gem install bundler && bundle install"
 COMMAND="bundle exec minke $@"
 
 if [[ $1 != \generate* ]]; then
-  if [ "$(ls -A ./vendor)" ]; then
+  if [ -d "./vendor" ]; then
     eval $COMMAND 
   else  
     eval "$INSTALL && $COMMAND"
