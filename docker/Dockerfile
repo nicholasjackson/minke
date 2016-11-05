@@ -1,4 +1,4 @@
-FROM ruby:latest
+FROM ruby:2.3.1
 
 ENV COMPOSE_VERSION 1.7.1
 ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
