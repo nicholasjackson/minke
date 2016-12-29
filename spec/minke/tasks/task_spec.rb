@@ -16,6 +16,29 @@ describe Minke::Tasks::Task, :a => :b do
 
       task.run_command_in_container 'go build'
     end
+    
+    it 'creates a container and runs a command with the working_directory' do
+      config.fetch.docker.build_docker_file = nil
+      expect(docker_runner).to receive(:create_and_run_container).with(
+        hash_including(
+          :working_directory => generator_config.build_settings.docker_settings.working_directory
+        )
+      )
+
+      task.run_command_in_container 'go build'
+    end
+
+    it 'creates a container and runs a command with the overriden working_directory' do
+      config.fetch.docker.working_directory = './server'
+
+      expect(docker_runner).to receive(:create_and_run_container).with(
+        hash_including(
+          :working_directory => '/working/server'
+        )
+      )
+
+      task.run_command_in_container 'go build'
+    end
 
     it 'builds a custom docker image when the docker_settings contains an override' do
       config.docker.build_docker_file = 'sdsdd'

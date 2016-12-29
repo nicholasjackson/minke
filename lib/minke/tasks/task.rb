@@ -67,15 +67,16 @@ module Minke
         begin
           @logger.info "Running command: #{command}"
 
-          settings = @generator_config.build_settings.docker_settings
-          build_image = create_container_image
+          settings          = @generator_config.build_settings.docker_settings
+          build_image       = create_container_image
+          working_directory = create_working_directory
 
           args = {
             :image             => build_image,
             :command           => command,
             :volumes           => settings.binds,
             :environment       => settings.env,
-            :working_directory => settings.working_directory
+            :working_directory => working_directory
           }
           container, success = @docker_runner.create_and_run_container args
 
@@ -106,6 +107,18 @@ module Minke
         end
 
         build_image
+      end
+
+      def create_working_directory
+        base_path = @generator_config.build_settings.docker_settings.working_directory
+        override_path = @task_settings.docker.working_directory unless @task_settings.docker == nil
+
+        if override_path != nil
+          path = Pathname.new(base_path)
+          return (path + override_path).to_s
+        else 
+          return base_path
+        end
       end
 
     end

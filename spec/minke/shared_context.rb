@@ -56,7 +56,9 @@ RSpec.shared_context 'shared context', :a => :b do
     Minke::Generators::Config.new.tap do |c|
       c.build_settings = Minke::Generators::BuildSettings.new.tap do |bs|
         bs.build_commands = Minke::Generators::BuildCommands.new
-        bs.docker_settings = Minke::Generators::DockerSettings.new
+        bs.docker_settings = Minke::Generators::DockerSettings.new.tap do |ds| 
+          ds.working_directory = '/working'
+        end
       end
     end
   end
