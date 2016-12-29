@@ -195,6 +195,12 @@ module Minke
       #
       # [Required]
       attr_accessor :application_compose_file
+
+      ##
+      # Working directory to use for build root, relative to project root
+      #
+      # [Optional]
+      attr_accessor :working_directory
     end
 
     ##

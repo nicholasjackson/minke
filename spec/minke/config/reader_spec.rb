@@ -67,6 +67,10 @@ describe Minke::Config::Reader, :a => :b do
     it 'should correctly read the application_compose_file' do
       expect(config.docker.application_compose_file).to eq('./dockercompose/event-sauce/docker-compose.yml')
     end
+    
+    it 'should correctly read the working_directory' do
+      expect(config.docker.working_directory).to eq('./')
+    end
   end
 
   describe 'build section' do
@@ -135,9 +139,14 @@ describe Minke::Config::Reader, :a => :b do
         end
       end
     end
+
     describe 'docker' do
       it 'should correctly read the build_image' do
         expect(config.build.docker).to be_an_instance_of(Minke::Config::DockerSettings)
+      end
+      
+      it 'should correctly set the working directory' do
+        expect(config.build.docker.working_directory).to eq('./server')
       end
     end
 

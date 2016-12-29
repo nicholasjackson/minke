@@ -27,6 +27,7 @@ docker:
   build_docker_file: ./something/something
   application_docker_file: ./dockerfiles/event-sauce/Dockerfile
   application_compose_file: ./dockercompose/event-sauce/docker-compose.yml
+  working_directory: ./
 fetch:
   include: true
   health_check:
@@ -60,6 +61,7 @@ build:
         to: ./dockerfile/event-sauce/swagger_spec/swagger.yml
   docker:
     build_image: golang:1.7beta
+    working_directory: ./server
   post:
     tasks:
       - task2

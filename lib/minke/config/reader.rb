@@ -50,6 +50,7 @@ module Minke
           d.build_docker_file        = section['build_docker_file']        unless section['build_docker_file'] == nil
           d.application_docker_file  = section['application_docker_file']  unless section['application_docker_file'] == nil
           d.application_compose_file = section['application_compose_file'] unless section['application_compose_file'] == nil
+          d.working_directory        = section['working_directory']        unless section['working_directory'] == nil
         end
       end
 
