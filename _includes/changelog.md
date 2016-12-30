@@ -1,3 +1,11 @@
+# Version 1.13.19
+Ability to forward SSH keys to build container for docker-machine for Mac and linux, currently docker for mac does not support this feature.
+
+Example:  
+```
+DOCKER_MACHINE=default ./minke -A -v build
+```
+
 # Version 1.13.9
 * New bash script with cleaner parameters
 * Updated logging for output

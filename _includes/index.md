@@ -46,7 +46,6 @@ The core concept of Minke is that it should be possible to run two Minke builds 
 # Secure
 Minke can encrypt config variables with a private key so you don't have to expose your passwords to the whole internet.
 
-
 # Generators
 The table below shows the currently available generators, to create your own please follow the [creating generators guide](#).
 
