@@ -45,6 +45,7 @@ HELP
 global = OptionParser.new do |opts|
   opts.banner = "Usage: minke [options] [subcommand [options]]"
   opts.on("-v", "--[no-]verbose", "Run verbosely") { |v| options[:verbose] = true }
+  opts.on("-A", "--forward-ssh", "Forward ssh keys to docker") { |v| options[:forward_ssh] = true }
   opts.separator ""
   opts.separator subtext
 end
