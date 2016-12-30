@@ -66,16 +66,23 @@ module Minke
       def run_command_in_container command
         begin
           @logger.info "Running command: #{command}"
-
-          settings          = @generator_config.build_settings.docker_settings
+          settings = @generator_config.build_settings.docker_settings
+          volumes           = settings.binds.clone unless settings.binds == nil
+          environment       = settings.env.clone unless settings.env == nil
           build_image       = create_container_image
           working_directory = create_working_directory
+
+          if ENV['AGENT_SOCK'] != nil
+            volumes.push "#{ENV['AGENT_SOCK']}:/ssh-agent"
+            environment.push "SSH_AUTH_SOCK=/ssh-agent"
+            environment.push "GIT_SSH_COMMAND=ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+          end
 
           args = {
             :image             => build_image,
             :command           => command,
-            :volumes           => settings.binds,
-            :environment       => settings.env,
+            :volumes           => volumes,
+            :environment       => environment,
             :working_directory => working_directory
           }
           container, success = @docker_runner.create_and_run_container args

@@ -35,6 +35,7 @@ RUN chmod +x /entrypoint.sh
 
 RUN gem update --system
 RUN gem install bundler -v 1.13.6
+RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle install
 
 RUN mkdir /usr/local/backup
