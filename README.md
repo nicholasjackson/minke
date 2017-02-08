@@ -6,6 +6,7 @@
 | Test Coverage: | [![Test Coverage](https://codeclimate.com/github/nicholasjackson/minke/badges/coverage.svg)](https://codeclimate.com/github/nicholasjackson/minke/coverage) |
 | Build Status: | [![Build Status](https://travis-ci.org/nicholasjackson/minke.svg?branch=master)](https://travis-ci.org/nicholasjackson/minke) [ ![Codeship Status for nicholasjackson/minke](https://codeship.com/projects/9e365bb0-46c3-0134-0bf1-568f97ef61e4/status?branch=master)](https://codeship.com/projects/168996) |
 | Chat: | [![Join the chat at https://gitter.im/nicholasjackson/minke](https://badges.gitter.im/nicholasjackson/minke.svg)](https://gitter.im/nicholasjackson/minke?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) |
+| Ruby Doc: | [http://www.rubydoc.info/gems/minke/1.13.19/index](http://www.rubydoc.info/gems/minke/1.13.19/index) |
 
 # Documentation and Tutorial 
 [https://minke.rocks/index.html](http://minke.rocks/index.html)
