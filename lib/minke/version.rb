@@ -1,3 +1,3 @@
 module Minke
-  VERSION = "1.13.19"
+  VERSION = "1.13.20"
 end
