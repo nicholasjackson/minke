@@ -1,6 +1,6 @@
 FROM ruby:2.3.1
 
-ENV COMPOSE_VERSION 1.7.1
+ENV COMPOSE_VERSION 1.11.1
 ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
   # Build-time metadata as defined at http://label-schema.org

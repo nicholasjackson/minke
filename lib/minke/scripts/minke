@@ -1,5 +1,5 @@
 #!/bin/bash
-MINKE_VERSION="1.13.19"
+MINKE_VERSION="1.13.20"
 
 DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
 NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')
@@ -14,12 +14,12 @@ if [[ $1 == "-A" || $2 == "-A" ]]; then
     # for docker machine
     SSH_SOCK=boot2docker.$$.ssh.socket
     docker-machine ssh ${DOCKER_MACHINE} -A -S $SSH_SOCK -M -f -n tail -f /dev/null
-    AGENT_SOCK=$(docker-machine ssh ${DOCKER_MACHINE} -S $SSH_SOCK echo \$SSH_AUTH_SOCK)
-    SSH_AUTH="-e AGENT_SOCK=${AGENT_SOCK}"
+    AGENT_SOCK=$(docker-machine ssh ${DOCKER_MACHINE} -S $SSH_SOCK echo \$\(readlink -f \$SSH_AUTH_SOCK\))
+    SSH_AUTH="-e AGENT_SOCK=${AGENT_SOCK} -e SSH_AUTH_SOCK=/ssh-agent/ssh.sock -v ${AGENT_SOCK}:/ssh-agent/ssh.sock"
   fi
 
   if [[ "${DOCKER_MACHINE}" == "" ]]; then
-    SSH_AUTH="-e AGENT_SOCK=${SSH_AUTH_SOCK}"
+    SSH_AUTH="-e AGENT_SOCK=${SSH_AUTH_SOCK} -e SSH_AUTH_SOCK=/ssh-agent/ssh.sock -v ${SSH_AUTH_SOCK}:/ssh-agent/ssh.sock"
   fi
   
   echo "Forwarding SSH Keys: ${SSH_AUTH}"
@@ -38,6 +38,7 @@ if [[ $1 != \generate* ]]; then
   done < <(grep :path Gemfile)
 
   DIR=$(dirname `pwd`)
+  
   DOCKER_RUN="docker run ${IT} --rm --net=minke_${NEW_UUID} ${SSH_AUTH} ${GEM_VOLUMES} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -e BUNDLE_PATH=${PWD}/vendor -e BUNDLE_JOBS=2 -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_minke ${DOCKER_IMAGE} ${COMMAND}"
 
   echo "Running command: minke ${COMMAND}"
@@ -45,8 +46,8 @@ if [[ $1 != \generate* ]]; then
   eval "${DOCKER_RUN}"
   id=$(docker network rm minke_${NEW_UUID})
   
+  # Clean up socket
   if [[ "${DOCKER_MACHINE}" != "" ]]; then
-    # Clean up socket
     docker-machine ssh default -S $SSH_SOCK -O exit
   fi
 fi
