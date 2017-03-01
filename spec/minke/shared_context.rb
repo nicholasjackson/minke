@@ -16,6 +16,7 @@ RSpec.shared_context 'shared context', :a => :b do
         c.build = Minke::Config::Task.new
         c.test = Minke::Config::Task.new
         c.cucumber = Minke::Config::Task.new
+        c.shell = Minke::Config::Task.new
         c.fetch = Minke::Config::Task.new.tap do |f|
           f.consul_loader = Minke::Config::ConsulLoader.new.tap do |cl|
             cl.url = Minke::Config::URL.new.tap do |u|

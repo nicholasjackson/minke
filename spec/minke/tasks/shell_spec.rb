@@ -1,15 +1,32 @@
 require 'spec_helper'
 require_relative '../shared_context.rb'
 
-describe Minke::Tasks::Test, :a => :b do
+describe Minke::Tasks::Shell, :a => :b do
 
   let(:task) do
     Minke::Tasks::Shell.new args
   end
 
-  it 'executes the given commands in a container' do
-    generator_config.build_settings.build_commands.test = ['command1', 'command2']
-    expect(docker_runner).to receive(:create_and_run_container).twice
+  it 'calls create on the compose factory' do
+    expect(docker_compose_factory).to receive(:create)
+
+    task.run
+  end
+
+  it 'starts the compose stack' do
+    expect(docker_compose).to receive(:up)
+
+    task.run
+  end
+
+  it 'stops compose and removes containers' do
+    expect(docker_compose).to receive(:down)
+
+    task.run
+  end
+
+  it 'starts a shell in the build container' do
+    expect(docker_runner).to receive(:create_and_run_container).once
     
     task.run
   end

@@ -39,6 +39,7 @@ Commonly used command are:
    build_image :     build a docker image
    push        :     push built image to the registry
    encrypt     :     encrypt secrets with a private key
+   shell       :     start a shell session inside the build container
 See 'minke COMMAND --help' for more information on a specific command.
 HELP
 
@@ -155,6 +156,8 @@ when "run"
   doCommand(:run, options[:verbose], options[:config])
 when "push"
   doCommand(:push, options[:verbose], options[:config])
+when "shell"
+  doCommand(:shell, options[:verbose], options[:config])
 when "generate"
   if options[:generator] == nil || options[:output] == nil || options[:name] == nil || options[:namespace] == nil
     puts "Please specify options use: minke generate --help for help on command line options"

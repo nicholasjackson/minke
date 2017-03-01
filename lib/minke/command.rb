@@ -130,8 +130,10 @@ module Minke
     end
 
     def shell
-      tasks = create_tasks :shell
-      tasks[:shell].run
+      if config.shell != nil
+        tasks = create_tasks :shell
+        tasks[:shell].run
+      end
     end
   end
 end

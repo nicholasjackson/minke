@@ -98,3 +98,10 @@ cucumber:
   post:
     tasks:
       - wait_for_elastic_search
+shell:
+  consul_loader:
+    config_file: ./config.yml
+    url:
+      address: consul
+      port: 8500
+      type: private

@@ -16,6 +16,7 @@ require 'securerandom'
 require 'sshkey'
 require 'mkmf'
 require 'open3'
+require "io/console"
 
 require 'minke/version'
 require 'minke/command'

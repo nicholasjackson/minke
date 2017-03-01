@@ -31,6 +31,8 @@ module Minke
         config.run      = read_task_section file['run'], config.docker      unless file['run'] == nil
         config.cucumber = read_task_section file['cucumber'], config.docker unless file['cucumber'] == nil
 
+        config.shell = read_task_section file['shell'], config.docker unless file['shell'] == nil
+
         return config
       end
 
