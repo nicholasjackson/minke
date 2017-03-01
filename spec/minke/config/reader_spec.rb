@@ -181,4 +181,9 @@ describe Minke::Config::Reader, :a => :b do
     end
   end
 
+  describe 'shell section' do
+    it 'should correctly read the run section' do
+      expect(config.cucumber).to be_an_instance_of(Minke::Config::Task)
+    end
+  end
 end

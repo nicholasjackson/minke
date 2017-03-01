@@ -113,4 +113,11 @@ describe Minke::Command, :a => :b do
       command.push
     end
   end
+
+  describe 'shell' do
+    it 'runs the shell task' do
+      expect(tasks[:shell]).to receive(:shell).once
+      command.shell
+    end
+  end
 end

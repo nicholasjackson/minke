@@ -18,12 +18,12 @@ module Minke
       logger = Minke::Logging.create_logger(self.verbose)
       shell = Minke::Helpers::Shell.new(logger)
 
-      variables = Minke::Generators::ConfigVariables.new.tap do |v|
-        v.application_name = @config.application_name
-        v.namespace = @config.namespace
-        v.src_root = File.expand_path('../')
-      end
-
+#      variables = Minke::Generators::ConfigVariables.new.tap do |v|
+#        v.application_name = @config.application_name
+#        v.namespace = @config.namespace
+#        v.src_root = File.expand_path('../')
+#      end
+      
       task_runner = Minke::Tasks::TaskRunner.new ({
         :ruby_helper       => Minke::Helpers::Ruby.new,
         :copy_helper       => Minke::Helpers::Copy.new,
@@ -74,7 +74,8 @@ module Minke
         :run         => Minke::Tasks::Run.new(dependencies),
         :build_image => Minke::Tasks::BuildImage.new(dependencies),
         :cucumber    => Minke::Tasks::Cucumber.new(dependencies),
-        :push        => Minke::Tasks::Push.new(dependencies)
+        :push        => Minke::Tasks::Push.new(dependencies),
+        :shell       => Minke::Tasks::Shell.new(dependencies)
       }
     end
 
@@ -128,5 +129,9 @@ module Minke
       tasks[:push].run
     end
 
+    def shell
+      tasks = create_tasks :shell
+      tasks[:shell].run
+    end
   end
 end
