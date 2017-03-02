@@ -37,8 +37,8 @@ module Minke
         end
 
         # write the shell script
-        Minke::Generators::write_bash_script output_folder + "/_build/minke"
-        Minke::Generators::create_rvm_files output_folder + "/_build/", @variables.application_name
+        Minke::Generators::write_bash_script output_folder + "/_minke/minke"
+        Minke::Generators::create_rvm_files output_folder + "/_minke/", @variables.application_name
       end
 
       def build_image docker_file
@@ -56,12 +56,18 @@ module Minke
       def run_command_in_container build_image, command
         @logger.debug command
         begin
-          container, success = @docker_runner.create_and_run_container build_image, ["#{File.expand_path(@variables.src_root)}:/src"], nil, '/src', command
+          args = {
+            :image             => build_image, 
+            :volumes           => ["#{File.expand_path(@variables.src_root)}:/src"],
+            :working_directory => '/src', 
+            :command           => command
+          }
 
+
+          container, success = @docker_runner.create_and_run_container args
+          
           # throw exception if failed
           raise " #{command}" unless success
-          #command = Minke::Helpers.replace_vars_in_section generator.generate_command, '##SERVICE_NAME##', APPLICATION_NAME
-          #container, ret = Minke::Docker.create_and_run_container config, command
         ensure
           @docker_runner.delete_container container
         end
