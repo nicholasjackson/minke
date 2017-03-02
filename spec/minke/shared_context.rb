@@ -128,6 +128,7 @@ RSpec.shared_context 'shared context', :a => :b do
   let(:docker_runner) do
     runner = double('docker_runner')
     allow(runner).to receive(:create_and_run_container).and_return([true, true])
+    allow(runner).to receive(:create_and_run_blocking_container).and_return([true, true])
     allow(runner).to receive(:delete_container)
     allow(runner).to receive(:get_docker_ip_address)
     allow(runner).to receive(:build_image)

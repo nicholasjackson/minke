@@ -4,7 +4,6 @@ module Minke
 
       def run args = nil
         @logger.info "## Run shell" 
-
         @logger.info "## Run application with docker compose"
 
         compose_file = @config.compose_file_for(@task_name)
@@ -16,7 +15,7 @@ module Minke
             compose.up
             pre_tasks.call
             @logger.info "## Shell open to build container"
-            run_command_in_container '/bin/sh', true
+            run_command_in_container('/bin/sh', true)
           rescue SystemExit, Interrupt
             @logger.info "Stopping...."
             raise SystemExit
