@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require "simplecov"
+SimpleCov.minimum_coverage 80
 SimpleCov.start
 
 require 'webmock/rspec'

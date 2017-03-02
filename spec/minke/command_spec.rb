@@ -17,7 +17,8 @@ describe Minke::Command, :a => :b do
       :test           => double("test").tap { |d| allow(d).to receive(:run) },
       :build_image    => double("build_image").tap { |d| allow(d).to receive(:run) },
       :cucumber       => double("cucumber").tap { |d| allow(d).to receive(:run) },
-      :push           => double("push").tap { |d| allow(d).to receive(:run) }
+      :push           => double("push").tap { |d| allow(d).to receive(:run) },
+      :shell          => double("shell").tap { |d| allow(d).to receive(:run) }
     }
   end
 
@@ -111,6 +112,13 @@ describe Minke::Command, :a => :b do
     it 'runs the push task' do
       expect(tasks[:push]).to receive(:run).once
       command.push
+    end
+  end
+
+  describe 'shell' do
+    it 'runs the shell task' do
+      expect(tasks[:shell]).to receive(:run).once
+      command.shell
     end
   end
 end

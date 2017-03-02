@@ -63,7 +63,7 @@ module Minke
 
       ##
       # runs the given command in a docker container
-      def run_command_in_container command
+      def run_command_in_container command, blocking = false
         begin
           @logger.info "Running command: #{command}"
           settings = @generator_config.build_settings.docker_settings
@@ -85,7 +85,12 @@ module Minke
             :environment       => environment,
             :working_directory => working_directory
           }
-          container, success = @docker_runner.create_and_run_container args
+
+          if blocking == false
+            container, success = @docker_runner.create_and_run_container args
+          else 
+            container, success = @docker_runner.create_and_run_blocking_container args
+          end
 
           # throw exception if failed
           raise "Unable to run command #{command}" unless success

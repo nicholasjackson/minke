@@ -71,6 +71,13 @@ module Minke
       attr_accessor :cucumber
 
       ##
+      # Settings for the build shell phase
+      # instance of Minke::Config::Task
+      #
+      # [Optional] if not provided the shell commands will not be executed
+      attr_accessor :shell
+
+      ##
       # Returns the docker_compose file for the given section,
       # if the section overrides application_compose_file then this is returned
       # otherwise the global file is returned

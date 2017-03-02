@@ -176,9 +176,14 @@ describe Minke::Config::Reader, :a => :b do
   end
 
   describe 'cucumber section' do
-    it 'should correctly read the run section' do
+    it 'should correctly read the cucumber section' do
       expect(config.cucumber).to be_an_instance_of(Minke::Config::Task)
     end
   end
 
+  describe 'shell section' do
+    it 'should correctly read the shell section' do
+      expect(config.shell).to be_an_instance_of(Minke::Config::Task)
+    end
+  end
 end

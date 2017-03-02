@@ -76,7 +76,7 @@ module Minke
       		"Env"             => args[:environment],
       		'WorkingDir'      => args[:working_directory],
           'NetworkMode'     => @network,
-          'name'        => args[:name],
+          'name'            => args[:name],
           'PublishAllPorts' => true
         )
 
@@ -97,14 +97,48 @@ module Minke
           end
         end
 
-        
-
         container.start
-        
         thread.join unless args[:deamon] == true
 
         success = (container.json['State']['ExitCode'] == 0) ? true: false 
-        
+        @logger.error(output) unless success 
+
+      	return container, success
+      end
+      
+      #
+      # create_and_run_blocking_container starts a conatainer of the given image name and executes a command, this method blocks until the container exits
+      #
+      # Returns:
+      # - Docker::Container
+      # - sucess (true if command succeded without error)
+      def create_and_run_blocking_container args
+      	# update the timeout for the Excon Http Client
+      	# set the chunk size to enable streaming of log files
+        ::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
+        container = ::Docker::Container.create(
+      		'Image'           => args[:image],
+      		'Cmd'             => args[:command],
+      		"Binds"           => args[:volumes],
+      		"Env"             => args[:environment],
+      		'WorkingDir'      => args[:working_directory],
+          'name'            => args[:name],
+          'NetworkMode'     => @network,
+          "OpenStdin"       => true,
+          "StdinOnce"       => true,
+          "Tty"             => true,
+          'PublishAllPorts' => true
+        )
+
+        container.start
+      
+        STDIN.raw do |stdin|
+          container.attach(stdin: stdin, tty: true) do |chunk|
+            print chunk
+          end
+        end
+
+        success = (container.json['State']['ExitCode'] == 0) ? true: false 
         @logger.error(output) unless success 
 
       	return container, success
