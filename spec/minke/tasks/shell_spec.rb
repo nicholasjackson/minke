@@ -25,6 +25,12 @@ describe Minke::Tasks::Shell, :a => :b do
     task.run
   end
 
+  it 'logs the shell starting message' do
+    expect(logger).to receive(:info).with("## Shell open to build container")
+    
+    task.run
+  end
+
   it 'starts a shell in the build container' do
     expect(docker_runner).to receive(:create_and_run_container).once
     

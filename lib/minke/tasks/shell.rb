@@ -15,6 +15,7 @@ module Minke
           begin
             compose.up
             pre_tasks.call
+            @logger.info "## Shell open to build container"
             run_command_in_container '/bin/sh', true
           rescue SystemExit, Interrupt
             @logger.info "Stopping...."

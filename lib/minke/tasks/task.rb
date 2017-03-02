@@ -63,7 +63,7 @@ module Minke
 
       ##
       # runs the given command in a docker container
-      def run_command_in_container command, blocking
+      def run_command_in_container command, blocking = false
         begin
           @logger.info "Running command: #{command}"
           settings = @generator_config.build_settings.docker_settings
