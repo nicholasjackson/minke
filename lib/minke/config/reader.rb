@@ -63,6 +63,7 @@ module Minke
           t.docker        = read_docker_section section['docker'] unless section['docker'] == nil
           t.pre           = read_pre_post_section section['pre']  unless section['pre'] == nil
           t.post          = read_pre_post_section section['post'] unless section['post'] == nil
+          t.ports         = section['ports'] unless section['ports'] == nil
         end
       end
 

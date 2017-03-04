@@ -18,12 +18,6 @@ module Minke
       logger = Minke::Logging.create_logger(self.verbose)
       shell = Minke::Helpers::Shell.new(logger)
 
-#      variables = Minke::Generators::ConfigVariables.new.tap do |v|
-#        v.application_name = @config.application_name
-#        v.namespace = @config.namespace
-#        v.src_root = File.expand_path('../')
-#      end
-      
       task_runner = Minke::Tasks::TaskRunner.new ({
         :ruby_helper       => Minke::Helpers::Ruby.new,
         :copy_helper       => Minke::Helpers::Copy.new,
@@ -51,7 +45,7 @@ module Minke
       return {
         :config                 => @config,
         :task_name              => task,
-        :docker_runner          => Minke::Docker::DockerRunner.new(logger, network_name),
+        :docker_runner          => Minke::Docker::DockerRunner.new(logger, network_name, project_name),
         :task_runner            => task_runner,
         :shell_helper           => shell,
         :logger_helper          => logger,
@@ -110,7 +104,7 @@ module Minke
     end
     
     def build_image
-      if config.test != nil
+      if config.build != nil
         test
         tasks = create_tasks :build
         tasks[:build_image].run

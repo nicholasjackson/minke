@@ -111,6 +111,14 @@ networks:
 
     end
 
+    describe 'get a list of services' do
+      it 'gets a list of services from the compose file' do
+        services = dockercompose.services  
+
+        expect(services.length).to eq(2)
+      end
+    end
+
   end
 
 end

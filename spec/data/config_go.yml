@@ -99,6 +99,8 @@ cucumber:
     tasks:
       - wait_for_elastic_search
 shell:
+  ports:
+    - "::8001"
   consul_loader:
     config_file: ./config.yml
     url:

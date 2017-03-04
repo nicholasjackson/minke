@@ -18,6 +18,7 @@ RSpec.shared_context 'shared context', :a => :b do
         c.cucumber = Minke::Config::Task.new
         c.shell = Minke::Config::Task.new
         c.fetch = Minke::Config::Task.new.tap do |f|
+          f.ports = [':8080']
           f.consul_loader = Minke::Config::ConsulLoader.new.tap do |cl|
             cl.url = Minke::Config::URL.new.tap do |u|
               u.address = 'myfile'
@@ -116,6 +117,8 @@ RSpec.shared_context 'shared context', :a => :b do
     allow(compose).to receive(:up)
     allow(compose).to receive(:down)
     allow(compose).to receive(:logs)
+    allow(compose).to receive(:services)
+
     return compose
   end
 

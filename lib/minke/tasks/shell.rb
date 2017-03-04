@@ -9,13 +9,15 @@ module Minke
         compose_file = @config.compose_file_for(@task_name)
         compose_file = File.expand_path(compose_file)
         compose = @docker_compose_factory.create compose_file unless compose_file == nil
-        
+
         run_with_block do |pre_tasks, post_tasks|
           begin
+            services = create_list_of_links(compose.services)
             compose.up
             pre_tasks.call
+
             @logger.info "## Shell open to build container"
-            run_command_in_container('/bin/sh', true)
+            run_command_in_container('/bin/sh', true, services, @task_settings.ports)
           rescue SystemExit, Interrupt
             @logger.info "Stopping...."
             raise SystemExit
@@ -26,6 +28,15 @@ module Minke
         end
       end
 
+      def create_list_of_links compose_services
+        services = []
+        compose_services.each do |k,v| 
+          services.push(k) 
+        end
+
+        services
+      end
     end
+
   end
 end

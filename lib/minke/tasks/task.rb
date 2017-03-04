@@ -63,7 +63,7 @@ module Minke
 
       ##
       # runs the given command in a docker container
-      def run_command_in_container command, blocking = false
+      def run_command_in_container(command, blocking = false, links = nil, ports = nil)
         begin
           @logger.info "Running command: #{command}"
           settings = @generator_config.build_settings.docker_settings
@@ -78,12 +78,19 @@ module Minke
             environment.push "GIT_SSH_COMMAND=ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
           end
 
+          if @task_settings.consul_loader != nil && links != nil
+            links.push "consul"
+          end
+
+
           args = {
             :image             => build_image,
             :command           => command,
             :volumes           => volumes,
             :environment       => environment,
-            :working_directory => working_directory
+            :working_directory => working_directory,
+            :links             => links,
+            :ports             => ports,
           }
 
           if blocking == false
