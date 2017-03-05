@@ -3,7 +3,7 @@ Minke is an opinionated build system for μServices and Docker, it uses generato
 
 The intention is to produce a 0 dependency standardised build and test framework that works equally well on CI as it does on your local machine.
 
-<asciinema-player src="/ascii/asciicast-105833.json" autoplay="1" preload="1"></asciinema-player>
+<asciinema-player src="/ascii/asciicast-105833.json" cols="120" font-size="small" autoplay="1" preload="1"></asciinema-player>
 
 You have two options keep reading and see just how quick you can build a microservice with Minke,  I promise it will be less than 5 minutes.  Or watch my talk from ContainerShed in 2016 where I demonstrate Minke live on stage, this talk also explains my ethos towards continuous delivery.
 
