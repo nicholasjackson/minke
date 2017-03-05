@@ -15,7 +15,6 @@ module Minke
       end
 
       def remove
-        puts "OKs" + @created_network.to_s
         if find_network.to_s != '' && @created_network == true
           @shell_runner.execute("docker network rm #{@network_name}", true)
         end

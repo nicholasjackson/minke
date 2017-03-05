@@ -117,6 +117,7 @@ module Minke
       def create_and_run_blocking_container args
         host_config = get_port_bindings args
         host_config['NetworkMode'] = @network
+        host_config['Binds'] = args[:volumes]
 
         if args[:links] != nil 
           network = {'EndpointsConfig' => {@network =>
@@ -128,7 +129,7 @@ module Minke
 
       	# update the timeout for the Excon Http Client
       	# set the chunk size to enable streaming of log files
-        ::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
+        #::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
         container = ::Docker::Container.create(
       		'Image'            => args[:image],
       		'Cmd'              => args[:command],
@@ -138,7 +139,6 @@ module Minke
           'name'             => args[:name],
           'NetworkMode'      => @network,
           "OpenStdin"        => true,
-          "StdinOnce"        => true,
           "Tty"              => true,
           'PublishAllPorts'  => true,
           'ExposedPorts'     => exposed_ports,
@@ -148,16 +148,16 @@ module Minke
 
         container.start
       
+        success = (container.json['State']['ExitCode'] == 0) ? true: false 
+        @logger.error("Unable to start docker container") unless success 
+
         STDIN.raw do |stdin|
           container.attach(stdin: stdin, tty: true) do |chunk|
             print chunk
           end
         end
 
-        success = (container.json['State']['ExitCode'] == 0) ? true: false 
-        @logger.error(output) unless success 
-
-      	return container, success
+        return container, success
       end
 
       ##

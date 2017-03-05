@@ -70,7 +70,7 @@ EOF
       :working_directory => '/working',
       :links => ['test2','statsd', 'consul'],
       :volumes => nil,
-      :command => '/bin/sh',
+      :command => ['/bin/sh','-c','ls && /bin/sh'],
       :ports => [':8080']))
     
     task.run

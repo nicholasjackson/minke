@@ -17,7 +17,7 @@ module Minke
             pre_tasks.call
 
             @logger.info "## Shell open to build container"
-            run_command_in_container('/bin/sh', true, services, @task_settings.ports)
+            run_command_in_container(['/bin/sh','-c','ls && /bin/sh'], true, services, @task_settings.ports)
           rescue SystemExit, Interrupt
             @logger.info "Stopping...."
             raise SystemExit
