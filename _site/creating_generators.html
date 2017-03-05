@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/cayman.css">
   <link rel="stylesheet" href="css/highlighting.css">
   <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/asciinema-player.css">
   <script src="css/menu.js"></script>
 </head>
 
@@ -41,36 +42,44 @@
 
       <div id="home">
   
-  <h2 id="version-1123">Version 1.12.3</h2>
-<p><a href="http://microbadger.com/#/images/nicholasjackson/minke" title="Get your own version badge on microbadger.com"><img src="https://images.microbadger.com/badges/version/nicholasjackson/minke.svg" alt="" /></a></p>
-
-<h1 id="introduction">Introduction</h1>
+  <h1 id="introduction">Introduction</h1>
 <p>Minke is an opinionated build system for μServices and Docker, it uses generator templates to create working source code, Dockerfiles, and anything else you may need to build and deploy a working microservice.</p>
 
 <p>The intention is to produce a 0 dependency standardised build and test framework that works equally well on CI as it does on your local machine.</p>
+
+<asciinema-player src="/ascii/asciicast-105833.json" cols="120" text-size="small" autoplay="1" preload="1"></asciinema-player>
 
 <p>You have two options keep reading and see just how quick you can build a microservice with Minke,  I promise it will be less than 5 minutes.  Or watch my talk from ContainerShed in 2016 where I demonstrate Minke live on stage, this talk also explains my ethos towards continuous delivery.</p>
 
 <p><a href="https://skillsmatter.com/skillscasts/8097-0-to-microservice-in-5-minutes">https://skillsmatter.com/skillscasts/8097-0-to-microservice-in-5-minutes</a></p>
 
 <h1 id="minke-uses-docker">Minke uses Docker</h1>
-<p>If you don’t have it … <a href="https://docs.docker.com/docker-for-mac/">https://docs.docker.com/docker-for-mac/</a></p>
+<p>If you don’t have it …
+Mac: <a href="https://docs.docker.com/docker-for-mac/">https://docs.docker.com/docker-for-mac/</a><br />
+Linux: <a href="https://docs.docker.com/engine/installation/linux/ubuntulinux/">https://docs.docker.com/engine/installation/linux/ubuntulinux/</a></p>
+
+<p>If you are using Docker Toolbox for Mac you will need to set your DOCKER_HOST environment variable, this is quite simple just execute the below command.  The Linux install and Docker for Mac should not require this.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">eval</span> <span class="k">$(</span>docker-machine env default<span class="k">)</span>
+</code></pre>
+</div>
 
 <h1 id="like-make-on-steroids">Like make on steroids</h1>
 <p>Minke is almost a 0 dependency setup for building your source code you will need three things.
-1. A computer, Mac or Linux (Windows too if someone would like to write a bat script).
+1. A computer, Mac or Linux (Windows too if someone would like to write a .bat script).
 2. Internet.
 3. Docker.</p>
 
 <p>Minke just deals with the other stuff; Minke and it’s generators are built in Ruby however you do not need Ruby installed as the build scripts run in a Docker container.  The commands to build and test the application are built into the generator along with any application specific logic so the interface to the user is one of a few key simple commands.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>rake app:fetch              # fetch dependent packages
-rake app:test               # run unit tests
-rake app:build              # build application
-rake app:build_image        # build Docker image for application
-rake app:build_and_run      # bonus points for guessing
-rake app:run                # run application with Docker Compose
-rake app:cucumber[feature]  # run end to end Cucumber tests USAGE: rake app:cucumber[@tag]
+<div class="highlighter-rouge"><pre class="highlight"><code>fetch              # fetch dependent packages
+test               # run unit tests
+build              # build application
+build_image        # build Docker image for application
+build_and_run      # bonus points for guessing
+run                # run application with Docker Compose
+cucumber[feature]  # run end to end Cucumber tests USAGE: rake app:cucumber[@tag]
+shell              # runs the application stack with docker compose and starts a shell session in the build container
 </code></pre>
 </div>
 
@@ -143,7 +152,7 @@ rake app:cucumber[feature]  # run end to end Cucumber tests USAGE: rake app:cucu
   <li>Run the generator command in a docker container. (note the space before -g)</li>
 </ol>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>curl -L -s get.minke.rocks | bash -s <span class="s1">' -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>curl -Ls https://get.minke.rocks | bash -s <span class="s1">'generate -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'</span>
 </code></pre>
 </div>
 
@@ -151,16 +160,18 @@ rake app:cucumber[feature]  # run end to end Cucumber tests USAGE: rake app:cucu
   <li>Build a Docker image</li>
 </ol>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">cd </span>_build
-<span class="gp">$ </span>./minke.sh rake app:build_image
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">cd </span>_minke
+<span class="gp">$ </span>./minke -v build_image
 </code></pre>
 </div>
+
+<p>The <em>-v</em> flag tells minke to output the verbose logs, if you omit this then you will see a much cleaner output.</p>
 
 <ol>
   <li>Execute the functional tests</li>
 </ol>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>./minke.sh rake app:cucumber
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>./minke -v cucumber
 </code></pre>
 </div>
 
@@ -170,6 +181,7 @@ rake app:cucumber[feature]  # run end to end Cucumber tests USAGE: rake app:cucu
 
 
       <footer class="site-footer">
+  <script language="javascript" src="/js/asciinema-player.js"></script>
   <span class="site-footer-owner"><a href="">Minke</a> is maintained by <a href="http://github.com/nicholasjackson">Nic Jackson</a>.</span>
   <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/pietromenna/jekyll-cayman-theme">Cayman theme</a> by <a href="http://github.com/jasonlong">Jason Long</a>.</span>
 </footer>

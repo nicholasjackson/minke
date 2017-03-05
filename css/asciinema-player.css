@@ -156,7 +156,6 @@
 }
 .asciinema-terminal .line {
   display: block;
-  width: 200%;
 }
 .asciinema-terminal .bright {
   font-weight: bold;
