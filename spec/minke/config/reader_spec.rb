@@ -185,5 +185,9 @@ describe Minke::Config::Reader, :a => :b do
     it 'should correctly read the shell section' do
       expect(config.shell).to be_an_instance_of(Minke::Config::Task)
     end
+
+    it 'should read the ports to be exposed' do
+      expect(config.shell.ports).to be_an_instance_of(Array)
+    end
   end
 end

@@ -1,9 +1,10 @@
 module Minke
   module Docker
     class DockerRunner
-      def initialize logger, network = nil
+      def initialize logger, network = nil, project = nil
         @network = network ||= 'bridge'
         @logger = logger
+        @project = project
       end
 
       ##
@@ -74,8 +75,8 @@ module Minke
       		'Cmd'             => args[:command],
       		"Binds"           => args[:volumes],
       		"Env"             => args[:environment],
+          'NetworkMode'         => @network,
       		'WorkingDir'      => args[:working_directory],
-          'NetworkMode'     => @network,
           'name'            => args[:name],
           'PublishAllPorts' => true
         )
@@ -106,42 +107,57 @@ module Minke
       	return container, success
       end
       
-      #
-      # create_and_run_blocking_container starts a conatainer of the given image name and executes a command, this method blocks until the container exits
+      ##
+      # create_and_run_blocking_container starts a conatainer of the given image name and executes a command, 
+      # this method blocks until the container exits
       #
       # Returns:
       # - Docker::Container
       # - sucess (true if command succeded without error)
       def create_and_run_blocking_container args
+        host_config = get_port_bindings args
+        host_config['NetworkMode'] = @network
+        host_config['Binds'] = args[:volumes]
+
+        if args[:links] != nil 
+          network = {'EndpointsConfig' => {@network =>
+            {'Links' => args[:links].map {|l| "#{@project}_#{l}_1:#{l}"}}
+          }}
+        end
+
+        exposed_ports = get_exposed_ports args
+
       	# update the timeout for the Excon Http Client
       	# set the chunk size to enable streaming of log files
-        ::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
+        #::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
         container = ::Docker::Container.create(
-      		'Image'           => args[:image],
-      		'Cmd'             => args[:command],
-      		"Binds"           => args[:volumes],
-      		"Env"             => args[:environment],
-      		'WorkingDir'      => args[:working_directory],
-          'name'            => args[:name],
-          'NetworkMode'     => @network,
-          "OpenStdin"       => true,
-          "StdinOnce"       => true,
-          "Tty"             => true,
-          'PublishAllPorts' => true
+      		'Image'            => args[:image],
+      		'Cmd'              => args[:command],
+      		"Binds"            => args[:volumes],
+      		"Env"              => args[:environment],
+      		'WorkingDir'       => args[:working_directory],
+          'name'             => args[:name],
+          'NetworkMode'      => @network,
+          "OpenStdin"        => true,
+          "Tty"              => true,
+          'PublishAllPorts'  => true,
+          'ExposedPorts'     => exposed_ports,
+          'HostConfig'       => host_config,
+          'NetworkingConfig' => network
         )
 
         container.start
       
+        success = (container.json['State']['ExitCode'] == 0) ? true: false 
+        @logger.error("Unable to start docker container") unless success 
+
         STDIN.raw do |stdin|
           container.attach(stdin: stdin, tty: true) do |chunk|
             print chunk
           end
         end
 
-        success = (container.json['State']['ExitCode'] == 0) ? true: false 
-        @logger.error(output) unless success 
-
-      	return container, success
+        return container, success
       end
 
       ##
@@ -152,12 +168,12 @@ module Minke
           ::Docker::Image.build_from_dir(dockerfile_dir, {:t => name}) do |v|
             data = /{"stream.*:"(.*)".*/.match(v)
             data = data[1].encode(Encoding.find('UTF-8'), {invalid: :replace, undef: :replace, replace: ''}) unless data == nil || data.length < 1
+            data.chomp('\n')
             $stdout.puts data unless data == nil
           end
         rescue => e
-          @logger.error e
-          message = /.*{"message":"(.*?)"}/.match(e.to_s)
-          @logger.error "Error: #{message[1]}" unless message == nil || message.length < 1
+          message = e.message
+          @logger.error "Error: #{message}" unless message == nil || message.length < 1
         end
       end
 
@@ -198,6 +214,37 @@ module Minke
       def docker_version
         ::Docker.version['Version']
       end
+
+      def get_port_bindings args
+        host_config = {}
+        if args[:ports] != nil 
+          port_bindings = {}
+          args[:ports].each do |p|
+            hostDest = p.split(":")
+            if hostDest[0] == ""
+              port_bindings[hostDest[1] + "/tcp"] = [{'HostPort' => "#{rand(40000..50000)}", 'HostIp' => "0.0.0.0"}]
+            else 
+              port_bindings[hostDest[1] + "/tcp"] = [{'HostPort' => hostDest[0], 'HostIp' => "0.0.0.0"}]
+            end
+          end
+          host_config = {'PortBindings' => port_bindings }
+        end
+
+        return host_config
+      end
+
+      def get_exposed_ports args
+        port_bindings = {}
+        if args[:ports] != nil 
+          args[:ports].each do |p|
+            hostDest = p.split(":")
+            port_bindings[hostDest[1] + "/tcp"] = {}
+          end
+        end
+
+        return port_bindings
+      end
+
     end
   end
 end

@@ -89,7 +89,7 @@ describe Minke::Command, :a => :b do
     end
 
     it 'does not run the build_image task when there is no config' do
-      command.config.test = nil
+      command.config.build = nil
       expect(tasks[:build_image]).to receive(:run).never
       command.build_image
     end

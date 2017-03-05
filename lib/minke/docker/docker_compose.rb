@@ -69,6 +69,10 @@ module Minke
         { 'networks' => {'default' => { 'external' => { 'name' => @docker_network } } } }
       end
 
+      def services 
+        create_compose['services']
+      end
+
       def create_compose
         existing = YAML.load(File.read(@compose_file))
         services = {}
