@@ -3,6 +3,8 @@ Minke is an opinionated build system for μServices and Docker, it uses generato
 
 The intention is to produce a 0 dependency standardised build and test framework that works equally well on CI as it does on your local machine.
 
+[![asciicast](https://asciinema.org/a/105820.png)](https://asciinema.org/a/105820)
+
 You have two options keep reading and see just how quick you can build a microservice with Minke,  I promise it will be less than 5 minutes.  Or watch my talk from ContainerShed in 2016 where I demonstrate Minke live on stage, this talk also explains my ethos towards continuous delivery.
 
 [https://skillsmatter.com/skillscasts/8097-0-to-microservice-in-5-minutes](https://skillsmatter.com/skillscasts/8097-0-to-microservice-in-5-minutes)
@@ -34,6 +36,7 @@ build_image        # build Docker image for application
 build_and_run      # bonus points for guessing
 run                # run application with Docker Compose
 cucumber[feature]  # run end to end Cucumber tests USAGE: rake app:cucumber[@tag]
+shell              # runs the application stack with docker compose and starts a shell session in the build container
 ```
 
 It is completely extensible, for example you are building a Microservice and would like to automatically setup the database schema or load some initial data.  This can easily be achieved by writing your own Rake tasks.
@@ -77,7 +80,7 @@ $ curl -Ls https://get.minke.rocks | bash -s 'generate -g minke-generator-go -o 
 3. Build a Docker image
 
 ```bash
-$ cd _build
+$ cd _minke
 $ ./minke -v build_image
 ```
 
