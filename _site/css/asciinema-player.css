@@ -144,6 +144,11 @@
   font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';
   line-height: 1.3333333333em;
 }
+
+.asciinema-terminal::---webkit-scrollbar {
+  display:none;
+}
+
 .asciinema-terminal .line {
   letter-spacing: normal;
   overflow: hidden;
@@ -156,6 +161,7 @@
 }
 .asciinema-terminal .line {
   display: block;
+  width: 200%;
 }
 .asciinema-terminal .bright {
   font-weight: bold;
@@ -168,12 +174,15 @@
 }
 .asciinema-terminal.font-small {
   font-size: 12px;
+  overflow: hidden;
 }
 .asciinema-terminal.font-medium {
   font-size: 18px;
+  overflow: hidden;
 }
 .asciinema-terminal.font-big {
   font-size: 24px;
+  overflow: hidden;
 }
 .asciinema-player:hover .control-bar {
   color: #bbbbbb;
