@@ -7,7 +7,7 @@ Example:
 ```
 This new feature allows you to start your compose stack including dependent services before starting a shell session into the build container with your source code.  Exceptionally useful for debugging a build or if you do not have the required dependencies to develop locally.
 
-<script type="text/javascript" src="https://asciinema.org/a/105822.js" id="asciicast-105822" async></script>
+<script type="text/javascript" src="https://asciinema.org/a/105822.js" id="asciicast-105822" async data-preload="1" data-autoplay="true" data-size="small"></script>
 
 # Version 1.13.19
 Ability to forward SSH keys to build container for docker-machine for Mac and linux, currently docker for mac does not support this feature.
