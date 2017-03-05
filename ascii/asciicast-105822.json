@@ -1,0 +1,862 @@
+{
+  "version": 1,
+  "width": 283,
+  "height": 70,
+  "duration": 77.211975,
+  "command": null,
+  "title": null,
+  "env": {
+    "TERM": "xterm-256color",
+    "SHELL": "/bin/zsh"
+  },
+  "stdout": [
+    [
+      0.441172,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                                                                                                                                                                                          \r \r"
+    ],
+    [
+      0.003071,
+      "\u001b]2;nicj@Nics-MacBook-Pro: ~/Developer/go/src/github.com/nicholasjackson/example\u0007\u001b]1;..ckson/example\u0007"
+    ],
+    [
+      0.183621,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\r\n\u001b[39m\u001b[0m\u001b[49m\u001b[47m\u001b[30m  master \u001b[31m✘\u001b[30m \u001b[31m✖\u001b[30m \u001b[33m✭\u001b[30m \u001b[40m\u001b[37m\u001b[39m nicj@Nics-MacBook-Pro \u001b[44m\u001b[30m\u001b[37m example \u001b[46m\u001b[34m\u001b[37m go  1.8 \u001b[47m\u001b[36m\u001b[30m 11:03:18 \u001b[49m\u001b[37m\u001b[39m\r\n\u001b[01;39m\u001b[32m$\u001b[39m\u001b[00m\u001b[K"
+    ],
+    [
+      2.5e-05,
+      "\u001b[?1h\u001b="
+    ],
+    [
+      8.4e-05,
+      "\u001b[?2004h"
+    ],
+    [
+      1.853761,
+      "c"
+    ],
+    [
+      0.191767,
+      "\bcd"
+    ],
+    [
+      0.104427,
+      " "
+    ],
+    [
+      0.688005,
+      "%"
+    ],
+    [
+      0.871065,
+      "\b \b"
+    ],
+    [
+      0.321308,
+      "$"
+    ],
+    [
+      0.519587,
+      "G"
+    ],
+    [
+      0.151486,
+      "O"
+    ],
+    [
+      0.438937,
+      "PATH\u001b[1m/\u001b[0m"
+    ],
+    [
+      0.409711,
+      "\b\u001b[0m/s"
+    ],
+    [
+      0.087723,
+      "r"
+    ],
+    [
+      0.318254,
+      "c\u001b[1m/\u001b[0m"
+    ],
+    [
+      1.544639,
+      "\b\u001b[0m/g"
+    ],
+    [
+      0.103225,
+      "i"
+    ],
+    [
+      0.129873,
+      "t"
+    ],
+    [
+      0.388341,
+      "hub.com\u001b[1m/\u001b[0m"
+    ],
+    [
+      0.732537,
+      "\b\u001b[0m/n"
+    ],
+    [
+      0.095041,
+      "i"
+    ],
+    [
+      0.136192,
+      "c"
+    ],
+    [
+      0.25211,
+      "holasjackson\u001b[1m/\u001b[0m"
+    ],
+    [
+      0.827907,
+      "\b\u001b[0m/e"
+    ],
+    [
+      0.430942,
+      "x"
+    ],
+    [
+      0.326268,
+      "ample\u001b[1m/\u001b[0m"
+    ],
+    [
+      1.082723,
+      "\b\u001b[0m/_"
+    ],
+    [
+      0.496177,
+      "m"
+    ],
+    [
+      0.150961,
+      "i"
+    ],
+    [
+      0.294151,
+      "nke\u001b[1m/\u001b[0m"
+    ],
+    [
+      0.674269,
+      "\b\u001b[0m \b"
+    ],
+    [
+      3.5e-05,
+      "\u001b[?1l\u001b>"
+    ],
+    [
+      7.6e-05,
+      "\u001b[?2004l\r\r\n"
+    ],
+    [
+      0.005275,
+      "\u001b]2;cd $GOPATH/src/github.com/nicholasjackson/example/_minke\u0007\u001b]1;cd\u0007"
+    ],
+    [
+      0.000109,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                                                                                                                                                                                          \r \r"
+    ],
+    [
+      0.004837,
+      "\u001b]2;nicj@Nics-MacBook-Pro: ~/Developer/go/src/github.com/nicholasjackson/example/_minke\u0007\u001b]1;..xample/_minke\u0007"
+    ],
+    [
+      0.180921,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\r\n\u001b[39m\u001b[0m\u001b[49m\u001b[47m\u001b[30m  master \u001b[31m✘\u001b[30m \u001b[31m✖\u001b[30m \u001b[33m✭\u001b[30m \u001b[40m\u001b[37m\u001b[39m nicj@Nics-MacBook-Pro \u001b[44m\u001b[30m\u001b[37m _minke \u001b[47m\u001b[34m\u001b[30m 11:03:32 \u001b[49m\u001b[37m\u001b[39m\r\n\u001b[01;39m\u001b[32m$\u001b[39m\u001b[00m\u001b[K"
+    ],
+    [
+      2e-05,
+      "\u001b[?1h\u001b=\u001b[?2004h"
+    ],
+    [
+      0.568962,
+      "."
+    ],
+    [
+      0.207894,
+      "\b./"
+    ],
+    [
+      0.240119,
+      "m"
+    ],
+    [
+      0.142832,
+      "i"
+    ],
+    [
+      0.16117,
+      "n"
+    ],
+    [
+      0.127142,
+      "k"
+    ],
+    [
+      0.145156,
+      "e"
+    ],
+    [
+      0.160286,
+      " "
+    ],
+    [
+      0.190672,
+      "-"
+    ],
+    [
+      0.888772,
+      "c"
+    ],
+    [
+      0.608261,
+      "\b \b"
+    ],
+    [
+      0.184036,
+      "v"
+    ],
+    [
+      0.280514,
+      " "
+    ],
+    [
+      0.191572,
+      "s"
+    ],
+    [
+      0.135446,
+      "h"
+    ],
+    [
+      0.128426,
+      "e"
+    ],
+    [
+      0.20019,
+      "l"
+    ],
+    [
+      0.159424,
+      "l"
+    ],
+    [
+      0.760381,
+      "\u001b[?1l\u001b>"
+    ],
+    [
+      3.3e-05,
+      "\u001b[?2004l\r\r\n"
+    ],
+    [
+      0.006497,
+      "\u001b]2;./minke -v shell\u0007\u001b]1;./minke\u0007"
+    ],
+    [
+      0.033677,
+      "Running command: minke -v shell\r\n"
+    ],
+    [
+      0.016798,
+      "Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?\r\n"
+    ],
+    [
+      0.019229,
+      "docker: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?.\r\nSee 'docker run --help'.\r\n"
+    ],
+    [
+      0.018898,
+      "Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?\r\n"
+    ],
+    [
+      0.002062,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                                                                                                                                                                                          \r \r"
+    ],
+    [
+      0.004461,
+      "\u001b]2;nicj@Nics-MacBook-Pro: ~/Developer/go/src/github.com/nicholasjackson/example/_minke\u0007\u001b]1;..xample/_minke\u0007"
+    ],
+    [
+      0.154116,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\r\n\u001b[39m\u001b[0m\u001b[49m\u001b[47m\u001b[30m  master \u001b[31m✘\u001b[30m \u001b[31m✖\u001b[30m \u001b[33m✭\u001b[30m \u001b[40m\u001b[37m\u001b[39m nicj@Nics-MacBook-Pro \u001b[44m\u001b[30m\u001b[37m _minke \u001b[47m\u001b[34m\u001b[30m 11:03:38 \u001b[49m\u001b[37m\u001b[39m\r\n\u001b[01;39m\u001b[32m$\u001b[39m\u001b[00m\u001b[K"
+    ],
+    [
+      2.1e-05,
+      "\u001b[?1h\u001b="
+    ],
+    [
+      1e-05,
+      "\u001b[?2004h"
+    ],
+    [
+      0.792126,
+      "d"
+    ],
+    [
+      0.216143,
+      "\bde"
+    ],
+    [
+      0.112039,
+      "n"
+    ],
+    [
+      0.119688,
+      "v"
+    ],
+    [
+      0.183842,
+      "\u001b[?1l\u001b>"
+    ],
+    [
+      2.5e-05,
+      "\u001b[?2004l\r\r\n"
+    ],
+    [
+      0.005107,
+      "\u001b]2;eval $(docker-machine env default)\u0007\u001b]1;denv\u0007"
+    ],
+    [
+      0.209045,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                                                                                                                                                                                          \r \r"
+    ],
+    [
+      0.003667,
+      "\u001b]2;nicj@Nics-MacBook-Pro: ~/Developer/go/src/github.com/nicholasjackson/example/_minke\u0007\u001b]1;..xample/_minke\u0007"
+    ],
+    [
+      0.142539,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\r\n\u001b[39m\u001b[0m\u001b[49m\u001b[47m\u001b[30m  master \u001b[31m✘\u001b[30m \u001b[31m✖\u001b[30m \u001b[33m✭\u001b[30m \u001b[40m\u001b[37m\u001b[39m nicj@Nics-MacBook-Pro \u001b[44m\u001b[30m\u001b[37m _minke \u001b[47m\u001b[34m\u001b[30m 11:03:39 \u001b[49m\u001b[37m\u001b[39m\r\n\u001b[01;39m\u001b[32m$\u001b[39m\u001b[00m\u001b[K"
+    ],
+    [
+      7.6e-05,
+      "\u001b[?1h\u001b=\u001b[?2004h"
+    ],
+    [
+      0.502403,
+      "denv"
+    ],
+    [
+      0.207018,
+      "\b\b\b\b./minke -v shell"
+    ],
+    [
+      0.39469,
+      "\u001b[?1l\u001b>\u001b[?2004l"
+    ],
+    [
+      2.6e-05,
+      "\r\r\n"
+    ],
+    [
+      0.005133,
+      "\u001b]2;./minke -v shell\u0007\u001b]1;./minke\u0007"
+    ],
+    [
+      0.030532,
+      "Running command: minke -v shell\r\n"
+    ],
+    [
+      2.834127,
+      "\r\n888b     d888 d8b          888\r\n8888b   d8888 Y8P          888\r\n88888b.d88888              888\r\n888Y88888P888 888 88888b.  888  888  .d88b.\r\n888 Y888P 888 888 888 \"88b 888 .88P d8P  Y8b\r\n888  Y8P  888 888 888  888 888888K  88888888\r\n888   \"   888 888 888  888 888 \"88b Y8b.\r\n888       888 888 888  888 888  888  \"Y8888\r\n\r\nVersion: 1.14.2\r\n\r\n"
+    ],
+    [
+      0.012588,
+      "registered minke-generator-go\r\n\r\n\r\n"
+    ],
+    [
+      0.021416,
+      "\u001b[0;32;49mINFO\u001b[0m: ## Run shell\r\n\u001b[0;32;49mINFO\u001b[0m: ## Run application with docker compose\r\n"
+    ],
+    [
+      0.041253,
+      "\u001b[0;32;49mINFO\u001b[0m: Starting Consul\r\n"
+    ],
+    [
+      0.73156,
+      "\u001b[0;33;49mDEBUG\u001b[0m: Waiting for server http://172.23.0.3:8500/v1/status/leader to start 180 attempts remaining\r\n"
+    ],
+    [
+      0.001008,
+      "\u001b[0;33;49mDEBUG\u001b[0m: Invalid response from server\r\n"
+    ],
+    [
+      1.001217,
+      "\u001b[0;33;49mDEBUG\u001b[0m: Waiting for server http://172.23.0.3:8500/v1/status/leader to start 179 attempts remaining\r\n"
+    ],
+    [
+      0.002237,
+      "\u001b[0;33;49mDEBUG\u001b[0m: Server: http://172.23.0.3:8500/v1/status/leader passed health check, 2 checks to go...\r\n"
+    ],
+    [
+      1.001395,
+      "\u001b[0;33;49mDEBUG\u001b[0m: Waiting for server http://172.23.0.3:8500/v1/status/leader to start 179 attempts remaining\r\n"
+    ],
+    [
+      0.002091,
+      "\u001b[0;33;49mDEBUG\u001b[0m: Server: http://172.23.0.3:8500/v1/status/leader passed health check, 1 checks to go...\r\n"
+    ],
+    [
+      1.002014,
+      "\u001b[0;33;49mDEBUG\u001b[0m: Waiting for server http://172.23.0.3:8500/v1/status/leader to start 179 attempts remaining\r\n"
+    ],
+    [
+      0.001874,
+      "\u001b[0;33;49mDEBUG\u001b[0m: Server: http://172.23.0.3:8500/v1/status/leader healthy\r\n"
+    ],
+    [
+      0.011511,
+      "Updating key: /example/settings/environment with value: dev\r\n"
+    ],
+    [
+      0.010453,
+      "\u001b[0;33;49mDEBUG\u001b[0m: docker-compose -f /Users/nicj/Developer/go/src/github.com/nicholasjackson/example/_minke/dockercompose/example/tmp_docker-compose.yml -p minkevn3h5hcsgpqaru1 up -d\r\n"
+    ],
+    [
+      0.359256,
+      "\u001b[0;33;49mDEBUG\u001b[0m: Creating minkevn3h5hcsgpqaru1_syslog_1\r\n"
+    ],
+    [
+      0.008293,
+      "\u001b[0;33;49mDEBUG\u001b[0m: Creating minkevn3h5hcsgpqaru1_registrator_1\r\n"
+    ],
+    [
+      2.71974,
+      "\u001b[0;32;49mINFO\u001b[0m: ## Shell open to build container\r\n\u001b[0;32;49mINFO\u001b[0m: Running command: [\"/bin/sh\", \"-c\", \"ls && /bin/sh\"]\r\n\u001b[0;33;49mDEBUG\u001b[0m: Pulling image: nicholasjackson/minke-generator-go:latest\r\n"
+    ],
+    [
+      0.696626,
+      "\u001b[0;0mMakefile\u001b[0m     \u001b[0;0mconfig.json\u001b[0m  \u001b[0;0mglide.lock\u001b[0m   \u001b[1;34mglobal\u001b[0m       \u001b[1;32mmain\u001b[0m         \u001b[1;34mvendor\u001b[0m\r\n\u001b[1;34m_minke\u001b[0m       \u001b[1;32mexample\u001b[0m      \u001b[0;0mglide.yaml\u001b[0m   \u001b[1;34mhandlers\u001b[0m     \u001b[0;0mmain.go\u001b[0m\r\n"
+    ],
+    [
+      0.000649,
+      "/go/src/github.com/nicholasjackson/example # \u001b[6n"
+    ],
+    [
+      1.507137,
+      "l"
+    ],
+    [
+      0.06336,
+      "s"
+    ],
+    [
+      0.175198,
+      "\r\n"
+    ],
+    [
+      0.005221,
+      "\u001b[0;0mMakefile\u001b[0m     \u001b[0;0mconfig.json\u001b[0m  \u001b[0;0mglide.lock\u001b[0m   \u001b[1;34mglobal\u001b[0m       \u001b[1;32mmain\u001b[0m         \u001b[1;34mvendor\u001b[0m\r\n\u001b[1;34m_minke\u001b[0m       \u001b[1;32mexample\u001b[0m      \u001b[0;0mglide.yaml\u001b[0m   \u001b[1;34mhandlers\u001b[0m     \u001b[0;0mmain.go\u001b[0m\r\n"
+    ],
+    [
+      0.000372,
+      "/go/src/github.com/nicholasjackson/example # \u001b[6n"
+    ],
+    [
+      2.363675,
+      "g"
+    ],
+    [
+      0.102393,
+      "o"
+    ],
+    [
+      0.129648,
+      " "
+    ],
+    [
+      0.23184,
+      "b"
+    ],
+    [
+      0.167844,
+      "u"
+    ],
+    [
+      0.048043,
+      "i"
+    ],
+    [
+      0.192245,
+      "l"
+    ],
+    [
+      0.111445,
+      "d"
+    ],
+    [
+      0.119623,
+      " "
+    ],
+    [
+      0.169006,
+      "m"
+    ],
+    [
+      0.093914,
+      "a"
+    ],
+    [
+      0.137927,
+      "i"
+    ],
+    [
+      0.103521,
+      "n"
+    ],
+    [
+      1.143839,
+      "."
+    ],
+    [
+      0.352147,
+      "g"
+    ],
+    [
+      0.128069,
+      "o"
+    ],
+    [
+      0.63256,
+      "\r\n"
+    ],
+    [
+      3.429619,
+      "/go/src/github.com/nicholasjackson/example # \u001b[6n"
+    ],
+    [
+      0.762101,
+      "p"
+    ],
+    [
+      0.727806,
+      "u"
+    ],
+    [
+      0.440325,
+      "\b\u001b[J"
+    ],
+    [
+      0.151389,
+      "i"
+    ],
+    [
+      0.088803,
+      "n"
+    ],
+    [
+      0.142295,
+      "g"
+    ],
+    [
+      0.297729,
+      " "
+    ],
+    [
+      0.238737,
+      "s"
+    ],
+    [
+      0.1211,
+      "y"
+    ],
+    [
+      0.103032,
+      "s"
+    ],
+    [
+      0.552764,
+      "l"
+    ],
+    [
+      0.183632,
+      "o"
+    ],
+    [
+      0.078635,
+      "g"
+    ],
+    [
+      0.441285,
+      "\r\n"
+    ],
+    [
+      0.001427,
+      "PING syslog (172.23.0.4): 56 data bytes\r\n64 bytes from 172.23.0.4: seq=0 ttl=64 time=0.096 ms\r\n"
+    ],
+    [
+      1.00174,
+      "64 bytes from 172.23.0.4: seq=1 ttl=64 time=0.131 ms\r\n"
+    ],
+    [
+      1.000385,
+      "64 bytes from 172.23.0.4: seq=2 ttl=64 time=0.141 ms\r\n"
+    ],
+    [
+      0.707621,
+      "^C\r\n--- syslog ping statistics ---\r\n3 packets transmitted, 3 packets received, 0% packet loss\r\nround-trip min/avg/max = 0.096/0.122/0.141 ms\r\n"
+    ],
+    [
+      0.000737,
+      "/go/src/github.com/nicholasjackson/example # \u001b[6n"
+    ],
+    [
+      0.66383,
+      "p"
+    ],
+    [
+      0.105204,
+      "i"
+    ],
+    [
+      0.239691,
+      "n"
+    ],
+    [
+      0.127776,
+      "g"
+    ],
+    [
+      0.223875,
+      " "
+    ],
+    [
+      0.200479,
+      "x"
+    ],
+    [
+      0.127984,
+      "o"
+    ],
+    [
+      0.063918,
+      "n"
+    ],
+    [
+      0.359035,
+      "\b\u001b[J"
+    ],
+    [
+      0.184417,
+      "\b\u001b[J"
+    ],
+    [
+      0.44783,
+      "c"
+    ],
+    [
+      0.208758,
+      "\b\u001b[J"
+    ],
+    [
+      0.167717,
+      "\b\u001b[J"
+    ],
+    [
+      0.135059,
+      "c"
+    ],
+    [
+      0.096564,
+      "o"
+    ],
+    [
+      0.079722,
+      "n"
+    ],
+    [
+      0.256509,
+      "s"
+    ],
+    [
+      0.127805,
+      "u"
+    ],
+    [
+      0.192284,
+      "l"
+    ],
+    [
+      0.255433,
+      "\r\n"
+    ],
+    [
+      0.001416,
+      "PING consul (172.23.0.3): 56 data bytes\r\n64 bytes from 172.23.0.3: seq=0 ttl=64 time=0.096 ms\r\n"
+    ],
+    [
+      1.002703,
+      "64 bytes from 172.23.0.3: seq=1 ttl=64 time=0.128 ms\r\n"
+    ],
+    [
+      1.001319,
+      "64 bytes from 172.23.0.3: seq=2 ttl=64 time=0.127 ms\r\n"
+    ],
+    [
+      0.297451,
+      "^C\r\n--- consul ping statistics ---\r\n3 packets transmitted, 3 packets received, 0% packet loss\r\nround-trip min/avg/max = 0.096/0.117/0.128 ms\r\n"
+    ],
+    [
+      0.000549,
+      "/go/src/github.com/nicholasjackson/example # \u001b[6n"
+    ],
+    [
+      1.33015,
+      "."
+    ],
+    [
+      0.215464,
+      "/"
+    ],
+    [
+      0.318936,
+      "m"
+    ],
+    [
+      0.200749,
+      "i"
+    ],
+    [
+      0.128319,
+      "n"
+    ],
+    [
+      0.558884,
+      "\b\u001b[J"
+    ],
+    [
+      0.169025,
+      "\b\u001b[J"
+    ],
+    [
+      0.151918,
+      "a"
+    ],
+    [
+      0.418868,
+      "\u0007\r/go/src/github.com/nicholasjackson/example # ./main\u001b[J"
+    ],
+    [
+      0.758016,
+      " "
+    ],
+    [
+      0.775222,
+      "."
+    ],
+    [
+      0.166468,
+      "/"
+    ],
+    [
+      0.320559,
+      "c"
+    ],
+    [
+      0.096426,
+      "o"
+    ],
+    [
+      0.120028,
+      "n"
+    ],
+    [
+      0.284229,
+      "\r/go/src/github.com/nicholasjackson/example # ./main ./config.json \u001b[J"
+    ],
+    [
+      1.139368,
+      "/"
+    ],
+    [
+      0.920351,
+      "\r\n"
+    ],
+    [
+      0.031176,
+      "Loading Config:  ./config.json\r\n"
+    ],
+    [
+      0.001078,
+      "{syslog:514 /}\r\n"
+    ],
+    [
+      0.001399,
+      "Listening for connections on port 8001\r\n"
+    ],
+    [
+      3.676446,
+      "^C"
+    ],
+    [
+      0.001016,
+      "\r\n"
+    ],
+    [
+      0.00047,
+      "/go/src/github.com/nicholasjackson/example # \u001b[6n"
+    ],
+    [
+      1.752436,
+      "e"
+    ],
+    [
+      0.344662,
+      "x"
+    ],
+    [
+      0.408117,
+      "i"
+    ],
+    [
+      0.158532,
+      "t"
+    ],
+    [
+      0.44942,
+      "\r\n"
+    ],
+    [
+      0.392922,
+      "\u001b[0;33;49mDEBUG\u001b[0m: docker-compose -f /Users/nicj/Developer/go/src/github.com/nicholasjackson/example/_minke/dockercompose/example/tmp_docker-compose.yml -p minkevn3h5hcsgpqaru1 down -v\r\n"
+    ],
+    [
+      0.265293,
+      "\u001b[0;33;49mDEBUG\u001b[0m: Stopping minkevn3h5hcsgpqaru1_registrator_1 ... \r\n\u001b[0;33;49mDEBUG\u001b[0m: Stopping minkevn3h5hcsgpqaru1_syslog_1 ... \r\n"
+    ],
+    [
+      0.627577,
+      "\u001b[0;33;49mDEBUG\u001b[0m: \u001b[1A\u001b[2K\rStopping minkevn3h5hcsgpqaru1_syslog_1 ... done\r\u001b[1B\u001b[2A\u001b[2K\rStopping minkevn3h5hcsgpqaru1_registrator_1 ... done\r\u001b[2BRemoving minkevn3h5hcsgpqaru1_registrator_1 ... \r\n\u001b[0;33;49mDEBUG\u001b[0m: Removing minkevn3h5hcsgpqaru1_syslog_1 ... \r\n"
+    ],
+    [
+      0.011236,
+      "\u001b[0;33;49mDEBUG\u001b[0m: \u001b[1A\u001b[2K\rRemoving minkevn3h5hcsgpqaru1_syslog_1 ... done\r\u001b[1B\u001b[2A\u001b[2K\rRemoving minkevn3h5hcsgpqaru1_registrator_1 ... done\r\u001b[2BNetwork minke_a7smsxbk9mr7uvhnf8spm1wftxlorouj is external, skipping\r\n"
+    ],
+    [
+      0.020824,
+      "\u001b[0;32;49mINFO\u001b[0m: Stopping Consul\r\n"
+    ],
+    [
+      1.358752,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                                                                                                                                                                                          \r \r"
+    ],
+    [
+      0.004716,
+      "\u001b]2;nicj@Nics-MacBook-Pro: ~/Developer/go/src/github.com/nicholasjackson/example/_minke\u0007\u001b]1;..xample/_minke\u0007"
+    ],
+    [
+      0.181911,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\r\n\u001b[39m\u001b[0m\u001b[49m\u001b[47m\u001b[30m  master \u001b[31m✘\u001b[30m \u001b[31m✖\u001b[30m \u001b[33m✭\u001b[30m \u001b[40m\u001b[37m\u001b[39m nicj@Nics-MacBook-Pro \u001b[44m\u001b[30m\u001b[37m _minke \u001b[47m\u001b[34m\u001b[30m 11:04:34 \u001b[49m\u001b[37m\u001b[39m\r\n\u001b[01;39m\u001b[32m$\u001b[39m\u001b[00m\u001b[K"
+    ],
+    [
+      0.000131,
+      "\u001b[?1h\u001b=\u001b[?2004h"
+    ],
+    [
+      0.861213,
+      "\u001b[?2004l\r\r\n"
+    ]
+  ]
+}
