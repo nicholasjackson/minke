@@ -30,7 +30,7 @@ after_deploy:
     docker build -t nicholasjackson/minke --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VCS_REF=`git rev-parse --short HEAD` .;
     docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     docker push nicholasjackson/minke:latest;
-    docker tag nicholasjackson/minke nicholasjackson/minke:1.14.3;
-    docker push nicholasjackson/minke:1.14.3;
+    docker tag nicholasjackson/minke nicholasjackson/minke:1.14.4;
+    docker push nicholasjackson/minke:1.14.4;
     curl https://hooks.microbadger.com/images/nicholasjackson/minke/tkpohfdrYPE0B0TL5NzLcOap4k0=;
     fi

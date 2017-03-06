@@ -87,14 +87,14 @@ if !subcommands[command].nil?
 end
 
 def load_config config_file, verbose
-  reader = Minke::Config::Reader.new Minke::Logging.create_logger(verbose)
+  reader = Minke::Config::Reader.new Minke::Logging.create_logger(STDOUT, verbose)
   config = reader.read config_file
   variables = Minke::Generators::ConfigVariables.new.tap do |v|
       v.application_name = config.application_name
       v.namespace = config.namespace
       v.src_root = File.expand_path('../')
   end
-  processor = Minke::Generators::Processor.new variables, nil, Minke::Logging.create_logger(verbose)
+  processor = Minke::Generators::Processor.new variables, nil, Minke::Logging.create_logger(STDOUT, verbose)
   generator_config = processor.get_generator config.generator_name
   return config, generator_config
 end
