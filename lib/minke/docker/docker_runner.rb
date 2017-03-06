@@ -45,7 +45,6 @@ module Minke
       ##
       # pull_image pulls a new copy of the given image from the registry
       def pull_image image_name
-      	@logger.debug "Pulling Image: #{image_name}"
         ::Docker.options = {:chunk_size => 1, :read_timeout => 3600}
         ::Docker::Image.create('fromImage' => image_name)
       end
@@ -75,7 +74,7 @@ module Minke
       		'Cmd'             => args[:command],
       		"Binds"           => args[:volumes],
       		"Env"             => args[:environment],
-          'NetworkMode'         => @network,
+          'NetworkMode'     => @network,
       		'WorkingDir'      => args[:working_directory],
           'name'            => args[:name],
           'PublishAllPorts' => true
@@ -167,9 +166,8 @@ module Minke
         begin
           ::Docker::Image.build_from_dir(dockerfile_dir, {:t => name}) do |v|
             data = /{"stream.*:"(.*)".*/.match(v)
-            data = data[1].encode(Encoding.find('UTF-8'), {invalid: :replace, undef: :replace, replace: ''}) unless data == nil || data.length < 1
-            data.chomp('\n')
-            $stdout.puts data unless data == nil
+            data = data[1].encode(Encoding.find('UTF-8'), {invalid: :replace, undef: :replace, replace: ''}).chomp('/n') unless data == nil || data.length < 1
+            @logger.info data unless data == nil
           end
         rescue => e
           message = e.message

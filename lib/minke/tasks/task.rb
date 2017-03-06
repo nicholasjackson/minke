@@ -66,7 +66,7 @@ module Minke
       def run_command_in_container(command, blocking = false, links = nil, ports = nil)
         begin
           @logger.info "Running command: #{command}"
-          settings = @generator_config.build_settings.docker_settings
+          settings          = @generator_config.build_settings.docker_settings
           volumes           = settings.binds.clone unless settings.binds == nil
           environment       = settings.env.clone unless settings.env == nil
           build_image       = create_container_image
@@ -121,8 +121,10 @@ module Minke
           @logger.debug "Building image: #{build_image} from file #{build_file}"
           @docker_runner.build_image build_file, build_image
         else
-          @logger.debug "Pulling image: #{build_image}"
-          @docker_runner.pull_image build_image unless @docker_runner.find_image build_image
+          if (@docker_runner.find_image build_image) == nil
+            @logger.debug "Pulling image: #{build_image}"
+            @docker_runner.pull_image build_image         
+          end
         end
 
         build_image
