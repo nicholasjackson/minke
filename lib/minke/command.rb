@@ -15,7 +15,7 @@ module Minke
       ENV['DOCKER_PROJECT'] = project_name
       ENV['DOCKER_NETWORK'] = network_name
 
-      logger = Minke::Logging.create_logger(self.verbose)
+      logger = Minke::Logging.create_logger(STDOUT, self.verbose)
       shell = Minke::Helpers::Shell.new(logger)
 
       task_runner = Minke::Tasks::TaskRunner.new ({
