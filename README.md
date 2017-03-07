@@ -33,14 +33,14 @@ $ curl -L -s get.minke.rocks | bash -s ' -g minke-generator-go -o $(pwd) -n gith
 3. Build a Docker image
 
 ```bash
-$ cd _build
-$ ./minke.sh rake app:build_image
+$ cd _minke
+$ ./minke -v build_image
 ```
 
 4. Execute the functional tests
 
 ```bash
-$ ./minke.sh rake app:cucumber
+$ ./minke -v cucumber
 ```
 
 You now have a working microservice ready to be pushed to a Docker registry and deployed to a server.  For more detailed information please see the [tutorial](tutorial.html).
