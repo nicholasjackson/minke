@@ -24,10 +24,10 @@ $ mkdir ~/myservice
 $ cd ~/myservice
 ```
 
-2. Run the generator command in a docker container. (note the space before -g)
+2. Run the generator command in a docker container.
 
 ```bash
-$ curl -L -s get.minke.rocks | bash -s ' -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'
+$ curl -Ls https://get.minke.rocks | bash -s 'generate -g minke-generator-go -o $(pwd) -n github.com/nicholasjackson -a myservice'
 ```
 
 3. Build a Docker image
