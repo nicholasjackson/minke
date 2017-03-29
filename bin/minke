@@ -40,12 +40,14 @@ Commonly used command are:
    push        :     push built image to the registry
    encrypt     :     encrypt secrets with a private key
    shell       :     start a shell session inside the build container
+   provision   :     run the provisioner using terraform
 See 'minke COMMAND --help' for more information on a specific command.
 HELP
 
 global = OptionParser.new do |opts|
   opts.banner = "Usage: minke [options] [subcommand [options]]"
   opts.on("-v", "--[no-]verbose", "Run verbosely") { |v| options[:verbose] = true }
+  opts.on("-m", "-m [FOLDER]", "Mount folder in Minke container, e.g. ssh keys") { }
   opts.on("-A", "--forward-ssh", "Forward ssh keys to docker") { |v| options[:forward_ssh] = true }
   opts.separator ""
   opts.separator subtext
@@ -76,8 +78,16 @@ subcommands = {
 
       opts.on('-e', '--encrypt STRING', 'Encrypt a string') { |v| options[:encrypt] = v }
       opts.on('-k', '--key STRING', 'Private key to use for encryption') { |v| options[:key] = v }
+   end,
+   
+   'provision' => OptionParser.new do |opts|
+      opts.banner = "Usage: minke [options] provision [options]"
+
+      opts.on('-plan',    '', 'Run terraform plan')      { |v| options[:provision_mode] = 'plan'    }
+      opts.on('-apply',   '', 'Run terraform apply')     { |v| options[:provision_mode] = 'apply'   }
+      opts.on('-destroy', '', 'Run terraform destroy')   { |v| options[:provision_mode] = 'destroy' }
     end
- }
+}
 
 global.order!
 command = ARGV.shift
@@ -99,12 +109,13 @@ def load_config config_file, verbose
   return config, generator_config
 end
 
-def doCommand(command, verbose, config_file = nil)
+def doCommand(command, verbose, options, config_file = nil)
   config, generator_config = load_config(config_file, verbose) unless config_file == nil
   Minke::Command.new(
     config, 
     generator_config,
-    verbose
+    verbose,
+    options
   ).public_send(command)
 end
 
@@ -143,21 +154,23 @@ end
 
 case command
 when "test"
-  doCommand(:test, options[:verbose], options[:config])
+  doCommand(:test, options[:verbose], options, options[:config])
 when "build"
-  doCommand(:build, options[:verbose], options[:config])
+  doCommand(:build, options[:verbose], options, options[:config])
 when "fetch"
-  doCommand(:fetch, options[:verbose], options[:config])
+  doCommand(:fetch, options[:verbose], options, options[:config])
 when "cucumber"
-  doCommand(:cucumber, options[:verbose], options[:config])
+  doCommand(:cucumber, options[:verbose], options, options[:config])
 when "build_image"
-  doCommand(:build_image, options[:verbose], options[:config])
+  doCommand(:build_image, options[:verbose], options, options[:config])
 when "run"
-  doCommand(:run, options[:verbose], options[:config])
+  doCommand(:run, options[:verbose], options, options[:config])
 when "push"
-  doCommand(:push, options[:verbose], options[:config])
+  doCommand(:push, options[:verbose], options, options[:config])
 when "shell"
-  doCommand(:shell, options[:verbose], options[:config])
+  doCommand(:shell, options[:verbose], options, options[:config])
+when "provision"
+  doCommand(:provision, options[:verbose], options, options[:config])
 when "generate"
   if options[:generator] == nil || options[:output] == nil || options[:name] == nil || options[:namespace] == nil
     puts "Please specify options use: minke generate --help for help on command line options"

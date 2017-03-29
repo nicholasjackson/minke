@@ -56,6 +56,7 @@ require 'minke/tasks/run'
 require 'minke/tasks/test'
 require 'minke/tasks/build_image'
 require 'minke/tasks/shell'
+require 'minke/tasks/terraform'
 
 require 'minke/generators/config'
 require 'minke/generators/config_processor'

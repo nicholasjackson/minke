@@ -1,11 +1,12 @@
 module Minke
   class Command
-    attr_accessor :config, :generator_config, :verbose
+    attr_accessor :config, :generator_config, :verbose, :args
 
-    def initialize(config, generator_config, verbose)
+    def initialize(config, generator_config, verbose, args)
       self.config = config
       self.generator_config = generator_config
       self.verbose = verbose
+      self.args = args
     end
 
     # Creates dependencies for minke
@@ -69,7 +70,8 @@ module Minke
         :build_image => Minke::Tasks::BuildImage.new(dependencies),
         :cucumber    => Minke::Tasks::Cucumber.new(dependencies),
         :push        => Minke::Tasks::Push.new(dependencies),
-        :shell       => Minke::Tasks::Shell.new(dependencies)
+        :shell       => Minke::Tasks::Shell.new(dependencies),
+        :provision   => Minke::Tasks::Terraform.new(dependencies)
       }
     end
 
@@ -127,6 +129,13 @@ module Minke
       if config.shell != nil
         tasks = create_tasks :shell
         tasks[:shell].run
+      end
+    end
+    
+    def provision
+      if config.provision != nil
+        tasks = create_tasks :provision
+        tasks[:provision].run self.args[:provision_mode]
       end
     end
   end

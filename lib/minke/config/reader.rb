@@ -94,7 +94,7 @@ module Minke
       def read_terraform_section section
         TerraformSettings.new.tap do |t|
           t.config_dir = section['config_dir']
-          t.environment = read_env_vars section['environment']
+          t.environment = read_env_vars section['environment'] unless section['environment'] == nil
         end
       end
 

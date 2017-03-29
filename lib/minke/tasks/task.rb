@@ -17,7 +17,7 @@ module Minke
         @docker_network         = args[:docker_network]
         @health_check           = args[:health_check]
         @service_discovery      = args[:service_discovery]
-        @task_settings          = @config.send(@task_name)
+        @task_settings          = @config.send(@task_name) unless @task_name == :push
       end
 
       ##
