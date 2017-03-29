@@ -190,4 +190,30 @@ describe Minke::Config::Reader, :a => :b do
       expect(config.shell.ports).to be_an_instance_of(Array)
     end
   end
+
+  describe 'provision section' do
+    it 'should read the provision section' do
+      expect(config.provision).to be_an_instance_of(Minke::Config::Task)
+    end
+    
+    it 'should read the terraform section' do
+      expect(config.provision.terraform).to be_an_instance_of(Minke::Config::TerraformSettings)
+    end
+    
+    it 'should read the correct config directory' do
+      expect(config.provision.terraform.config_dir).to eq('./terraform')
+    end
+    
+    it 'should read the correct environment settings' do
+      expect(config.provision.terraform.environment).to be_an_instance_of(Minke::Config::EnvironmentSettings)
+    end
+    
+    it 'should read plain text environment variables' do
+      expect(config.provision.terraform.environment['AWS_ACCESS_KEY']).to eq('abc123')
+    end
+    
+    it 'should read secure text environment variables' do
+      expect(config.provision.terraform.environment['AWS_SECRET_KEY']).to eq('http://myURL')
+    end
+  end
 end

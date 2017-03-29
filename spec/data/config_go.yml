@@ -107,3 +107,27 @@ shell:
       address: consul
       port: 8500
       type: private
+provision:
+  terraform:
+    config_dir: ./terraform
+    environment:
+      - AWS_ACCESS_KEY: abc123
+      - AWS_SECRET_KEY:
+          secure:
+            fingerprint: 90:5d:ee:d4:8f:cf:c6:a7:05:53:07:79:a2:01:51:0a
+            value: >
+              j+4VjYc4sLTcsv3D4jJR0jLWcBOpmqVSMEdo/RanRchNsDctQmdMR+9dxKUp
+              SPHSwuWcx7x0ykc8dpe+qovhzJraK2bY9zhIJfoM/vWAuNQGdSYjMjYOMTN4
+              qRZ0nuOzXQceFB8DCltjCwhDPIobhWbqmkHYENKZIWpo2fEHOk1rIqHwep2K
+              51sdNDcNMyrNjp0zR8BH6KYd7qA8Ai1CaW+Ti0ED03aTKcQJiIHrH/HoAtlT
+              zgRDT6w4A0x9e42p/kpv/kHAZ2Sl1Kh7gnQp811vPwBzePJbFzt5BQa3N4ld
+              h+UpNJHCcL2EFGeuz3aEkvW0DaEsFqVgg6+W/53OjVfEaM1eJYdZAwWTxzuK
+              pILCZVcZMX018wSCV1J/edzAiLmyboq46n1CShmRQUNUIAX1XSH/t9DTH+n5
+              ViIrqxxMjvQ3CssL4dldnllT2Pv77GSJttdulpJWBF8g/0hStd1mcf1aICpj
+              10mLycE5iIId1c6On7EbY+gAQ/PwEjqgyBu2exhr3WHDIXQ+wEwcG8GIiKKK
+              WHENKZ9VlAZI6lHiD3xM3ZrOW19qNrPdDE2GmlMhdUBsWtbqHP2TyqMn6udA
+              UHeZ4I3w1GkdBU6tIyHX3SNBZnZyk/7Nt+0JlVKhMYrduT3mUn32eZpp+y4Q
+              2cIrVJzcNHo1aDjSmeKD+2E=
+
+
+
