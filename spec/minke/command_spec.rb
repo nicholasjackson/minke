@@ -4,7 +4,7 @@ require_relative './shared_context.rb'
 describe Minke::Command, :a => :b do
 
   let(:command) do
-    command = Minke::Command.new(config, generator_config, logger_helper)
+    command = Minke::Command.new(config, generator_config, {}, logger_helper)
     allow(command).to receive(:create_tasks).and_return(tasks)
     command
   end

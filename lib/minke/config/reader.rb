@@ -25,13 +25,13 @@ module Minke
         config.docker_registry = read_docker_registry file['docker_registry'] unless file['docker_registry'] == nil
         config.docker          = read_docker_section file['docker']           unless file['docker'] == nil
 
-        config.fetch    = read_task_section file['fetch'], config.docker    unless file['fetch'] == nil
-        config.build    = read_task_section file['build'], config.docker    unless file['build'] == nil
-        config.test     = read_task_section file['test'], config.docker     unless file['test'] == nil
-        config.run      = read_task_section file['run'], config.docker      unless file['run'] == nil
-        config.cucumber = read_task_section file['cucumber'], config.docker unless file['cucumber'] == nil
-
-        config.shell = read_task_section file['shell'], config.docker unless file['shell'] == nil
+        config.fetch     = read_task_section file['fetch'],     config.docker unless file['fetch'] == nil
+        config.build     = read_task_section file['build'],     config.docker unless file['build'] == nil
+        config.test      = read_task_section file['test'],      config.docker unless file['test'] == nil
+        config.run       = read_task_section file['run'],       config.docker unless file['run'] == nil
+        config.cucumber  = read_task_section file['cucumber'],  config.docker unless file['cucumber'] == nil
+        config.shell     = read_task_section file['shell'],     config.docker unless file['shell'] == nil
+        config.provision = read_task_section file['provision'], config.docker unless file['provision'] == nil
 
         return config
       end
@@ -58,12 +58,13 @@ module Minke
 
       def read_task_section section, docker_config
         Task.new.tap do |t|
-          t.consul_loader = read_consul_loader_section section['consul_loader'] unless section['consul_loader'] == nil
-          t.health_check  = read_url section['health_check']  unless section['health_check'] == nil
-          t.docker        = read_docker_section section['docker'] unless section['docker'] == nil
-          t.pre           = read_pre_post_section section['pre']  unless section['pre'] == nil
-          t.post          = read_pre_post_section section['post'] unless section['post'] == nil
-          t.ports         = section['ports'] unless section['ports'] == nil
+          t.consul_loader = read_consul_loader_section section['consul_loader']  unless section['consul_loader'] == nil
+          t.health_check  = read_url section['health_check']                     unless section['health_check'] == nil
+          t.docker        = read_docker_section section['docker']                unless section['docker'] == nil
+          t.pre           = read_pre_post_section section['pre']                 unless section['pre'] == nil
+          t.post          = read_pre_post_section section['post']                unless section['post'] == nil
+          t.ports         = section['ports']                                     unless section['ports'] == nil
+          t.terraform     = read_terraform_section section['terraform']          unless section['terraform'] == nil
         end
       end
 
@@ -88,6 +89,25 @@ module Minke
           c.config_file = section['config_file']
           c.url         = read_url section['url']
         end
+      end
+
+      def read_terraform_section section
+        TerraformSettings.new.tap do |t|
+          t.config_dir = section['config_dir']
+          t.environment = read_env_vars section['environment'] unless section['environment'] == nil
+        end
+      end
+
+      def read_env_vars section
+        env = EnvironmentSettings.new
+
+        section.each do |e|
+          e.each do |k,v|
+            env[k]  = v.is_a?(Hash) ? read_secure(v) : v
+          end
+        end
+
+        env
       end
 
       def read_url section

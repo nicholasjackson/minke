@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MINKE_VERSION="1.14.5"
+MINKE_VERSION="1.15.0"
 
 DOCKER_SOCK="/var/run/docker.sock:/var/run/docker.sock"
 NEW_UUID=$(base64 /dev/urandom | tr -d '/+' | head -c 32 | tr '[:upper:]' '[:lower:]')
@@ -29,6 +29,14 @@ fi
 # Test if interactive terminal and set the flag
 [[ -t 1 ]] && IT="-it" || IT=""
 
+# Do we need to forward an ssh key for encrypt?
+MOUNT_VOLUME=""
+while getopts 'Avm:v' flag; do
+  if [[ $flag == "m" ]]; then
+    SSH_KEY="-v ${OPTARG}"
+  fi
+done
+
 if [[ $1 != \generate* ]]; then
   # Test if we need to mount any special volumes for paths specified in the Gemfile
   while read -r line; do
@@ -40,7 +48,7 @@ if [[ $1 != \generate* ]]; then
 
   DIR=$(dirname `pwd`)
   
-  DOCKER_RUN="docker run ${IT} --rm --net=minke_${NEW_UUID} ${SSH_AUTH} ${GEM_VOLUMES} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -e BUNDLE_PATH=${PWD}/vendor -e BUNDLE_JOBS=2 -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_minke ${DOCKER_IMAGE} ${COMMAND}"
+  DOCKER_RUN="docker run ${IT} --rm --net=minke_${NEW_UUID} ${SSH_AUTH} ${GEM_VOLUMES} ${SSH_KEY} -v ${DOCKER_SOCK} -v ${DIR}:${DIR} -e BUNDLE_PATH=${PWD}/vendor -e BUNDLE_JOBS=2 -e DOCKER_NETWORK=minke_${NEW_UUID} -w ${DIR}/_minke ${DOCKER_IMAGE} ${COMMAND}"
 
   echo "Running command: minke ${COMMAND}"
   id=$(docker network create minke_${NEW_UUID})
